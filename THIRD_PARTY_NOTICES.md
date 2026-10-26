@@ -1,8 +1,10 @@
-# 第三方依赖与授权记录（M1）
+# 第三方依赖与授权记录（M2）
 
 版本来自实际还原的 NuGet 锁文件及 SDK 隐式运行时包。项目原创源码为 GPL-3.0-or-later，
 下列组件保留其独立授权，不能将 Windows App SDK 的二进制包一概标为 MIT。
 当前只提交源码和授权材料，没有发布应用二进制包或安装器。
+
+M2 没有新增第三方包；Native 仅调用 Windows 系统的只读 kernel32 API，不复制或分发系统 DLL。
 
 实际 Release 开发输出的第三方文件、SHA-256 和匹配的上游包路径见 [runtime-files.json](docs/runtime-files.json)。
 该清单不包含本项目生成的程序集、XAML 字节码或模板图标；用于授权核对，不是正式发布包清单。

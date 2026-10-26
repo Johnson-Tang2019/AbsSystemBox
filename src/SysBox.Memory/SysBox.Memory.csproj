@@ -1,5 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="../SysBox.Abstractions/SysBox.Abstractions.csproj" />
+    <ProjectReference Include="../SysBox.Native/SysBox.Native.csproj" />
   </ItemGroup>
 </Project>

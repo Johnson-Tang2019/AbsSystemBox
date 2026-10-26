@@ -1,0 +1,36 @@
+﻿{
+    "configuration":  "Debug",
+    "demoArgument":  true,
+    "expectedDemo":  true,
+    "dpi":  96,
+    "scalePercent":  100,
+    "xamlScale":  "窗口缩放：100%",
+    "isElevated":  true,
+    "isAdministrator":  true,
+    "restrictedUser":  false,
+    "memory":  {
+                   "commit":  "12.0 GiB / 24.0 GiB",
+                   "coverage":  "已读取 1 / 1 个进程，显示工作集前 1 项。权限不足 0，退出或不可读 0，其他失败 0，超时跳过 0。",
+                   "usage":  "62.5%",
+                   "total":  "总量 16.0 GiB",
+                   "available":  "6.0 GiB"
+               },
+    "reference":  null,
+    "resourceSamples":  [
+
+                        ],
+    "continuousSamples":  [
+
+                          ],
+    "exitCode":  0,
+    "checks":  [
+                   "All seven destinations selected through native UI Automation, three cycles",
+                   "Demo mode expected: True",
+                   "Light, dark and system themes applied through the theme ComboBox",
+                   "Five-second monitoring produces samples; stopping freezes history beyond a full interval",
+                   "Loading indicator and cancel button exercised on delayed demo client",
+                   "Navigating away cancels pending memory request; dashboard loads explicit demo data",
+                   "Compact 900 x 740 physical-pixel layout remains navigable",
+                   "Close window exits process with code 0"
+               ]
+}

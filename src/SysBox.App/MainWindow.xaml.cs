@@ -70,7 +70,8 @@ public sealed partial class MainWindow : Window
         if (RootFrame.CurrentSourcePageType == pageType) return;
         if (RootFrame.Content is IPageLifetime page) page.Deactivate();
         RootFrame.Navigate(pageType);
-        // Sidebar destinations are peers; do not retain pages or view models in a back stack.
+        // There are seven fixed destinations: keep at most one view of each, never an unbounded back stack.
+        if (RootFrame.Content is Page current) current.NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Required;
         RootFrame.BackStack.Clear();
     }
 }

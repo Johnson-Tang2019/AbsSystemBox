@@ -5,6 +5,7 @@ using SysBox.Abstractions;
 using SysBox.App.Services;
 using SysBox.Core;
 using SysBox.Memory;
+using SysBox.Native;
 using SysBox.Presentation;
 
 namespace SysBox.App;
@@ -23,14 +24,22 @@ public partial class App : Application
     protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
     {
         var services = new ServiceCollection();
-        services.AddSingleton<IMemoryMonitor, UnavailableMemoryMonitor>();
+        services.AddSingleton<IWindowsMemoryApi, WindowsMemoryApi>();
+        services.AddSingleton<IMemoryMonitor, WindowsMemoryMonitor>();
+        services.AddSingleton<IProcessMemoryMonitor, WindowsProcessMemoryMonitor>();
         services.AddSingleton<IDashboardClient, DashboardClient>();
 #if DEBUG
         if (Environment.GetCommandLineArgs().Contains("--demo", StringComparer.Ordinal))
+        {
             services.AddSingleton<IDashboardClient, DemoDashboardClient>();
+            services.AddSingleton<IMemoryMonitor, DemoMemoryMonitor>();
+            services.AddSingleton<IProcessMemoryMonitor, DemoProcessMemoryMonitor>();
+        }
 #endif
         services.AddSingleton<ThemeService>();
         services.AddTransient<DashboardViewModel>();
+        services.AddSingleton<ISamplingDelay, SamplingDelay>();
+        services.AddTransient<MemoryViewModel>();
         Services = services.BuildServiceProvider();
         MainWindow = new MainWindow();
         _window = MainWindow;

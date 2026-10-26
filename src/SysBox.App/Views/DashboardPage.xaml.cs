@@ -14,6 +14,7 @@ public sealed partial class DashboardPage : Page, IPageLifetime
     {
         InitializeComponent();
         DataContext = ViewModel;
+        Loaded += async (_, _) => await ViewModel.RefreshAsync();
         Unloaded += (_, _) => Deactivate();
     }
 

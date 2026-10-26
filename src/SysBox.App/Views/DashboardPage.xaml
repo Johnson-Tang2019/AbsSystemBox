@@ -20,8 +20,8 @@
                             <FontIcon Glyph="&#xE9D9;" FontSize="24" Foreground="{ThemeResource RoseBrush}" />
                         </Border>
                     </Grid>
-                    <InfoBar IsOpen="True" IsClosable="False" Severity="Informational" Title="功能开发中"
-                             Message="目前可浏览界面和调整外观。系统读数、搜索和空间分析尚未实现。" />
+                    <InfoBar IsOpen="True" IsClosable="False" Severity="Informational" Title="只读内存观察已就绪"
+                             Message="查看真实内存与进程状态；文件搜索、磁盘空间分析和规则仍在开发中。" />
                 </StackPanel>
             </Border>
             <TextBlock Text="工作台" Style="{StaticResource SubtitleTextBlockStyle}" />

@@ -170,8 +170,12 @@
       "sysbox.memory": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Abstractions": "[1.0.0, )"
+          "SysBox.Abstractions": "[1.0.0, )",
+          "SysBox.Native": "[1.0.0, )"
         }
+      },
+      "sysbox.native": {
+        "type": "Project"
       },
       "sysbox.presentation": {
         "type": "Project",

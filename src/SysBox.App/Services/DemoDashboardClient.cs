@@ -12,7 +12,7 @@ internal sealed class DemoDashboardClient : IDashboardClient
 
     public async Task<Result<MemorySnapshot>> ReadAsync(CancellationToken cancellationToken)
     {
-        await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken);
+        await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
         return Result<MemorySnapshot>.Success(new(
             DateTimeOffset.UtcNow, 16UL << 30, 6UL << 30, 12UL << 30, 24UL << 30,
             DataCompleteness.Complete));

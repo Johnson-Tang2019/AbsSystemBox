@@ -1,0 +1,43 @@
+﻿{
+    "configuration":  "Debug",
+    "demoArgument":  false,
+    "expectedDemo":  false,
+    "dpi":  96,
+    "scalePercent":  100,
+    "xamlScale":  "窗口缩放：100%",
+    "isElevated":  true,
+    "isAdministrator":  true,
+    "restrictedUser":  false,
+    "memory":  {
+                   "commit":  "36.5 GiB / 63.6 GiB",
+                   "sampledAt":  "最近采样 13:07:12",
+                   "total":  "总量 31.8 GiB",
+                   "available":  "5.1 GiB",
+                   "usage":  "84.0%",
+                   "coverage":  "已读取 489 / 490 个进程，显示工作集前 200 项。权限不足 0，退出或不可读 1，其他失败 0，超时跳过 0。"
+               },
+    "reference":  {
+                      "availableBytes":  5506199552,
+                      "totalVisibleBytes":  34146074624,
+                      "utc":  "2026-10-26T05:07:15.6256697+00:00",
+                      "committedBytes":  39129587712,
+                      "commitLimitBytes":  68292149248
+                  },
+    "resourceSamples":  [
+
+                        ],
+    "continuousSamples":  [
+
+                          ],
+    "exitCode":  0,
+    "checks":  [
+                   "All seven destinations selected through native UI Automation, three cycles",
+                   "Demo mode expected: False",
+                   "Light, dark and system themes applied through the theme ComboBox",
+                   "Five-second monitoring produces samples; stopping freezes history beyond a full interval",
+                   "Real physical/commit counters and process list displayed; manual refresh works while stopped",
+                   "Displayed physical total agrees with independent Windows OS counter within rounding",
+                   "Compact 900 x 740 physical-pixel layout remains navigable",
+                   "Close window exits process with code 0"
+               ]
+}

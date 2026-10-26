@@ -1,0 +1,231 @@
+{
+  "configuration": "Release",
+  "sdk": "10.0.403",
+  "framework": "net10.0",
+  "os": "Windows x64",
+  "total": 44,
+  "passed": 44,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "SysBox.UnitTests.ContractTests.FileIdentitySurvivesJsonWithoutIntegerPrecisionLoss",
+      "outcome": "Passed",
+      "duration": "00:00:00.0293995"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.CancellationIsNotConvertedToNotImplemented",
+      "outcome": "Passed",
+      "duration": "00:00:00.0007861"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.NativeFailureProducesStructuredError",
+      "outcome": "Passed",
+      "duration": "00:00:00.0012812"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryMonitoringLifecycleTests.CancelledLateSuccessDoesNotBecomeANewReading",
+      "outcome": "Passed",
+      "duration": "00:00:00.0016289"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryMonitoringLifecycleTests.EqualProcessReadingsDoNotTriggerRedundantBindingUpdates",
+      "outcome": "Passed",
+      "duration": "00:00:00.0006820"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.OverflowedCommitNeverProducesPartialWrappedNumbers",
+      "outcome": "Passed",
+      "duration": "00:00:00.0020477"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.NativeLayoutsMatchWindowsHeaders",
+      "outcome": "Passed",
+      "duration": "00:00:00.0003702"
+    },
+    {
+      "name": "SysBox.UnitTests.DashboardLifecycleTests.UnavailableStatusDoesNotBecomeAZeroReading",
+      "outcome": "Passed",
+      "duration": "00:00:00.0006749"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryMonitoringLifecycleTests.ManualRefreshCannotOverlapAnActiveRead",
+      "outcome": "Passed",
+      "duration": "00:00:00.0018060"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.SuccessfulResultPreservesValueWithoutError",
+      "outcome": "Passed",
+      "duration": "00:00:00.0002017"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryMonitoringLifecycleTests.StopCancelsTheTimerAndRestartOwnsExactlyOneLoop",
+      "outcome": "Passed",
+      "duration": "00:00:00.0043410"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.FailedResultCannotBeReadAsSuccessfulData",
+      "outcome": "Passed",
+      "duration": "00:00:00.0001555"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.SearchAcceptsBoundaryLimits(limit: 1000)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0017993"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.UnimplementedServicesDoNotReturnFakeEmptyResults",
+      "outcome": "Passed",
+      "duration": "00:00:00.0820733"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.UnsupportedPlatformDoesNotCallNativeFunctions",
+      "outcome": "Passed",
+      "duration": "00:00:00.0017167"
+    },
+    {
+      "name": "SysBox.UnitTests.WindowsMemoryIntegrationTests.RepeatedHandleReadsDoNotAccumulateProcessHandles",
+      "outcome": "Passed",
+      "duration": "00:00:00.0210760"
+    },
+    {
+      "name": "SysBox.UnitTests.DashboardLifecycleTests.CancelledUncooperativeClientCannotPublishData",
+      "outcome": "Passed",
+      "duration": "00:00:00.0005065"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.FormattingUsesBinaryUnitsAndGuardsInvalidDenominators",
+      "outcome": "Passed",
+      "duration": "00:00:00.0021039"
+    },
+    {
+      "name": "SysBox.UnitTests.WindowsMemoryIntegrationTests.NativeReadReturnsPhysicalCommitAndCurrentProcess",
+      "outcome": "Passed",
+      "duration": "00:00:00.0147184"
+    },
+    {
+      "name": "SysBox.UnitTests.DashboardLifecycleTests.CancelClearsLoadingWithoutReportingAnError",
+      "outcome": "Passed",
+      "duration": "00:00:00.0028394"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.SearchRejectsEmptyText(text: \" \")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0000878"
+    },
+    {
+      "name": "SysBox.UnitTests.DashboardLifecycleTests.LeavingThePageRejectsAnUncooperativeLateResult",
+      "outcome": "Passed",
+      "duration": "00:00:00.0010184"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.SearchAcceptsBoundaryLimits(limit: 1)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0001458"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.SearchRejectsUnboundedOrInvalidLimits(limit: 0)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0000106"
+    },
+    {
+      "name": "SysBox.UnitTests.DashboardLifecycleTests.RetryReplacesFailureStateWithData",
+      "outcome": "Passed",
+      "duration": "00:00:00.0008819"
+    },
+    {
+      "name": "SysBox.UnitTests.DashboardLifecycleTests.OldRequestCannotOverwriteNewerPageState",
+      "outcome": "Passed",
+      "duration": "00:00:00.0004591"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.PreCancelledCollectionsDoNotBegin",
+      "outcome": "Passed",
+      "duration": "00:00:00.0038578"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.HistoryKeepsOnlyTheNewestBoundedSamples",
+      "outcome": "Passed",
+      "duration": "00:00:00.0017569"
+    },
+    {
+      "name": "SysBox.UnitTests.DashboardLifecycleTests.UnexpectedErrorsDoNotLeakPrivateDetailsToTheUI",
+      "outcome": "Passed",
+      "duration": "00:00:00.0868604"
+    },
+    {
+      "name": "SysBox.UnitTests.ProcessIdentityTests.ReusedPidCarriesNewStartTimeAndNeverReusesPriorNameOrCounters",
+      "outcome": "Passed",
+      "duration": "00:00:00.0974390"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryMonitoringLifecycleTests.FailedReadRetainsTheLastTimestampWithoutGrowingHistory",
+      "outcome": "Passed",
+      "duration": "00:00:00.0005787"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.ProcessResultsAreBoundedAndSortedAfterReading",
+      "outcome": "Passed",
+      "duration": "00:00:00.0035184"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.SearchRejectsUnboundedOrInvalidLimits(limit: 1001)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0002193"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.SearchRejectsEmptyText(text: \"\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0002020"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.CommitUsesPageSizeRatherThanPagefileOrPhysicalValues",
+      "outcome": "Passed",
+      "duration": "00:00:00.0766903"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryMonitoringLifecycleTests.StableRowsReplaceIdentityWithoutRebuildingTheCollection",
+      "outcome": "Passed",
+      "duration": "00:00:00.0014906"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.SearchRejectsUnboundedOrInvalidLimits(limit: -1)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0003363"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.MissingCommitReadKeepsPhysicalDataAndMarksPartial",
+      "outcome": "Passed",
+      "duration": "00:00:00.0016461"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.ErrorRequiresMachineCodeAndHumanMessage",
+      "outcome": "Passed",
+      "duration": "00:00:00.0001717"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryMonitoringLifecycleTests.FailedProcessCollectorDoesNotHidePhysicalMemory",
+      "outcome": "Passed",
+      "duration": "00:00:00.0015228"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryMonitoringLifecycleTests.DeactivateDiscardsLateReadAndCancelsBothCollectors",
+      "outcome": "Passed",
+      "duration": "00:00:00.0948358"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.ProcessExitAndAccessDenialDoNotDiscardReadableProcesses",
+      "outcome": "Passed",
+      "duration": "00:00:00.0018160"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.NullSuccessAndNullErrorAreRejected",
+      "outcome": "Passed",
+      "duration": "00:00:00.0002567"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.InvalidPhysicalReadDoesNotPublishWrappedUsage",
+      "outcome": "Passed",
+      "duration": "00:00:00.0013410"
+    }
+  ]
+}

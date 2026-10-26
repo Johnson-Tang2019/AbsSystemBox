@@ -1,0 +1,18 @@
+<UserControl x:Class="SysBox.App.Controls.MemoryHistoryChart"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid ColumnSpacing="10" Height="150" AutomationProperties.Name="物理内存使用率历史曲线">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="36" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+        <TextBlock Text="100%" VerticalAlignment="Top" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+        <TextBlock Text="50%" VerticalAlignment="Center" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+        <TextBlock Text="0%" VerticalAlignment="Bottom" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+        <Canvas x:Name="Plot" Grid.Column="1" SizeChanged="Plot_SizeChanged">
+            <Line x:Name="TopLine" Stroke="{ThemeResource SurfaceStrokeBrush}" StrokeThickness="1" />
+            <Line x:Name="MiddleLine" Stroke="{ThemeResource SurfaceStrokeBrush}" StrokeThickness="1" />
+            <Line x:Name="BottomLine" Stroke="{ThemeResource SurfaceStrokeBrush}" StrokeThickness="1" />
+            <Polygon x:Name="Area" Fill="{ThemeResource RoseSoftBrush}" />
+            <Polyline x:Name="Curve" Stroke="{ThemeResource RoseBrush}" StrokeThickness="2.5" />
+            <Ellipse x:Name="Latest" Width="6" Height="6" Fill="{ThemeResource RoseBrush}" Visibility="Collapsed" />
+        </Canvas>
+    </Grid>
+</UserControl>

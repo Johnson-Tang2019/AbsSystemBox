@@ -13,7 +13,7 @@ public sealed class DashboardViewModel : ObservableObject
     private int generation;
     private bool isBusy;
     private string? errorMessage;
-    private string status = "内存观察尚未实现，当前没有系统读数。";
+    private string status = "尚未读取系统状态。";
     private MemorySnapshot? snapshot;
 
     public DashboardViewModel(IDashboardClient client)
@@ -124,6 +124,6 @@ public sealed class DashboardViewModel : ObservableObject
         IsBusy = false;
         Snapshot = null;
         ErrorMessage = null;
-        Status = "内存观察尚未实现，当前没有系统读数。";
+        Status = "尚未读取系统状态。";
     }
 }

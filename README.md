@@ -4,13 +4,15 @@
 实现内存观察、自主文件名索引与搜索、目录大小分析和受控规则。
 不依赖 Everything、WizTree、Mem Reduct 或 Fluent Reduct 运行。
 
-**当前阶段：M1 原生桌面界面。** 已有主窗口、七页导航、粉色主题、毛玻璃背景，
-支持浅色、深色和跟随系统。内存采集、文件搜索和磁盘分析尚未实现，页面明确显示占位状态。
+**当前阶段：M2 只读内存监控。** 已有真实物理内存、可用量、提交量、历史曲线和按工作集排序的进程列表。
+保留七页导航、粉色毛玻璃外观及浅色/深色/跟随系统主题。文件搜索、磁盘分析和规则尚未实现。
 当前没有安装器，进度以 [开发状态](docs/STATUS.md) 为准。
 
-![浅色界面](docs/images/m1-light.png)
-
-![深色界面](docs/images/m1-dark.png)
+内存页进入时开始采样，每轮完成后等待 5 秒再刷新；可停止、手动刷新和取消当前读取。
+离开页面或关闭窗口会停止采样。历史最多保留 60 点，进程列表显示可读进程中工作集最高的 200 项。
+权限不足、退出或不可读的进程分别计数；不申请调试权限，不提供结束进程或内存清理操作。
+工作集包含共享页，私有提交不等于私有工作集，不能把进程列直接相加当作总内存。
+具体口径与对照方法见 [内存测量说明](docs/MEMORY.md)。
 
 ## 构建与测试
 
@@ -42,8 +44,8 @@ dotnet test SysBox.slnx -c Debug --no-build --no-restore
 请保留整个输出目录，不能只复制一个 EXE。无需部署 MSIX、注册服务或以管理员身份启动。
 在 Visual Studio 中，将 `SysBox.App` 设为启动项目，选择 x64 和 `SysBox.App (Unpackaged)` 配置。
 
-仅 Debug 构建可显式传入 `--demo` 预览模拟内存数据，窗口会持续显示“示例预览”警示。
-正常模式不生成系统读数；Release 忽略该参数，且不编译模拟数据实现。
+仅 Debug 构建可显式传入 `--demo` 预览模拟数据，窗口会持续显示“示例预览”警示。
+正常模式调用 Windows 只读 API；Release 忽略该参数，且不编译模拟数据实现。
 主题设置本次会话内生效，退出窗口即结束应用；尚无托盘或后台进程。
 
 原生界面自动化（需要可交互 Windows 桌面）：
@@ -52,9 +54,11 @@ dotnet test SysBox.slnx -c Debug --no-build --no-restore
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./scripts/ui-smoke.ps1
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./scripts/ui-smoke.ps1 -Demo
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./scripts/ui-smoke.ps1 -Configuration Release -Demo
+# Optional: remove administrator privileges for a test run without changing system settings.
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./scripts/ui-smoke.ps1 -RestrictedUser
 ```
 
-运行报告和仅包含本应用窗口的截图写入 `artifacts/ui/`。
+运行报告和尽力捕获的本应用窗口图像写入 `artifacts/ui/`；PrintWindow 可能遗漏 DirectComposition 客户区，黑色图像不能当作渲染通过证据。
 详见 [界面设计与验收范围](docs/UX.md)。
 
 ## 开发资料
@@ -64,7 +68,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./scripts/ui-smoke.ps1 -
 - [路线图](docs/ROADMAP.md)、[贡献指南](CONTRIBUTING.md)。
 
 仓库名称为 AbsSystemBox，内部程序集沿用手册的 `SysBox.*` 名称。
-本阶段不扫描用户文件、不配置规则或后台服务。
+本阶段不扫描用户文件、不配置规则或后台服务，不执行任何内存清理。
 
 ## 许可证
 

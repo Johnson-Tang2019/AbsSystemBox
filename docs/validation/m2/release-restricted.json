@@ -1,0 +1,337 @@
+﻿{
+    "configuration":  "Release",
+    "demoArgument":  true,
+    "expectedDemo":  false,
+    "dpi":  96,
+    "scalePercent":  100,
+    "xamlScale":  "窗口缩放：100%",
+    "isElevated":  false,
+    "isAdministrator":  false,
+    "restrictedUser":  true,
+    "memory":  {
+                   "commit":  "36.9 GiB / 63.6 GiB",
+                   "sampledAt":  "最近采样 12:55:21",
+                   "total":  "总量 31.8 GiB",
+                   "available":  "4.7 GiB",
+                   "usage":  "85.3%",
+                   "coverage":  "已读取 281 / 495 个进程，显示工作集前 200 项。权限不足 213，退出或不可读 1，其他失败 0，超时跳过 0。"
+               },
+    "reference":  {
+                      "availableBytes":  4993892352,
+                      "totalVisibleBytes":  34146074624,
+                      "utc":  "2026-10-26T04:55:22.9472470+00:00",
+                      "committedBytes":  39601422336,
+                      "commitLimitBytes":  68292149248
+                  },
+    "resourceSamples":  [
+                            {
+                                "cycle":  1,
+                                "privateBytes":  172142592,
+                                "workingSetBytes":  228982784,
+                                "handles":  1364
+                            },
+                            {
+                                "cycle":  2,
+                                "privateBytes":  172904448,
+                                "workingSetBytes":  229441536,
+                                "handles":  1358
+                            },
+                            {
+                                "cycle":  3,
+                                "privateBytes":  173543424,
+                                "workingSetBytes":  230674432,
+                                "handles":  1355
+                            },
+                            {
+                                "cycle":  4,
+                                "privateBytes":  173547520,
+                                "workingSetBytes":  230674432,
+                                "handles":  1352
+                            },
+                            {
+                                "cycle":  5,
+                                "privateBytes":  173584384,
+                                "workingSetBytes":  230666240,
+                                "handles":  1352
+                            },
+                            {
+                                "cycle":  6,
+                                "privateBytes":  176431104,
+                                "workingSetBytes":  234123264,
+                                "handles":  1355
+                            },
+                            {
+                                "cycle":  7,
+                                "privateBytes":  177045504,
+                                "workingSetBytes":  234569728,
+                                "handles":  1358
+                            },
+                            {
+                                "cycle":  8,
+                                "privateBytes":  174723072,
+                                "workingSetBytes":  231292928,
+                                "handles":  1355
+                            },
+                            {
+                                "cycle":  9,
+                                "privateBytes":  174755840,
+                                "workingSetBytes":  231669760,
+                                "handles":  1355
+                            },
+                            {
+                                "cycle":  10,
+                                "privateBytes":  182190080,
+                                "workingSetBytes":  239595520,
+                                "handles":  1358
+                            },
+                            {
+                                "cycle":  11,
+                                "privateBytes":  182546432,
+                                "workingSetBytes":  239943680,
+                                "handles":  1355
+                            },
+                            {
+                                "cycle":  12,
+                                "privateBytes":  173924352,
+                                "workingSetBytes":  231280640,
+                                "handles":  1354
+                            },
+                            {
+                                "cycle":  13,
+                                "privateBytes":  174448640,
+                                "workingSetBytes":  231567360,
+                                "handles":  1354
+                            },
+                            {
+                                "cycle":  14,
+                                "privateBytes":  174911488,
+                                "workingSetBytes":  232161280,
+                                "handles":  1352
+                            },
+                            {
+                                "cycle":  15,
+                                "privateBytes":  177852416,
+                                "workingSetBytes":  234967040,
+                                "handles":  1357
+                            },
+                            {
+                                "cycle":  16,
+                                "privateBytes":  178532352,
+                                "workingSetBytes":  235716608,
+                                "handles":  1360
+                            },
+                            {
+                                "cycle":  17,
+                                "privateBytes":  170979328,
+                                "workingSetBytes":  231829504,
+                                "handles":  1333
+                            },
+                            {
+                                "cycle":  18,
+                                "privateBytes":  167407616,
+                                "workingSetBytes":  228626432,
+                                "handles":  1324
+                            },
+                            {
+                                "cycle":  19,
+                                "privateBytes":  168747008,
+                                "workingSetBytes":  229232640,
+                                "handles":  1321
+                            },
+                            {
+                                "cycle":  20,
+                                "privateBytes":  169644032,
+                                "workingSetBytes":  230166528,
+                                "handles":  1324
+                            },
+                            {
+                                "cycle":  21,
+                                "privateBytes":  173600768,
+                                "workingSetBytes":  233545728,
+                                "handles":  1324
+                            },
+                            {
+                                "cycle":  22,
+                                "privateBytes":  174268416,
+                                "workingSetBytes":  234029056,
+                                "handles":  1324
+                            },
+                            {
+                                "cycle":  23,
+                                "privateBytes":  173256704,
+                                "workingSetBytes":  233529344,
+                                "handles":  1326
+                            },
+                            {
+                                "cycle":  24,
+                                "privateBytes":  173531136,
+                                "workingSetBytes":  233697280,
+                                "handles":  1324
+                            },
+                            {
+                                "cycle":  25,
+                                "privateBytes":  173633536,
+                                "workingSetBytes":  233865216,
+                                "handles":  1332
+                            },
+                            {
+                                "cycle":  26,
+                                "privateBytes":  173948928,
+                                "workingSetBytes":  234041344,
+                                "handles":  1329
+                            },
+                            {
+                                "cycle":  27,
+                                "privateBytes":  174972928,
+                                "workingSetBytes":  235077632,
+                                "handles":  1332
+                            },
+                            {
+                                "cycle":  28,
+                                "privateBytes":  175562752,
+                                "workingSetBytes":  235548672,
+                                "handles":  1327
+                            },
+                            {
+                                "cycle":  29,
+                                "privateBytes":  175931392,
+                                "workingSetBytes":  235753472,
+                                "handles":  1329
+                            },
+                            {
+                                "cycle":  30,
+                                "privateBytes":  176181248,
+                                "workingSetBytes":  236072960,
+                                "handles":  1323
+                            },
+                            {
+                                "cycle":  "idle",
+                                "privateBytes":  176132096,
+                                "workingSetBytes":  236044288,
+                                "handles":  1318
+                            }
+                        ],
+    "continuousSamples":  [
+                              {
+                                  "seconds":  5,
+                                  "historyCount":  5,
+                                  "privateBytes":  160772096,
+                                  "handles":  1379
+                              },
+                              {
+                                  "seconds":  10,
+                                  "historyCount":  6,
+                                  "privateBytes":  163590144,
+                                  "handles":  1379
+                              },
+                              {
+                                  "seconds":  15,
+                                  "historyCount":  7,
+                                  "privateBytes":  164536320,
+                                  "handles":  1379
+                              },
+                              {
+                                  "seconds":  20,
+                                  "historyCount":  8,
+                                  "privateBytes":  165126144,
+                                  "handles":  1380
+                              },
+                              {
+                                  "seconds":  25,
+                                  "historyCount":  9,
+                                  "privateBytes":  165670912,
+                                  "handles":  1380
+                              },
+                              {
+                                  "seconds":  30,
+                                  "historyCount":  10,
+                                  "privateBytes":  166207488,
+                                  "handles":  1380
+                              },
+                              {
+                                  "seconds":  35,
+                                  "historyCount":  11,
+                                  "privateBytes":  166518784,
+                                  "handles":  1368
+                              },
+                              {
+                                  "seconds":  40,
+                                  "historyCount":  12,
+                                  "privateBytes":  167100416,
+                                  "handles":  1368
+                              },
+                              {
+                                  "seconds":  45,
+                                  "historyCount":  13,
+                                  "privateBytes":  167645184,
+                                  "handles":  1368
+                              },
+                              {
+                                  "seconds":  50,
+                                  "historyCount":  14,
+                                  "privateBytes":  168235008,
+                                  "handles":  1369
+                              },
+                              {
+                                  "seconds":  55,
+                                  "historyCount":  15,
+                                  "privateBytes":  168763392,
+                                  "handles":  1369
+                              },
+                              {
+                                  "seconds":  60,
+                                  "historyCount":  16,
+                                  "privateBytes":  169754624,
+                                  "handles":  1370
+                              },
+                              {
+                                  "seconds":  65,
+                                  "historyCount":  17,
+                                  "privateBytes":  171479040,
+                                  "handles":  1368
+                              },
+                              {
+                                  "seconds":  70,
+                                  "historyCount":  18,
+                                  "privateBytes":  171483136,
+                                  "handles":  1362
+                              },
+                              {
+                                  "seconds":  75,
+                                  "historyCount":  19,
+                                  "privateBytes":  171429888,
+                                  "handles":  1357
+                              },
+                              {
+                                  "seconds":  80,
+                                  "historyCount":  20,
+                                  "privateBytes":  171483136,
+                                  "handles":  1362
+                              },
+                              {
+                                  "seconds":  85,
+                                  "historyCount":  21,
+                                  "privateBytes":  171483136,
+                                  "handles":  1362
+                              },
+                              {
+                                  "seconds":  90,
+                                  "historyCount":  22,
+                                  "privateBytes":  171483136,
+                                  "handles":  1362
+                              }
+                          ],
+    "exitCode":  0,
+    "checks":  [
+                   "All seven destinations selected through native UI Automation, three cycles",
+                   "Demo mode expected: False",
+                   "Light, dark and system themes applied through the theme ComboBox",
+                   "Five-second monitoring produces samples; stopping freezes history beyond a full interval",
+                   "Real physical/commit counters and process list displayed; manual refresh works while stopped",
+                   "Displayed physical total agrees with independent Windows OS counter within rounding",
+                   "Observed 90 seconds of continuous sampling before leaving the page",
+                   "Completed 30 memory-page open/sample/leave cycles; resource observations recorded without forcing GC",
+                   "Compact 900 x 740 physical-pixel layout remains navigable",
+                   "Close window exits process with code 0"
+               ]
+}
