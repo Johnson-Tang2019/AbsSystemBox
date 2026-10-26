@@ -1,0 +1,13 @@
+{
+  "installed": true,
+  "installerSha256": "1ff380ca6bc7b0d106812f961a0a9fa7e07853b8354914e8642ec477167dfd5a",
+  "isAdministrator": false,
+  "isElevated": false,
+  "payloadFilesVerified": 593,
+  "releaseUrl": "https://github.com/Johnson-Tang2019/AbsSystemBox/releases/tag/v0.1.0-preview.1",
+  "runtimeVerified": true,
+  "sourceRevision": "5a63a27c72ed07f71fe0d44b29c0197f0d78f98f",
+  "startMenuShortcut": true,
+  "version": "0.1.0-preview.1",
+  "windowsVersion": "0.1.0.1"
+}

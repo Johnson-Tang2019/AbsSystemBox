@@ -119,3 +119,7 @@ M4：用户选择范围内的普通目录索引；不加入内存清理或管理
 - 预览版未签名，首次公开附件包括安装器、对应源码、文件清单与 SHA-256；发布入口为 GitHub Releases。
 
 安装与版本维护说明见 INSTALL.md。程序版本回退与 M3 配置回滚独立；下一开发范围仍为 M4 普通目录索引。
+
+已公开发布 [v0.1.0-preview.1](https://github.com/Johnson-Tang2019/AbsSystemBox/releases/tag/v0.1.0-preview.1)。四个远端附件 SHA-256 与本地验收文件一致。
+按用户要求在本机当前用户默认目录正式安装，非管理员身份实际启动/导航/退出通过，开始菜单入口保留；593 个已安装 payload 文件哈希全部匹配发布清单。
+发布源码修订 5a63a27 的 GitHub CI（含新增 publish 资源检查）已通过；本机安装汇总见 docs/validation/release/local-install.json。
