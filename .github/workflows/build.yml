@@ -1,0 +1,25 @@
+name: Core build and tests
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  core:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+      - name: Restore locked dependencies
+        run: dotnet restore SysBox.slnx --locked-mode
+      - name: Build
+        run: dotnet build SysBox.slnx -c Release --no-restore
+      - name: Test
+        run: dotnet test SysBox.slnx -c Release --no-build --no-restore --logger trx --results-directory artifacts/test-results
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: artifacts/test-results

@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "sysbox.abstractions": {
+        "type": "Project"
+      },
+      "sysbox.fileindex": {
+        "type": "Project",
+        "dependencies": {
+          "SysBox.Abstractions": "[1.0.0, )"
+        }
+      }
+    }
+  }
+}
