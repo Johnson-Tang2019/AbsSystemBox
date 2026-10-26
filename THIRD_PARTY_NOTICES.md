@@ -1,16 +1,17 @@
-# 第三方依赖与授权记录（M2）
+# 第三方依赖与授权记录（M3）
 
 版本来自实际还原的 NuGet 锁文件及 SDK 隐式运行时包。项目原创源码为 GPL-3.0-or-later，
 下列组件保留其独立授权，不能将 Windows App SDK 的二进制包一概标为 MIT。
 当前只提交源码和授权材料，没有发布应用二进制包或安装器。
 
-M2 没有新增第三方包；Native 仅调用 Windows 系统的只读 kernel32 API，不复制或分发系统 DLL。
+M3 新增 YamlDotNet 18.1.0（MIT），仅使用低层 YAML 事件解析器，不反序列化任意运行时类型。Native 仅调用 Windows 系统的只读 kernel32 API，不复制或分发系统 DLL。
 
 实际 Release 开发输出的第三方文件、SHA-256 和匹配的上游包路径见 [runtime-files.json](docs/runtime-files.json)。
 该清单不包含本项目生成的程序集、XAML 字节码或模板图标；用于授权核对，不是正式发布包清单。
 
 | 项目 | 精确版本 | 许可依据 | 官方来源 | 用途与分发范围 |
 |---|---|---|---|---|
+| YamlDotNet | 18.1.0 | MIT（[存档](licenses/third-party/YamlDotNet-18.1.0/LICENSE.txt)） | [上游](https://github.com/aaubry/YamlDotNet/tree/748334a8fa7c227740018b284b71ad95cc6b7fc7) | 有界 YAML 事件解析；YamlDotNet.dll |
 | CommunityToolkit.Mvvm | 8.4.2 | MIT（[存档](licenses/third-party/CommunityToolkit.Mvvm-8.4.2/License.md)） | [上游](https://github.com/CommunityToolkit/dotnet) | ViewModel 通知和命令；CommunityToolkit.Mvvm.dll |
 | Microsoft.CodeCoverage | 17.14.1 | MIT（[存档](licenses/third-party/Microsoft.CodeCoverage-17.14.1/ThirdPartyNotices.txt)） | [上游](https://github.com/microsoft/vstest) | 仅测试基础设施，不随应用分发 |
 | Microsoft.Extensions.DependencyInjection | 10.0.14 | MIT（[存档](licenses/third-party/Microsoft.Extensions.DependencyInjection-10.0.14/THIRD-PARTY-NOTICES.TXT)） | [上游](https://github.com/dotnet/dotnet) | 应用直接/传递依赖；随构建输出使用的对应程序集 |
@@ -59,3 +60,6 @@ M2 没有新增第三方包；Native 仅调用 Windows 系统的只读 kernel32 
 - 未复制 Everything、WizTree、Mem Reduct 或 Fluent Reduct 的代码或素材。
 
 发布时须随实际包保留 LICENSE、COPYING.md、本清单和适用的 licenses 原文；新增依赖后更新锁文件并重新核对。
+
+电池读取复用已记录的 Microsoft.Windows.SDK.NET.Ref 10.0.26100.57 中的 Microsoft.Windows.SDK.NET.dll / WinRT.Runtime.dll。
+上游 [C#/WinRT 源码](https://github.com/microsoft/CsWinRT) 为 MIT；实际 SDK 包的分发条款仍以上表为准。未新增电池依赖或复制第三方电池工具代码。

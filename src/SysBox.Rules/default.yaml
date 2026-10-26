@@ -1,0 +1,55 @@
+schema_version: 1
+id: balanced-default
+name: 平衡与安全
+revision: 1
+
+enabled: true
+
+sampling:
+  interval_seconds: 5
+  keep_history_minutes: 30
+
+conditions:
+  all:
+    - metric: available_memory_percent
+      op: lt
+      value: 12
+      hold_seconds: 45
+    - metric: committed_memory_percent
+      op: gt
+      value: 80
+      hold_seconds: 45
+
+cooldown:
+  after_action_seconds: 1200
+  max_actions_per_hour: 1
+
+protections:
+  exclude_foreground: true
+  exclude_system_processes: true
+  exclude_process_names:
+    - Code.exe
+    - Codex.exe
+    - javaw.exe
+    - clash-verge.exe
+  min_process_age_seconds: 120
+
+actions:
+  - type: notify
+    level: warning
+    message: "检测到持续内存压力，请检查占用较高的应用。"
+
+  - type: trim_working_set
+    enabled: false
+    selector:
+      only_user_processes: true
+      min_working_set_mb: 1024
+      max_targets: 2
+    require_interactive_approval: true
+
+simulation:
+  default_dry_run: true
+
+observability:
+  audit_enabled: true
+  include_raw_paths_in_logs: false

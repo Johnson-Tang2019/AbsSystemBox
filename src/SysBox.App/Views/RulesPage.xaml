@@ -1,14 +1,37 @@
 <Page x:Class="SysBox.App.Views.RulesPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:SysBox.App.Controls">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ScrollViewer HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
-        <StackPanel Spacing="24" Padding="4,4,4,12">
-            <StackPanel Spacing="6">
-                <TextBlock Text="规则" Style="{StaticResource PageTitleStyle}" AutomationProperties.AutomationId="PageTitle" />
-                <TextBlock Text="先了解影响，再决定是否执行。" Style="{StaticResource BodyCopyStyle}" />
-            </StackPanel>
-            <controls:FeaturePlaceholder Glyph="&#xE9D5;" Description="规则校验、模拟与审批尚未实现。默认只通知，危险操作需要明确确认。" />
+        <StackPanel Spacing="16" Padding="4,4,4,12">
+            <TextBlock Text="规则" Style="{StaticResource PageTitleStyle}" AutomationProperties.AutomationId="PageTitle" />
+            <InfoBar IsOpen="True" IsClosable="False" Severity="Informational" Title="只通知，不清理" Message="后台只读观察内存；校验、模拟和提案均不会清理内存。应用与回滚需要审批。" />
+            <Border Style="{StaticResource SurfaceStyle}">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="内存规则 · 当前有效配置" FontSize="20" FontWeight="SemiBold" />
+                    <TextBlock Text="{Binding ActiveSummary}" TextWrapping="Wrap" AutomationProperties.AutomationId="ActiveRule" />
+                    <TextBlock x:Name="ObserverStatus" TextWrapping="Wrap" AutomationProperties.AutomationId="RuleObservation" />
+                    <TextBlock x:Name="NotificationText" TextWrapping="Wrap" Foreground="{ThemeResource RoseBrush}" AutomationProperties.AutomationId="RuleNotification" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button Content="重新加载" Click="Reload_Click" AutomationProperties.AutomationId="ReloadRule" />
+                        <Button Content="校验" Click="Validate_Click" AutomationProperties.AutomationId="ValidateRule" />
+                        <Button Content="模拟历史" Click="Simulate_Click" AutomationProperties.AutomationId="SimulateRule" />
+                        <Button Content="提出修改" Click="Propose_Click" Style="{StaticResource AccentButtonStyle}" AutomationProperties.AutomationId="ProposeRule" />
+                        <Button Content="审批提案" Click="Review_Click" AutomationProperties.AutomationId="ReviewRule" />
+                    </StackPanel>
+                    <TextBox x:Name="ReasonBox" Header="修改原因" Text="调整内存通知阈值" MaxLength="512" AutomationProperties.AutomationId="RuleReason" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <ComboBox x:Name="VersionsBox" Header="保留的安全版本" Width="240" DisplayMemberPath="Summary" AutomationProperties.AutomationId="RuleVersions" />
+                        <Button Content="提出回滚" VerticalAlignment="Bottom" Click="Rollback_Click" AutomationProperties.AutomationId="RollbackRule" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource SurfaceStyle}">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="YAML 高级编辑 · 草案" FontSize="20" FontWeight="SemiBold" />
+                    <TextBox Text="{Binding Yaml, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="NoWrap" FontFamily="Consolas" Height="340" MaxLength="65536" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto" AutomationProperties.AutomationId="RuleYaml" />
+                    <TextBlock Text="{Binding Output}" TextWrapping="Wrap" IsTextSelectionEnabled="True" AutomationProperties.AutomationId="RuleOutput" />
+                </StackPanel>
+            </Border>
         </StackPanel>
     </ScrollViewer>
 </Page>

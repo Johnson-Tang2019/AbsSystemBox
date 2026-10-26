@@ -21,9 +21,10 @@
                         </Border>
                     </Grid>
                     <InfoBar IsOpen="True" IsClosable="False" Severity="Informational" Title="只读内存观察已就绪"
-                             Message="查看真实内存与进程状态；文件搜索、磁盘空间分析和规则仍在开发中。" />
+                             Message="查看真实内存与进程状态，规则默认只通知；文件搜索和磁盘空间分析仍在开发中。" />
                 </StackPanel>
             </Border>
+            <controls:BatteryCard />
             <TextBlock Text="工作台" Style="{StaticResource SubtitleTextBlockStyle}" />
             <Grid ColumnSpacing="16" RowSpacing="16" SizeChanged="Cards_SizeChanged">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="*" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>

@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
     <ProjectReference Include="../SysBox.Abstractions/SysBox.Abstractions.csproj" />
+    <PackageReference Include="YamlDotNet" Version="18.1.0" />
+    <EmbeddedResource Include="memory-rules.schema.json" />
+    <EmbeddedResource Include="default.yaml" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,558 @@
+{
+  "configuration": "debug",
+  "counters": {
+    "total": "107",
+    "executed": "107",
+    "passed": "107",
+    "failed": "0",
+    "error": "0",
+    "timeout": "0",
+    "aborted": "0",
+    "inconclusive": "0",
+    "passedButRunAborted": "0",
+    "notRunnable": "0",
+    "notExecuted": "0",
+    "disconnected": "0",
+    "warning": "0",
+    "completed": "0",
+    "inProgress": "0",
+    "pending": "0"
+  },
+  "tests": [
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsEveryUnsafeField(old: \"type: notify\", replacement: \"type: powershell\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0004391"
+    },
+    {
+      "name": "SysBox.UnitTests.DashboardLifecycleTests.RetryReplacesFailureStateWithData",
+      "outcome": "Passed",
+      "duration": "00:00:00.0006867"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.ErrorRequiresMachineCodeAndHumanMessage",
+      "outcome": "Passed",
+      "duration": "00:00:00.0001662"
+    },
+    {
+      "name": "SysBox.UnitTests.BatteryTests.UnknownAndInvalidRateNeverBecomePositivePower(rate: -45000)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0002445"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.ApprovalRestartRejectAndRollbackAreVersioned",
+      "outcome": "Passed",
+      "duration": "00:00:00.1904344"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryMonitoringLifecycleTests.StableRowsReplaceIdentityWithoutRebuildingTheCollection",
+      "outcome": "Passed",
+      "duration": "00:00:00.0014838"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsUnsafeYaml(yaml: \"---\\nx: 1\\n---\\nx: 2\", code: \"YAML_SYNTAX\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0009114"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.NotificationLimitsSurviveRestartAndClockRollback",
+      "outcome": "Passed",
+      "duration": "00:00:00.0989017"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.DisabledAndNoNotifyDoNotExecute",
+      "outcome": "Passed",
+      "duration": "00:00:00.3149941"
+    },
+    {
+      "name": "SysBox.UnitTests.BatteryTests.BadCapacityCannotProduceEstimate(full: -1, remaining: 0)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0000019"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.ThresholdBoundary(op: \"lte\", available: 12, notify: True)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0010222"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryMonitoringLifecycleTests.FailedProcessCollectorDoesNotHidePhysicalMemory",
+      "outcome": "Passed",
+      "duration": "00:00:00.0013722"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsUnsafeYaml(yaml: \"!!System.Object {}\", code: \"YAML_UNSAFE\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0017036"
+    },
+    {
+      "name": "SysBox.UnitTests.ProcessIdentityTests.ReusedPidCarriesNewStartTimeAndNeverReusesPriorNameOrCounters",
+      "outcome": "Passed",
+      "duration": "00:00:00.1337247"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.CommitUsesPageSizeRatherThanPagefileOrPhysicalValues",
+      "outcome": "Passed",
+      "duration": "00:00:00.0777388"
+    },
+    {
+      "name": "SysBox.UnitTests.BatteryTests.BadCapacityCannotProduceEstimate(full: null, remaining: 30000)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0000023"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsEveryUnsafeField(old: \"after_action_seconds: 1200\", replacement: \"after_action_seconds: 0\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0004852"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryMonitoringLifecycleTests.DeactivateDiscardsLateReadAndCancelsBothCollectors",
+      "outcome": "Passed",
+      "duration": "00:00:00.1349675"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.UnimplementedServicesDoNotReturnFakeEmptyResults",
+      "outcome": "Passed",
+      "duration": "00:00:00.1710023"
+    },
+    {
+      "name": "SysBox.UnitTests.BatteryTests.HiddenUnlessCharging(state: Unavailable)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0000038"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsUnsafeYaml(yaml: \"x: 1\\nx: 2\", code: \"YAML_DUPLICATE\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0000736"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.ThresholdBoundary(op: \"gt\", available: 12, notify: False)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0006066"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsEveryUnsafeField(old: \"schema_version: 1\", replacement: \"schema_version: 2\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0046025"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.ProcessResultsAreBoundedAndSortedAfterReading",
+      "outcome": "Passed",
+      "duration": "00:00:00.0029040"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.DefaultIsCompleteAndSafe",
+      "outcome": "Passed",
+      "duration": "00:00:00.0015388"
+    },
+    {
+      "name": "SysBox.UnitTests.BatteryTests.BadCapacityCannotProduceEstimate(full: 0, remaining: 0)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0002006"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryMonitoringLifecycleTests.ManualRefreshCannotOverlapAnActiveRead",
+      "outcome": "Passed",
+      "duration": "00:00:00.0010135"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.FileIdentitySurvivesJsonWithoutIntegerPrecisionLoss",
+      "outcome": "Passed",
+      "duration": "00:00:00.0693529"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.StoreDirectoryFailureIsStructuredAndPreservesExistingFile",
+      "outcome": "Passed",
+      "duration": "00:00:00.0089294"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsSizeAndNodeBombs",
+      "outcome": "Passed",
+      "duration": "00:00:00.0050720"
+    },
+    {
+      "name": "SysBox.UnitTests.BatteryTests.BadCapacityCannotProduceEstimate(full: 75000, remaining: 75001)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0000059"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.PreCancelledCollectionsDoNotBegin",
+      "outcome": "Passed",
+      "duration": "00:00:00.0068264"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.InvalidDraftNeverChangesActiveAndProposalIsNotApproval",
+      "outcome": "Passed",
+      "duration": "00:00:00.0272639"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsEveryUnsafeField(old: \"level: warning\", replacement: \"command: run\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0004612"
+    },
+    {
+      "name": "SysBox.UnitTests.BatteryTests.HiddenUnlessCharging(state: NotPresent)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0000020"
+    },
+    {
+      "name": "SysBox.UnitTests.BatteryTests.BadCapacityCannotProduceEstimate(full: 75000, remaining: null)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0337677"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RevisionRewritePreservesYamlCommentsAndScalarNamedRevision",
+      "outcome": "Passed",
+      "duration": "00:00:00.0388687"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.SuccessfulResultPreservesValueWithoutError",
+      "outcome": "Passed",
+      "duration": "00:00:00.0002773"
+    },
+    {
+      "name": "SysBox.UnitTests.BatteryTests.HiddenUnlessCharging(state: Discharging)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0001809"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.FormattingUsesBinaryUnitsAndGuardsInvalidDenominators",
+      "outcome": "Passed",
+      "duration": "00:00:00.0006360"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.LogicAndHistoryMustBeConsistent",
+      "outcome": "Passed",
+      "duration": "00:00:00.0029338"
+    },
+    {
+      "name": "SysBox.UnitTests.DashboardLifecycleTests.UnexpectedErrorsDoNotLeakPrivateDetailsToTheUI",
+      "outcome": "Passed",
+      "duration": "00:00:00.1122678"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.SearchRejectsEmptyText(text: \" \")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0001229"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsEveryUnsafeField(old: \"max_actions_per_hour: 1\", replacement: \"max_actions_per_hour: 0\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0004825"
+    },
+    {
+      "name": "SysBox.UnitTests.BatteryTests.PresentationClearsOnUnplugAndIgnoresLateRead",
+      "outcome": "Passed",
+      "duration": "00:00:00.0758646"
+    },
+    {
+      "name": "SysBox.UnitTests.DashboardLifecycleTests.UnavailableStatusDoesNotBecomeAZeroReading",
+      "outcome": "Passed",
+      "duration": "00:00:00.0004650"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.OverflowedCommitNeverProducesPartialWrappedNumbers",
+      "outcome": "Passed",
+      "duration": "00:00:00.0035539"
+    },
+    {
+      "name": "SysBox.UnitTests.BatteryTests.BadCapacityCannotProduceEstimate(full: 75000, remaining: -1)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0000016"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsEveryUnsafeField(old: \"exclude_system_processes: true\", replacement: \"exclude_system_processes: false\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0004103"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryMonitoringLifecycleTests.StopCancelsTheTimerAndRestartOwnsExactlyOneLoop",
+      "outcome": "Passed",
+      "duration": "00:00:00.0049965"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.NativeLayoutsMatchWindowsHeaders",
+      "outcome": "Passed",
+      "duration": "00:00:00.0567473"
+    },
+    {
+      "name": "SysBox.UnitTests.DashboardLifecycleTests.OldRequestCannotOverwriteNewerPageState",
+      "outcome": "Passed",
+      "duration": "00:00:00.0003761"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.SearchRejectsEmptyText(text: \"\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0328779"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.SearchAcceptsBoundaryLimits(limit: 1000)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0000909"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsEveryUnsafeField(old: \"interval_seconds: 5\", replacement: \"interval_seconds: 1\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0004598"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.MissingCommitAndGapsNeverManufactureContinuousPressure",
+      "outcome": "Passed",
+      "duration": "00:00:00.0013258"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.SearchRejectsUnboundedOrInvalidLimits(limit: 1001)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0002267"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.ConcurrentAndStaleProposalsCannotOverwrite",
+      "outcome": "Passed",
+      "duration": "00:00:00.0538985"
+    },
+    {
+      "name": "SysBox.UnitTests.WindowsMemoryIntegrationTests.RepeatedHandleReadsDoNotAccumulateProcessHandles",
+      "outcome": "Passed",
+      "duration": "00:00:00.0264903"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsEveryUnsafeField(old: \"enabled: false\", replacement: \"enabled: true\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0006975"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsEveryUnsafeField(old: \"exclude_foreground: true\", replacement: \"exclude_foreground: false\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0005054"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsEveryUnsafeField(old: \"hold_seconds: 45\", replacement: \"hold_seconds: 1\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0008041"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryMonitoringLifecycleTests.CancelledLateSuccessDoesNotBecomeANewReading",
+      "outcome": "Passed",
+      "duration": "00:00:00.0010361"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.UnsupportedPlatformDoesNotCallNativeFunctions",
+      "outcome": "Passed",
+      "duration": "00:00:00.0008646"
+    },
+    {
+      "name": "SysBox.UnitTests.BatteryTests.HiddenUnlessCharging(state: Idle)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0001094"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsEveryUnsafeField(old: \"Code.exe\", replacement: \"C:/Code.exe\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0004736"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.SearchAcceptsBoundaryLimits(limit: 1)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0001799"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.HoldCooldownAndHourlyLimitAreExact",
+      "outcome": "Passed",
+      "duration": "00:00:00.0027916"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.NativeFailureProducesStructuredError",
+      "outcome": "Passed",
+      "duration": "00:00:00.0006590"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.FailedResultCannotBeReadAsSuccessfulData",
+      "outcome": "Passed",
+      "duration": "00:00:00.0002542"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsUnsafeYaml(yaml: \"x: [[[[[[[[[[[[[1]]]]]]]]]]]]]\", code: \"YAML_DEPTH\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0000528"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsEveryUnsafeField(old: \"audit_enabled: true\", replacement: \"audit_enabled: false\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0004249"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryMonitoringLifecycleTests.FailedReadRetainsTheLastTimestampWithoutGrowingHistory",
+      "outcome": "Passed",
+      "duration": "00:00:00.0004703"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsEveryUnsafeField(old: \"min_process_age_seconds: 120\", replacement: \"min_process_age_seconds: 0\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0004305"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.InvalidPhysicalReadDoesNotPublishWrappedUsage",
+      "outcome": "Passed",
+      "duration": "00:00:00.0009435"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.HistoryKeepsOnlyTheNewestBoundedSamples",
+      "outcome": "Passed",
+      "duration": "00:00:00.0016206"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsEveryUnsafeField(old: \"enabled: true\", replacement: \"enabled: 'true'\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0006027"
+    },
+    {
+      "name": "SysBox.UnitTests.BatteryTests.NetWattsAndHoursUseActualFullCapacity",
+      "outcome": "Passed",
+      "duration": "00:00:00.0015524"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.SearchRejectsUnboundedOrInvalidLimits(limit: -1)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0003000"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.StoreLockDoesNotLoseUpdates",
+      "outcome": "Passed",
+      "duration": "00:00:00.0116950"
+    },
+    {
+      "name": "SysBox.UnitTests.DashboardLifecycleTests.LeavingThePageRejectsAnUncooperativeLateResult",
+      "outcome": "Passed",
+      "duration": "00:00:00.0004795"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsUnsafeYaml(yaml: \"x: [\", code: \"YAML_SYNTAX\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0001167"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.ThresholdBoundary(op: \"gte\", available: 12, notify: True)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0006619"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsUnsafeYaml(yaml: \"x: &x [*x]\", code: \"YAML_UNSAFE\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0011440"
+    },
+    {
+      "name": "SysBox.UnitTests.DashboardLifecycleTests.CancelledUncooperativeClientCannotPublishData",
+      "outcome": "Passed",
+      "duration": "00:00:00.0003411"
+    },
+    {
+      "name": "SysBox.UnitTests.BatteryTests.UnknownAndInvalidRateNeverBecomePositivePower(rate: -2147483648)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0000041"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.SearchRejectsUnboundedOrInvalidLimits(limit: 0)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0000123"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsEveryUnsafeField(old: \"require_interactive_approval: true\", replacement: \"require_interactive_approval: false\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0005653"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.ViewModelShowsErrorsAndDoesNotApplyOnPropose",
+      "outcome": "Passed",
+      "duration": "00:00:00.0285717"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.ThresholdBoundary(op: \"lt\", available: 12, notify: False)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0019377"
+    },
+    {
+      "name": "SysBox.UnitTests.BatteryTests.UnknownAndInvalidRateNeverBecomePositivePower(rate: 0)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0001163"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.NullSuccessAndNullErrorAreRejected",
+      "outcome": "Passed",
+      "duration": "00:00:00.0007963"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsEveryUnsafeField(old: \"default_dry_run: true\", replacement: \"default_dry_run: false\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0005741"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsEveryUnsafeField(old: \"max_targets: 2\", replacement: \"max_targets: 3\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0004232"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsEveryUnsafeField(old: \"only_user_processes: true\", replacement: \"only_user_processes: false\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0004744"
+    },
+    {
+      "name": "SysBox.UnitTests.ContractTests.CancellationIsNotConvertedToNotImplemented",
+      "outcome": "Passed",
+      "duration": "00:00:00.0007421"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryMonitoringLifecycleTests.EqualProcessReadingsDoNotTriggerRedundantBindingUpdates",
+      "outcome": "Passed",
+      "duration": "00:00:00.0006952"
+    },
+    {
+      "name": "SysBox.UnitTests.WindowsMemoryIntegrationTests.NativeReadReturnsPhysicalCommitAndCurrentProcess",
+      "outcome": "Passed",
+      "duration": "00:00:00.0160773"
+    },
+    {
+      "name": "SysBox.UnitTests.DashboardLifecycleTests.CancelClearsLoadingWithoutReportingAnError",
+      "outcome": "Passed",
+      "duration": "00:00:00.0188161"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsEveryUnsafeField(old: \"value: 12\", replacement: \"value: 101\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0005765"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.AnyAllAndMonotonicTime",
+      "outcome": "Passed",
+      "duration": "00:00:00.0014529"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.MissingCommitReadKeepsPhysicalDataAndMarksPartial",
+      "outcome": "Passed",
+      "duration": "00:00:00.0134551"
+    },
+    {
+      "name": "SysBox.UnitTests.BatteryTests.UnknownAndInvalidRateNeverBecomePositivePower(rate: null)",
+      "outcome": "Passed",
+      "duration": "00:00:00.0000012"
+    },
+    {
+      "name": "SysBox.UnitTests.BatteryTests.NearFullAndImplausiblyLongEstimate",
+      "outcome": "Passed",
+      "duration": "00:00:00.0001417"
+    },
+    {
+      "name": "SysBox.UnitTests.MemoryCollectionTests.ProcessExitAndAccessDenialDoNotDiscardReadableProcesses",
+      "outcome": "Passed",
+      "duration": "00:00:00.0018038"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.RejectsEveryUnsafeField(old: \"include_raw_paths_in_logs: false\", replacement: \"include_raw_paths_in_logs: true\")",
+      "outcome": "Passed",
+      "duration": "00:00:00.0004273"
+    },
+    {
+      "name": "SysBox.UnitTests.RuleTests.ExpiredProposalAndCorruptStoreFailClosed",
+      "outcome": "Passed",
+      "duration": "00:00:00.0194035"
+    }
+  ]
+}

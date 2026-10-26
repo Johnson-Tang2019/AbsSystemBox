@@ -1,0 +1,13 @@
+{
+  "demo": true,
+  "configuration": "Debug",
+  "checks": [
+    "Battery card conditional visibility checked on dashboard and memory, including navigation",
+    "Explicit Debug demo shows 45.0 W net charge and estimated 60 minutes",
+    "Actual WinUI process exited with code 0"
+  ],
+  "isAdministrator": true,
+  "physicalBatteryCount": 0,
+  "isElevated": true,
+  "batteryStatus": "电池报告：Charging · Windows BatteryReport / C#/WinRT"
+}

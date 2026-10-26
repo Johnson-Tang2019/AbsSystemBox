@@ -1,0 +1,14 @@
+{
+  "demo": false,
+  "configuration": "Release",
+  "checks": [
+    "Battery card conditional visibility checked on dashboard and memory, including navigation",
+    "Actual Windows BatteryReport read, no demo hardware values",
+    "Release rule page loads default v1 and real notification-only observer",
+    "Actual WinUI process exited with code 0"
+  ],
+  "isAdministrator": false,
+  "physicalBatteryCount": 0,
+  "isElevated": false,
+  "batteryStatus": "电池报告：NotPresent · Windows BatteryReport / C#/WinRT"
+}

@@ -1,0 +1,15 @@
+{
+  "demo": false,
+  "configuration": "Debug",
+  "checks": [
+    "Invalid YAML shown with code; active v1 preserved",
+    "Dry-run, immutable proposal, cancel, reject and explicit approval verified",
+    "Real memory pressure threshold produces application notification with audit; no cleanup",
+    "Rollback creates reviewed v3 and restores original threshold",
+    "Cached page navigation retains active rule and resumes display",
+    "Actual WinUI window exited with code 0"
+  ],
+  "auditCount": 4,
+  "isolatedStore": true,
+  "revision": 3
+}

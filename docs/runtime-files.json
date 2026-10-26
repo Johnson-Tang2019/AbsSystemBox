@@ -6476,6 +6476,18 @@
       ]
     },
     {
+      "path": "YamlDotNet.dll",
+      "bytes": 300032,
+      "sha256": "d618138109a40e4a7250e49e2abad8c450e3636bee18d7499ab231e37fa9150a",
+      "sources": [
+        {
+          "package": "yamldotnet",
+          "version": "18.1.0",
+          "file": "lib/net10.0/YamlDotNet.dll"
+        }
+      ]
+    },
+    {
       "path": "zh-CN/Microsoft.ui.xaml.dll.mui",
       "bytes": 21304,
       "sha256": "7fe8654a30615b380917732746f434618f34d8e80c92d379504efffb2e0e676b",

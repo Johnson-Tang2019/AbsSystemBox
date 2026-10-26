@@ -1,6 +1,6 @@
 # 开发状态
 
-更新日期：2026-10-26。当前范围：M2 只读内存与进程列表已实现，完成本地构建、测试和真实运行验证。
+更新日期：2026-10-26。当前范围：M3 规则校验、模拟、提案、审批、版本回滚及追加的充电显示已实现。完成本地 Debug/Release 构建、107 项测试和真实窗口流程。默认仅通知，无实际内存清理。
 高 DPI、IDE 和独立安装验证的边界见下文及 UX.md，不将其标记为已通过。
 
 ## 已实现
@@ -29,6 +29,33 @@
 - 概览自动读取一次真实状态；Debug 示例模式替换全部三种采集器，Release 不编译模拟实现。
 - Win32 布局、页大小换算、溢出、权限/退出、PID 重用、取消、停止重启与句柄释放测试。
 
+## M3 新增实现
+
+- YamlDotNet 有界事件解析、正式 DTO/JSON Schema、逐字段类型/语义/安全校验；恶意、超大及未知配置明确拒绝。
+- all/any 条件、单调持续时间、间断重计、缺失提交量保守处理、冷却及每小时通知限制的纯函数模拟。
+- 窗口生命周期的只读规则观察、最长 30 分钟/1024 点历史、应用内通知和跨重启/版本的持久化通知限流。
+- 带 revision/SHA-256/模拟快照的 15 分钟待审提案、可信 UI 取消/拒绝/批准、冲突检测、原子存储和有界审计。
+- 版本快照与需要审批的回滚；恢复旧内容生成新 revision，保留 YAML 格式与注释。
+- 原生规则页编辑、字段错误、模拟时间/冷却/排除原因、完整旧/新配置审批、版本选择，保留粉色毛玻璃。
+- 概览/内存页仅在充电时显示电池净充电功率及预计充满时间；复用已有微软开源 C#/WinRT 电池报告封装，无新增电池包或驱动。
+- 不可用功率/容量明确提示；电池拔插、迟到结果、未知值及估算边界测试。诊断页可见报告状态。
+
+## M3 验证
+
+- 锁定依赖还原成功；最终完整 Debug/Release 构建各 0 警告、0 错误。
+- 全部测试：Debug/Release 各 107 通过、0 失败、0 跳过，报告在 docs/validation/m3/。
+- 最终 Debug 真实窗口：无效 YAML 不影响 v1、真实历史模拟、提案不生效、取消、拒绝、批准 v2、实际只读通知及审计均通过。
+- 回滚先提案再审批，生成 v3 并恢复原阈值；导航及实际关闭后重启恢复版本/审计通过。审批测试仅写 artifacts 隔离存储。
+- Debug 真实 BatteryReport=NotPresent，独立 Win32_Battery 数量为 0；概览/内存卡片隐藏且导航/退出正常。
+- Debug 明确示例预览：45.0 W / 预计 60 分钟卡片在两页显示，导航和退出通过。
+- 最终 Release 受限非管理员令牌：isElevated=false、isAdministrator=false；真实电池报告与默认 v1 规则观察正常。
+  携带 --demo 仍读取真实数据，模拟电池类型不编译到 Release，实际退出 code 0。
+- 本机无电池，未将示例功率或单元测试当作物理笔记本充电验收。仍需在充电笔记本核对实际功率/估算。
+- 当前 Release 第三方输出 516 个文件均通过 SHA-256 匹配，无未归属项；YamlDotNet MIT 原文已归档。
+- M2 提交的 GitHub Actions 已核实成功；M3 本次推送后的远端结果另行查看，不用本地结果替代。
+
+规则存储/审批及边界见 RULES.md，电池数据来源/单位及估算边界见 BATTERY.md。仅通知，没有清理执行器或特权接口。
+
 ## 当前环境
 
 - Windows 11 x64，OS 10.0.26200。
@@ -39,10 +66,10 @@
 - Windows SDK include 目录：10.0.26100.0。
 - 官方模板包 Microsoft.WindowsAppSDK.WinUI.CSharp.Templates 0.0.7-alpha；只使用 WinUI Blank App。
 - Windows App SDK 2.5.1、Windows SDK BuildTools 10.0.28000.2705（由包提供编译工具）。
-- CommunityToolkit.Mvvm 8.4.2、Microsoft.Extensions.DependencyInjection 10.0.14。
+- CommunityToolkit.Mvvm 8.4.2、Microsoft.Extensions.DependencyInjection 10.0.14、YamlDotNet 18.1.0（MIT）。
 - 自包含 .NET Runtime 10.0.14；开发依赖均已锁定。Visual Studio WinUI 工作负载未通过 IDE 验收。
 
-## 验证
+## M2 历史验证
 
 - `scripts/build.ps1` 与 `scripts/build.ps1 -Configuration Release`：锁定依赖还原及完整构建通过，各 0 警告、0 错误。
 - 全部单元/Windows 集成测试：Debug/Release 各 44 通过、0 失败、0 跳过。
@@ -70,10 +97,10 @@
 
 ## 未实现
 
-内存清理（本阶段明确不加入）、规则引擎、目录索引与搜索、NTFS/USN、磁盘分析、
+内存清理（本阶段明确不加入）、目录索引与搜索、NTFS/USN、磁盘分析、
 CoreHost、IPC、CLI/MCP、特权服务、安装包均未实现。
-Core 仅有同进程客户端，FileIndex/Rules 仍为模块边界。
+Core 仍使用同进程客户端；FileIndex 尚未实现，Rules 已实现 M3 内部服务。
 
 ## 下一任务
 
-M3：规则校验与模拟，保持默认只通知，不加入内存清理或管理员服务；既有环境验收缺口继续保留。
+M4：用户选择范围内的普通目录索引；不加入内存清理或管理员服务，保留既有环境验收缺口。

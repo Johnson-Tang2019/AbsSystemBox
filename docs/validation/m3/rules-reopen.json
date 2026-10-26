@@ -1,0 +1,11 @@
+{
+  "demo": false,
+  "configuration": "Debug",
+  "checks": [
+    "Reopened real application reads v3, proposals and audit",
+    "Actual WinUI window exited with code 0"
+  ],
+  "auditCount": 4,
+  "isolatedStore": true,
+  "revision": 3
+}

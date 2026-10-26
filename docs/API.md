@@ -61,3 +61,25 @@ MemoryViewModel 同时调用两个只读端口；进程采集失败不抹掉成�
 History 为最多 60 个时间戳/物理占用百分比。采集失败时保留上次成功读数和时间，不追加历史。
 Processes 集合实例稳定，最多复用 200 个行模型；行对象只是界面槽位，真实身份始终来自该行完整的 ProcessMemoryEntry。
 所有界面绑定在捕获的 UI 上下文更新，原生读取在 Task.Run 后台线程完成。
+
+## M3 内部规则端口
+
+IRuleService.Validate(yaml) 返回 RuleValidation/RuleIssue(code,path,message)。
+Simulate(yaml,samples) 返回绑定 YAML SHA-256 和 revision 的 RuleReport，包含每个决定的时间、状态、原因与通知描述，ActuallyExecuted 恒为 0。
+Read() 返回 RuleState，Propose(yaml,expectedRevision,expectedHash,reason,samples) 保存待审 RuleProposal，不改变 Active。
+提案带不可变 YAML/hash、基准版本/hash、原因、15 分钟到期和模拟快照。
+RuleSample.Elapsed 是单调时间；MemorySnapshot.TimestampUtc 仅展示。模拟至多接收 1024 样本。
+
+错误以 RuleException.Code 表达，包括 INVALID_RULE、CONFLICT_REVISION、HASH_MISMATCH、PROPOSAL_EXPIRED、
+PROPOSAL_REVIEWED、PROPOSAL_LIMIT、STORE_IO、STORE_ACCESS、STORE_CORRUPT、STORE_LIMIT。
+字段错误码包括 INPUT_SIZE、YAML_LIMIT、YAML_DEPTH、YAML_UNSAFE、YAML_DUPLICATE、YAML_SYNTAX、RULE_SCHEMA、RULE_REQUIRED、RULE_UNKNOWN、RULE_SEMANTIC。
+IRuleReview.Approve/Reject/ProposeRollback 只供可信 WinUI 使用，不在 IRuleService/facade 中，不接收 approved:Boolean。
+接口当前为同进程 .NET 契约，尚无 HTTP、CLI、MCP 或 IPC；不是已发布的 Agent 工具。
+RULES.md 说明持久化文件、数据上限及审批边界；AGENT_API.md 说明未来 Agent 只能使用的内部工作流。
+
+## 电池只读端口
+
+IBatteryMonitor.ReadAsync(token) 返回 BatteryReading，State 区分 Charging/Discharging/Idle/NotPresent/Unavailable。
+ChargeRateMilliwatts、FullChargeCapacityMilliwattHours、RemainingCapacityMilliwattHours 均可空，单位不可混淆。
+Core/BatteryEstimate.From 只在正在充电时生成正的净功率及有效的当前速率充满估算；无数据保持 null。
+不是充电器总功率，没有电池控制操作。BATTERY.md 记录上游开源投影、测量口径和硬件验收边界。

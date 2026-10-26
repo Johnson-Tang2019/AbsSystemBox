@@ -7,6 +7,7 @@ using SysBox.Core;
 using SysBox.Memory;
 using SysBox.Native;
 using SysBox.Presentation;
+using SysBox.Rules;
 
 namespace SysBox.App;
 
@@ -28,22 +29,35 @@ public partial class App : Application
         services.AddSingleton<IMemoryMonitor, WindowsMemoryMonitor>();
         services.AddSingleton<IProcessMemoryMonitor, WindowsProcessMemoryMonitor>();
         services.AddSingleton<IDashboardClient, DashboardClient>();
+        services.AddSingleton<IBatteryMonitor, WindowsBatteryMonitor>();
 #if DEBUG
         if (Environment.GetCommandLineArgs().Contains("--demo", StringComparer.Ordinal))
         {
             services.AddSingleton<IDashboardClient, DemoDashboardClient>();
             services.AddSingleton<IMemoryMonitor, DemoMemoryMonitor>();
             services.AddSingleton<IProcessMemoryMonitor, DemoProcessMemoryMonitor>();
+            services.AddSingleton<IBatteryMonitor, DemoBatteryMonitor>();
         }
 #endif
         services.AddSingleton<ThemeService>();
         services.AddTransient<DashboardViewModel>();
         services.AddSingleton<ISamplingDelay, SamplingDelay>();
         services.AddTransient<MemoryViewModel>();
+        services.AddTransient<BatteryViewModel>();
+        var ruleDirectory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SysBox");
+#if DEBUG
+        ruleDirectory = Environment.GetEnvironmentVariable("SYSBOX_TEST_RULE_DIRECTORY") ?? ruleDirectory;
+#endif
+        services.AddSingleton(new RuleWorkspace(ruleDirectory));
+        services.AddSingleton<IRuleService>(sp => new RuleDraftService(sp.GetRequiredService<RuleWorkspace>()));
+        services.AddSingleton<IRuleReview>(sp => sp.GetRequiredService<RuleWorkspace>());
+        services.AddSingleton<RuleObserver>();
+        services.AddTransient<RulesViewModel>();
         Services = services.BuildServiceProvider();
         MainWindow = new MainWindow();
         _window = MainWindow;
         _window.Closed += (_, _) => Services.Dispose();
         _window.Activate();
+        Services.GetRequiredService<RuleObserver>().Start();
     }
 }

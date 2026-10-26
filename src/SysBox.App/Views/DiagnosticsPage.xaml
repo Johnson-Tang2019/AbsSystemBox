@@ -12,6 +12,7 @@
                     <TextBlock Text="AbsSystemBox" Style="{StaticResource SubtitleTextBlockStyle}" />
                     <TextBlock x:Name="EnvironmentText" TextWrapping="Wrap" IsTextSelectionEnabled="True" />
                     <TextBlock x:Name="ScaleText" AutomationProperties.AutomationId="UiScale" />
+                    <TextBlock x:Name="BatteryText" TextWrapping="Wrap" AutomationProperties.AutomationId="BatterySourceStatus" />
                     <TextBlock Text="许可证：GPL-3.0-or-later" Style="{StaticResource BodyCopyStyle}" />
                     <InfoBar IsOpen="True" IsClosable="False" Severity="Informational" Title="诊断功能开发中"
                              Message="此处仅展示基本环境信息，尚未提供日志导出与故障检测。" />

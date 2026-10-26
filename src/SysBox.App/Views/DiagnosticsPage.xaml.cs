@@ -2,6 +2,8 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.Extensions.DependencyInjection;
+using SysBox.Abstractions;
 
 namespace SysBox.App.Views;
 
@@ -13,5 +15,10 @@ public sealed partial class DiagnosticsPage : Page
         var version = Assembly.GetExecutingAssembly().GetName().Version;
         EnvironmentText.Text = $"应用版本：{version}\n{RuntimeInformation.OSDescription}\n{RuntimeInformation.FrameworkDescription}\n进程架构：{RuntimeInformation.ProcessArchitecture}";
         Loaded += (_, _) => ScaleText.Text = $"窗口缩放：{XamlRoot.RasterizationScale:P0}";
+        Loaded += async (_,_) =>
+        {
+            var reading = await App.Services.GetRequiredService<IBatteryMonitor>().ReadAsync(CancellationToken.None);
+            BatteryText.Text = $"电池报告：{reading.State} · {reading.Error ?? "Windows BatteryReport / C#/WinRT"}";
+        };
     }
 }

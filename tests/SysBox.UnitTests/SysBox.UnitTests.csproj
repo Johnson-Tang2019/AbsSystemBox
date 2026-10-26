@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="../../src/SysBox.Abstractions/SysBox.Abstractions.csproj" />
     <ProjectReference Include="../../src/SysBox.Memory/SysBox.Memory.csproj" />
+    <ProjectReference Include="../../src/SysBox.Rules/SysBox.Rules.csproj" />
     <ProjectReference Include="../../src/SysBox.Search/SysBox.Search.csproj" />
     <ProjectReference Include="../../src/SysBox.Storage/SysBox.Storage.csproj" />
     <ProjectReference Include="../../src/SysBox.Core/SysBox.Core.csproj" />

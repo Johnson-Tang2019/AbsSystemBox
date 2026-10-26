@@ -1,0 +1,322 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64,
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]*$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "sampling": {
+      "type": "object",
+      "properties": {
+        "interval_seconds": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 60
+        },
+        "keep_history_minutes": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30
+        }
+      },
+      "required": [
+        "interval_seconds",
+        "keep_history_minutes"
+      ],
+      "additionalProperties": false
+    },
+    "conditions": {
+      "type": "object",
+      "properties": {
+        "all": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "metric": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "enum": [
+                  "available_memory_percent",
+                  "committed_memory_percent"
+                ]
+              },
+              "op": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "enum": [
+                  "lt",
+                  "lte",
+                  "gt",
+                  "gte"
+                ]
+              },
+              "value": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "hold_seconds": {
+                "type": "integer",
+                "minimum": 2,
+                "maximum": 86400
+              }
+            },
+            "required": [
+              "metric",
+              "op",
+              "value",
+              "hold_seconds"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 32
+        },
+        "any": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "metric": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "enum": [
+                  "available_memory_percent",
+                  "committed_memory_percent"
+                ]
+              },
+              "op": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 128,
+                "enum": [
+                  "lt",
+                  "lte",
+                  "gt",
+                  "gte"
+                ]
+              },
+              "value": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 100
+              },
+              "hold_seconds": {
+                "type": "integer",
+                "minimum": 2,
+                "maximum": 86400
+              }
+            },
+            "required": [
+              "metric",
+              "op",
+              "value",
+              "hold_seconds"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 32
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "cooldown": {
+      "type": "object",
+      "properties": {
+        "after_action_seconds": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 86400
+        },
+        "max_actions_per_hour": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 60
+        }
+      },
+      "required": [
+        "after_action_seconds",
+        "max_actions_per_hour"
+      ],
+      "additionalProperties": false
+    },
+    "protections": {
+      "type": "object",
+      "properties": {
+        "exclude_foreground": {
+          "type": "boolean",
+          "const": true
+        },
+        "exclude_system_processes": {
+          "type": "boolean",
+          "const": true
+        },
+        "exclude_process_names": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[^/\\\\:*?\"<>|]+\\.exe$"
+          },
+          "minItems": 0,
+          "maxItems": 64
+        },
+        "min_process_age_seconds": {
+          "type": "integer",
+          "minimum": 120,
+          "maximum": 86400
+        }
+      },
+      "required": [
+        "exclude_foreground",
+        "exclude_system_processes",
+        "exclude_process_names",
+        "min_process_age_seconds"
+      ],
+      "additionalProperties": false
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "enum": [
+              "notify",
+              "trim_working_set"
+            ]
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "level": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "enum": [
+              "info",
+              "warning",
+              "error"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 512
+          },
+          "selector": {
+            "type": "object",
+            "properties": {
+              "only_user_processes": {
+                "type": "boolean",
+                "const": true
+              },
+              "min_working_set_mb": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 1048576
+              },
+              "max_targets": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 2
+              }
+            },
+            "required": [
+              "only_user_processes",
+              "min_working_set_mb",
+              "max_targets"
+            ],
+            "additionalProperties": false
+          },
+          "require_interactive_approval": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "type"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 8
+    },
+    "simulation": {
+      "type": "object",
+      "properties": {
+        "default_dry_run": {
+          "type": "boolean",
+          "const": true
+        }
+      },
+      "required": [
+        "default_dry_run"
+      ],
+      "additionalProperties": false
+    },
+    "observability": {
+      "type": "object",
+      "properties": {
+        "audit_enabled": {
+          "type": "boolean",
+          "const": true
+        },
+        "include_raw_paths_in_logs": {
+          "type": "boolean",
+          "const": false
+        }
+      },
+      "required": [
+        "audit_enabled",
+        "include_raw_paths_in_logs"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "name",
+    "revision",
+    "enabled",
+    "sampling",
+    "conditions",
+    "cooldown",
+    "protections",
+    "actions",
+    "simulation",
+    "observability"
+  ],
+  "additionalProperties": false
+}

@@ -8,6 +8,7 @@
                 <TextBlock Text="内存" Style="{StaticResource PageTitleStyle}" AutomationProperties.AutomationId="PageTitle" />
                 <TextBlock Text="观察真实内存与进程占用。仅查询，不清理。" Style="{StaticResource BodyCopyStyle}" />
             </StackPanel>
+            <controls:BatteryCard />
             <Border Style="{StaticResource SurfaceStyle}">
                 <StackPanel Spacing="16">
                     <StackPanel Orientation="Horizontal" Spacing="12">
