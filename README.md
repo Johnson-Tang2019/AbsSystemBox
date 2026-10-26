@@ -4,14 +4,21 @@
 实现内存观察、自主文件名索引与搜索、目录大小分析和受控规则。
 不依赖 Everything、WizTree、Mem Reduct 或 Fluent Reduct 运行。
 
-**当前阶段：M0 工程基础。尚无桌面应用、安装器或可用的系统工具功能。**
-后续功能以 [开发状态](docs/STATUS.md) 为准。
+**当前阶段：M1 原生桌面界面。** 已有主窗口、七页导航、粉色主题、毛玻璃背景，
+支持浅色、深色和跟随系统。内存采集、文件搜索和磁盘分析尚未实现，页面明确显示占位状态。
+当前没有安装器，进度以 [开发状态](docs/STATUS.md) 为准。
+
+![浅色界面](docs/images/m1-light.png)
+
+![深色界面](docs/images/m1-dark.png)
 
 ## 构建与测试
 
 安装 [微软 .NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)，
-版本由 `global.json` 固定。运行时不能代替 SDK。当前核心工程不需要管理员权限、
-Visual Studio 或 WinUI 工作负载；M1 UI 开发另需相应 Windows 开发工具。
+版本由 `global.json` 固定。运行时不能代替 SDK。
+完整 Solution 需要 Windows x64 开发环境，建议使用 Visual Studio 2026 和 Windows SDK。
+UI 基于微软官方 WinUI 模板，依赖版本已固定并保存 NuGet 锁文件。
+纯核心与 ViewModel 测试不需要图形桌面或管理员权限。
 
 ```powershell
 dotnet restore SysBox.slnx --locked-mode
@@ -22,6 +29,33 @@ dotnet test SysBox.slnx -c Debug --no-build --no-restore
 也可运行 `./scripts/build.ps1` 和 `./scripts/test.ps1`。
 脚本优先使用存在于 `.tools/dotnet/` 的本地 SDK，否则使用 PATH 中的 `dotnet`。
 本地 SDK 与依赖缓存不提交，也不属于应用运行时。
+
+## 启动桌面界面
+
+构建完成后，在 PowerShell 中运行：
+
+```powershell
+& ./src/SysBox.App/bin/x64/Debug/net10.0-windows10.0.26100.0/win-x64/SysBox.App.exe
+```
+
+当前使用 unpackaged、自包含的 .NET 和 Windows App SDK 开发输出。
+请保留整个输出目录，不能只复制一个 EXE。无需部署 MSIX、注册服务或以管理员身份启动。
+在 Visual Studio 中，将 `SysBox.App` 设为启动项目，选择 x64 和 `SysBox.App (Unpackaged)` 配置。
+
+仅 Debug 构建可显式传入 `--demo` 预览模拟内存数据，窗口会持续显示“示例预览”警示。
+正常模式不生成系统读数；Release 忽略该参数，且不编译模拟数据实现。
+主题设置本次会话内生效，退出窗口即结束应用；尚无托盘或后台进程。
+
+原生界面自动化（需要可交互 Windows 桌面）：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./scripts/ui-smoke.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./scripts/ui-smoke.ps1 -Demo
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File ./scripts/ui-smoke.ps1 -Configuration Release -Demo
+```
+
+运行报告和仅包含本应用窗口的截图写入 `artifacts/ui/`。
+详见 [界面设计与验收范围](docs/UX.md)。
 
 ## 开发资料
 

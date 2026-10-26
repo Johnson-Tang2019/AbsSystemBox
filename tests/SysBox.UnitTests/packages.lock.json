@@ -29,6 +29,11 @@
         "resolved": "3.1.4",
         "contentHash": "5mj99LvCqrq3CNi06xYdyIAXOEh+5b33F2nErCzI5zWiDdLHXiPXEWFSUAF8zlIv0ZWqjZNCwHTQeAPYbF3pCg=="
       },
+      "CommunityToolkit.Mvvm": {
+        "type": "Transitive",
+        "resolved": "8.4.2",
+        "contentHash": "WadCzGEc2U+3e20avRLng4qNtt4zoOGWrdUISqJWrHe3/FSnrYjuM5Sb4yQb09LhkBXrrI4Zt3dLKgRMbItsrg=="
+      },
       "Microsoft.CodeCoverage": {
         "type": "Transitive",
         "resolved": "17.14.1",
@@ -96,6 +101,12 @@
       "sysbox.abstractions": {
         "type": "Project"
       },
+      "sysbox.core": {
+        "type": "Project",
+        "dependencies": {
+          "SysBox.Abstractions": "[1.0.0, )"
+        }
+      },
       "sysbox.fileindex": {
         "type": "Project",
         "dependencies": {
@@ -106,6 +117,14 @@
         "type": "Project",
         "dependencies": {
           "SysBox.Abstractions": "[1.0.0, )"
+        }
+      },
+      "sysbox.presentation": {
+        "type": "Project",
+        "dependencies": {
+          "CommunityToolkit.Mvvm": "[8.4.2, )",
+          "SysBox.Abstractions": "[1.0.0, )",
+          "SysBox.Core": "[1.0.0, )"
         }
       },
       "sysbox.search": {

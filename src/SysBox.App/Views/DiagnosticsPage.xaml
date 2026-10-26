@@ -1,0 +1,22 @@
+<Page x:Class="SysBox.App.Views.DiagnosticsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
+        <StackPanel Spacing="24" Padding="4,4,4,12">
+            <StackPanel Spacing="6">
+                <TextBlock Text="诊断" Style="{StaticResource PageTitleStyle}" AutomationProperties.AutomationId="PageTitle" />
+                <TextBlock Text="关于当前应用与运行环境。" Style="{StaticResource BodyCopyStyle}" />
+            </StackPanel>
+            <Border Style="{StaticResource SurfaceStyle}">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="AbsSystemBox" Style="{StaticResource SubtitleTextBlockStyle}" />
+                    <TextBlock x:Name="EnvironmentText" TextWrapping="Wrap" IsTextSelectionEnabled="True" />
+                    <TextBlock x:Name="ScaleText" AutomationProperties.AutomationId="UiScale" />
+                    <TextBlock Text="许可证：GPL-3.0-or-later" Style="{StaticResource BodyCopyStyle}" />
+                    <InfoBar IsOpen="True" IsClosable="False" Severity="Informational" Title="诊断功能开发中"
+                             Message="此处仅展示基本环境信息，尚未提供日志导出与故障检测。" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

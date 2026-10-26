@@ -1,0 +1,18 @@
+﻿{
+    "configuration":  "Debug",
+    "demoArgument":  true,
+    "expectedDemo":  true,
+    "dpi":  96,
+    "scalePercent":  100,
+    "xamlScale":  "窗口缩放：100%",
+    "exitCode":  0,
+    "checks":  [
+                   "All seven destinations selected through native UI Automation, three cycles",
+                   "Demo mode expected: True",
+                   "Light, dark and system themes applied through the theme ComboBox",
+                   "Loading indicator and cancel button exercised on delayed demo client",
+                   "Navigating away cancels pending request; fresh page can load demo result",
+                   "Compact 900 x 740 physical-pixel layout remains navigable",
+                   "Close window exits process with code 0"
+               ]
+}

@@ -1,9 +1,17 @@
 <Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
   <Folder Name="/src/">
     <Project Path="src/SysBox.Abstractions/SysBox.Abstractions.csproj" />
+    <Project Path="src/SysBox.App/SysBox.App.csproj">
+      <Platform Project="x64" />
+    </Project>
     <Project Path="src/SysBox.Core/SysBox.Core.csproj" />
     <Project Path="src/SysBox.FileIndex/SysBox.FileIndex.csproj" />
     <Project Path="src/SysBox.Memory/SysBox.Memory.csproj" />
+    <Project Path="src/SysBox.Presentation/SysBox.Presentation.csproj" />
     <Project Path="src/SysBox.Rules/SysBox.Rules.csproj" />
     <Project Path="src/SysBox.Search/SysBox.Search.csproj" />
     <Project Path="src/SysBox.Storage/SysBox.Storage.csproj" />

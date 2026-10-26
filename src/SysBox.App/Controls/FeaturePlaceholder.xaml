@@ -1,0 +1,16 @@
+<UserControl x:Class="SysBox.App.Controls.FeaturePlaceholder"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Border Style="{StaticResource SurfaceStyle}" HorizontalAlignment="Stretch">
+        <StackPanel Spacing="20" HorizontalAlignment="Stretch">
+            <Border Background="{ThemeResource RoseSoftBrush}" CornerRadius="16" Width="64" Height="64" HorizontalAlignment="Left">
+                <FontIcon x:Name="FeatureIcon" FontSize="28" Foreground="{ThemeResource RoseBrush}" />
+            </Border>
+            <TextBlock Text="尚未实现" Style="{StaticResource SubtitleTextBlockStyle}" TextWrapping="Wrap" />
+            <TextBlock x:Name="DescriptionText" Style="{StaticResource BodyCopyStyle}" />
+            <Border Background="{ThemeResource SoftSurfaceBrush}" CornerRadius="8" Padding="16">
+                <TextBlock Text="现在不会读取文件、扫描磁盘或执行系统优化。" Style="{StaticResource BodyCopyStyle}" />
+            </Border>
+        </StackPanel>
+    </Border>
+</UserControl>

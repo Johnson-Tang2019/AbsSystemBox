@@ -1,4 +1,4 @@
-# M0 核心契约
+# M0/M1 核心与界面客户端契约
 
 当前仅有 C# 接口，无 CLI、IPC、MCP、HTTP 服务。
 协议版本常量为 `1.0`；对外服务正式接入时再冻结兼容性。
@@ -23,3 +23,17 @@ DataCompleteness = Unknown/Partial/Complete；不能把部分数据标成完整�
 FolderSummary 当前口径为目录项的逻辑字节，未承诺占用空间或硬链接去重。
 FileSearchRequest 默认最多 100 条，允许范围 1–1000；查询文本不能为空白。
 序列化策略与分页协议将在对应里程碑实现；当前不承诺 JSON 字段命名。
+
+## M1 同进程客户端
+
+`SysBox.Core.IDashboardClient` 暴露 `IsDemo` 与 `ReadAsync(CancellationToken)`，
+返回 `Task<Result<MemorySnapshot>>`。`DashboardClient` 委托注入的 IMemoryMonitor。
+这不是新的跨进程协议，没有增加监听端口。
+
+`SysBox.Presentation.DashboardViewModel` 暴露 RefreshCommand、CancelCommand、IsBusy、
+ErrorMessage/HasError、Status、Snapshot、MemorySummary。Deactivate 取消任务并使旧结果失效。
+普通模式的 NOT_IMPLEMENTED 只显示中文未就绪状态，不转换为 0 或示例读数。
+读取异常使用通用错误提示，不将异常中的私有路径直接显示到界面。
+
+`SysBox.App.Services.ThemeService` 为 UI 会话提供 System/Light/Dark 主题；不写用户配置。
+Debug 的 `--demo` 只用于布局验收，不是正式功能或稳定 CLI 接口；Release 不启用它。

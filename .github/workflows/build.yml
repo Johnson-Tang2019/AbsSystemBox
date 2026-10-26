@@ -1,4 +1,4 @@
-name: Core build and tests
+name: Windows build and tests
 on:
   push:
   pull_request:

@@ -1,0 +1,17 @@
+﻿{
+    "configuration":  "Debug",
+    "demoArgument":  false,
+    "expectedDemo":  false,
+    "dpi":  96,
+    "scalePercent":  100,
+    "xamlScale":  "窗口缩放：100%",
+    "exitCode":  0,
+    "checks":  [
+                   "All seven destinations selected through native UI Automation, three cycles",
+                   "Demo mode expected: False",
+                   "Light, dark and system themes applied through the theme ComboBox",
+                   "Unavailable service displayed as an explicit information state without fake metrics",
+                   "Compact 900 x 740 physical-pixel layout remains navigable",
+                   "Close window exits process with code 0"
+               ]
+}
