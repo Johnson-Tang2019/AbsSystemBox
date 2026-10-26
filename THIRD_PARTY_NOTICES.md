@@ -1,8 +1,9 @@
-# 第三方依赖与授权记录（M3）
+# 第三方依赖与授权记录（M3 预览版）
 
 版本来自实际还原的 NuGet 锁文件及 SDK 隐式运行时包。项目原创源码为 GPL-3.0-or-later，
 下列组件保留其独立授权，不能将 Windows App SDK 的二进制包一概标为 MIT。
-当前只提交源码和授权材料，没有发布应用二进制包或安装器。
+新增安装器由 NSIS 3.12 生成，存根及 zlib 压缩模块按 zlib/libpng 许可使用，完整上游许可见 [NSIS COPYING](licenses/third-party/NSIS-3.12/COPYING)。
+编译器来自 [官方发布](https://sourceforge.net/projects/nsis/files/NSIS%203/3.12/nsis-3.12.zip/download)，SHA-256 固定在 packaging/version.json；工具本体不随应用安装。
 
 M3 新增 YamlDotNet 18.1.0（MIT），仅使用低层 YAML 事件解析器，不反序列化任意运行时类型。Native 仅调用 Windows 系统的只读 kernel32 API，不复制或分发系统 DLL。
 
@@ -54,8 +55,8 @@ M3 新增 YamlDotNet 18.1.0（MIT），仅使用低层 YAML 事件解析器，�
 - .NET SDK 10.0.403 是开发工具，不提交、不随应用分发；.NET Runtime 10.0.14 通过自包含输出使用。
   SDK 原始许可和第三方通知见 licenses/dotnet/。
 - Windows App SDK 各包附带 Microsoft Software License Terms 及第三方 NOTICE；原文逐包归档，不能用开源仓库的 MIT 替代二进制包条款。
-- 当前采用 x64 unpackaged、.NET 与 Windows App SDK 自包含开发输出。不是安装器，也不是已完成分发授权审查的正式发布包。
-- 发布阶段须复核实际输出、Microsoft redistributable 条件、GPL 义务及其相容性；本次不更改项目 GPL 授权，也不新增链接例外。
+- 当前采用 x64 unpackaged、.NET 与 Windows App SDK 自包含预览安装包。安装页展示项目与第三方许可，并原样保留适用的 licenses/ 通知。
+- 预览安装器仅打包 NuGet 放入应用输出的可再分发文件，按对应组件独立条款保留和展示通知；项目 GPL 授权不变，不新增链接例外。
 - WebView2 的投影程序集和加载器来自 WinUI 的传递依赖；代码中没有 WebView2 控件，不加载网页或要求 Edge WebView2 Runtime。
 - 未复制 Everything、WizTree、Mem Reduct 或 Fluent Reduct 的代码或素材。
 

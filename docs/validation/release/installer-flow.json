@@ -1,0 +1,17 @@
+{
+  "checks": [
+    "Fresh per-user installation registered one stable product identity",
+    "Installed old WinUI app runs; update refuses a running app; duplicate instance exits safely",
+    "Direct overwrite upgrade uses same directory and identity, switches complete payload and removes obsolete owned files",
+    "Downgrade blocked; same-version repair succeeds",
+    "Stable start-menu shortcut and existing user rules preserved across upgrade/repair",
+    "Uninstall removes owned executable/registration and preserves user rules plus unknown files",
+    "Both installed versions started real WinUI windows, displayed expected version and exited with code 0",
+    "Installed rules observer and real read-only memory metrics loaded in both versions"
+  ],
+  "existingUserRulesPreserved": true,
+  "initialVersion": "0.1.0-preview.0",
+  "restrictedNonAdministrator": true,
+  "unknownFilesPreserved": true,
+  "upgradedVersion": "0.1.0-preview.1"
+}

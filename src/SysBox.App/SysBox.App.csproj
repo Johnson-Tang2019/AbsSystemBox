@@ -17,7 +17,6 @@
     <SelfContained>true</SelfContained>
     <PublishTrimmed>false</PublishTrimmed>
     <PublishReadyToRun>false</PublishReadyToRun>
-    <Version>0.1.0</Version>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="Assets/**" CopyToOutputDirectory="PreserveNewest" />
@@ -31,4 +30,14 @@
     <ProjectReference Include="../SysBox.Rules/SysBox.Rules.csproj" />
     <ProjectReference Include="../SysBox.Presentation/SysBox.Presentation.csproj" />
   </ItemGroup>
+  <!-- Keep app-generated XAML resources in unpackaged publish output as well as build output. -->
+  <Target Name="IncludeCompiledWinUIResources" AfterTargets="ComputeFilesToPublish">
+    <ItemGroup>
+      <_CompiledWinUIResource Include="$(TargetDir)**\*.xbf;$(TargetDir)$(AssemblyName).pri" Exclude="@(ResolvedFileToPublish)" />
+      <ResolvedFileToPublish Include="@(_CompiledWinUIResource)">
+        <RelativePath>%(_CompiledWinUIResource.RecursiveDir)%(_CompiledWinUIResource.Filename)%(_CompiledWinUIResource.Extension)</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+  </Target>
 </Project>

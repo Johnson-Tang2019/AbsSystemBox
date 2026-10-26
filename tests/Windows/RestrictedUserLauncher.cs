@@ -51,7 +51,13 @@ public static class RestrictedUserLauncher
             ProcessInfo info;
             if (!CreateProcessAsUserW(restricted, executable, new StringBuilder("\"" + executable + "\" " + arguments),
                 IntPtr.Zero, IntPtr.Zero, false, 0, IntPtr.Zero, Path.GetDirectoryName(executable), ref startup, out info)) throw new Win32Exception();
-            try { return Process.GetProcessById(info.ProcessId); }
+            try
+            {
+                var process = Process.GetProcessById(info.ProcessId);
+                // Retain a handle before the original one closes so even fast exits have a readable exit code.
+                var retainedHandle = process.Handle;
+                return process;
+            }
             finally { CloseHandle(info.Thread); CloseHandle(info.Process); }
         }
         finally

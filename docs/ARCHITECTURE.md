@@ -71,3 +71,11 @@ IBatteryMonitor/BatteryReading 属于 Abstractions。App/Services/WindowsBattery
 复用既有 C#/WinRT 的 Battery.AggregateBattery.GetReport，无需在纯 .NET 库加入 Windows 投影。
 Core/BatteryEstimate 负责功率/时长边界，Presentation/BatteryViewModel 处理可见性、5 秒轮询和取消。
 两个页面使用可复用 BatteryCard；仅 Charging 显示，页面离开停止读取。Debug 模拟显式隔离，Release 不编译模拟电池类型。
+
+
+## 用户安装与版本
+
+packaging/installer.nsi 生成当前用户 NSIS 安装器，固定产品身份，HKCU 保存版本与安装位置，开始菜单入口稳定。
+Directory.Build.props 是统一版本来源。App 用会话互斥体限制重复实例，安装器在运行中拒绝更新；不终止其他进程。
+scripts/build-installer.ps1 从干净提交发布 x64、自包含输出，明确补入 WinUI XBF/PRI，携带独立许可证、生成 payload 清单及源码/校验附件。
+程序与 %LOCALAPPDATA%\SysBox 用户规则分离。安装器暂存并切换程序目录，按有界清单卸载，不递归删除未知文件；详见 INSTALL.md。

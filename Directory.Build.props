@@ -6,6 +6,9 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <AnalysisLevel>latest</AnalysisLevel>
     <Deterministic>true</Deterministic>
+    <Version>0.1.0-preview.1</Version>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.1</FileVersion>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <Authors>Johnson-Tang2019;AbsSystemBox contributors</Authors>
     <RepositoryUrl>https://github.com/Johnson-Tang2019/AbsSystemBox</RepositoryUrl>

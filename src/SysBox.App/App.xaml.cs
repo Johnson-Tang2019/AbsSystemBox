@@ -14,6 +14,7 @@ namespace SysBox.App;
 public partial class App : Application
 {
     private Window? _window;
+    private Mutex? instanceMutex;
     public static MainWindow MainWindow { get; private set; } = null!;
     public static ServiceProvider Services { get; private set; } = null!;
 
@@ -24,6 +25,11 @@ public partial class App : Application
 
     protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
     {
+        instanceMutex = new Mutex(false, "Local\\AbsSystemBox.Desktop");
+        bool acquired;
+        try { acquired = instanceMutex.WaitOne(0); }
+        catch (AbandonedMutexException) { acquired = true; }
+        if (!acquired) { instanceMutex.Dispose(); instanceMutex = null; Exit(); return; }
         var services = new ServiceCollection();
         services.AddSingleton<IWindowsMemoryApi, WindowsMemoryApi>();
         services.AddSingleton<IMemoryMonitor, WindowsMemoryMonitor>();
@@ -56,7 +62,7 @@ public partial class App : Application
         Services = services.BuildServiceProvider();
         MainWindow = new MainWindow();
         _window = MainWindow;
-        _window.Closed += (_, _) => Services.Dispose();
+        _window.Closed += (_, _) => { Services.Dispose(); instanceMutex?.ReleaseMutex(); instanceMutex?.Dispose(); instanceMutex = null; };
         _window.Activate();
         Services.GetRequiredService<RuleObserver>().Start();
     }
