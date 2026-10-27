@@ -9,6 +9,7 @@ using SysBox.Native;
 using SysBox.Presentation;
 using SysBox.Rules;
 using SysBox.FileIndex;
+using SysBox.Search;
 
 namespace SysBox.App;
 
@@ -66,6 +67,8 @@ public partial class App : Application
 #endif
         services.AddSingleton(new IndexDatabase(indexDirectory));
         services.AddSingleton<IFileIndexService, DirectoryWalkIndexer>();
+        services.AddSingleton<IIndexedSearchService, IndexedSearchService>();
+        services.AddTransient<SearchViewModel>();
         services.AddTransient(sp => new IndexViewModel(sp.GetRequiredService<IFileIndexService>(), () => new IndexControl()));
         Services = services.BuildServiceProvider();
         MainWindow = new MainWindow();

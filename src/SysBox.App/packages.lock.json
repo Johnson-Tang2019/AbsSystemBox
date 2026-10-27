@@ -248,6 +248,13 @@
           "SysBox.Abstractions": "[0.1.0-preview.1, )",
           "YamlDotNet": "[18.1.0, )"
         }
+      },
+      "sysbox.search": {
+        "type": "Project",
+        "dependencies": {
+          "SysBox.Abstractions": "[0.1.0-preview.1, )",
+          "SysBox.FileIndex": "[0.1.0-preview.1, )"
+        }
       }
     },
     "net10.0-windows10.0.26100/win-x64": {

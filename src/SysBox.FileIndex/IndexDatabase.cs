@@ -29,13 +29,15 @@ public sealed class IndexDatabase(string directory)
         public void Dispose() { stream.Dispose(); semaphore.Release(); }
     }
 
-    internal SqliteConnection Open()
+    // Only trusted data modules use this connection. No SQL is accepted from UI/Agent callers.
+    public SqliteConnection OpenReadConnection() => Open(true);
+    internal SqliteConnection Open(bool readOnly = false)
     {
         Directory.CreateDirectory(DirectoryPath);
         var connection = new SqliteConnection(new SqliteConnectionStringBuilder
         {
             DataSource = Path.Combine(DirectoryPath, "metadata.db"), Pooling = false,
-            ForeignKeys = true, DefaultTimeout = 2
+            ForeignKeys = true, DefaultTimeout = 2, Mode = readOnly ? SqliteOpenMode.ReadOnly : SqliteOpenMode.ReadWriteCreate
         }.ToString());
         try
         {

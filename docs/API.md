@@ -1,4 +1,4 @@
-# 核心与界面客户端契约（M4）
+# 核心与界面客户端契约（M5）
 
 当前仅有 C# 接口，无 CLI、IPC、MCP、HTTP 服务。
 协议版本常量为 `1.0`；对外服务正式接入时再冻结兼容性。
@@ -7,7 +7,7 @@
 |---|---|---|
 | IMemoryMonitor.ReadAsync(ct) | Task&lt;Result&lt;MemorySnapshot&gt;&gt; | WindowsMemoryMonitor 在后台读取真实系统内存 |
 | IProcessMemoryMonitor.ReadAsync(ct) | Task&lt;Result&lt;ProcessMemorySnapshot&gt;&gt; | WindowsProcessMemoryMonitor 读取可访问进程并按工作集降序返回前 200 项 |
-| IFileSearchService.SearchAsync(request, ct) | IAsyncEnumerable&lt;FileSearchHit&gt; | Unavailable 实现调用时抛 SysBoxOperationException |
+| IFileSearchService.SearchAsync(request, ct) | IAsyncEnumerable&lt;FileSearchHit&gt; | IndexedSearchService 按有界分页流式返回；旧 Unavailable 类仅回归测试保留 |
 | IStorageAnalyzer.AnalyzeAsync(path, ct) | Task&lt;Result&lt;FolderSummary&gt;&gt; | Unavailable 实现返回 NOT_IMPLEMENTED |
 
 所有接口传入 CancellationToken；已取消的 token 抛 OperationCanceledException。
@@ -94,3 +94,13 @@ IndexRunState 分 Running/Paused/Complete/Partial/Cancelled/Failed/LimitReached�
 报告分别记录文件/目录数、逻辑字节、权限错误、I/O 错误、跳过链接、排除数、开始/更新时间。
 普通目录身份不是 NTFS 卷/文件身份，FileId 与 ParentFileId 为空，详见 INDEXING.md。
 存储/锁错误可抛 IOException/SqliteException，UI 提供中文错误；取消按启动时机返回 Cancelled 或抛 OperationCanceledException。
+
+## M5 搜索端口
+
+IIndexedSearchService.QueryAsync(SearchPageRequest,token) 返回 SearchPageResult。
+请求含 Query、Sort、Offset、Limit、Snapshot、IncludeHidden；默认每页 100 条，最多 200 条，offset 最大 100000。
+后续页携带首次响应的 Snapshot；活动 generation 变化返回 INDEX_CHANGED。
+响应含 Hits、HasMore、Snapshot、Completeness、中文 Notice 及 ElapsedMilliseconds，不执行无界 COUNT。
+QUERY_INVALID 为语法/预算错误，INDEX_NOT_READY 区分无索引，QUERY_BUDGET 为 SQLite 合作时限。
+查询运行错误仍通过 SysBoxOperationException 或存储异常表达；取消使用 OperationCanceledException。
+SEARCH.md 是语法/单位规范。仅提供本进程接口，未开放 CLI/MCP 或任意 SQL。

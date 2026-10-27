@@ -1,14 +1,14 @@
 <Page x:Class="SysBox.App.Views.SearchPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:models="using:SysBox.Abstractions">
+    xmlns:presentation="using:SysBox.Presentation">
     <Grid RowSpacing="16" Padding="4,4,4,12">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="*" />
+            <RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
             <StackPanel Spacing="6">
-                <TextBlock Text="文件索引" Style="{StaticResource PageTitleStyle}" AutomationProperties.AutomationId="PageTitle" />
-                <TextBlock Text="由你选择范围，文件仍留在原处。只读取元数据，搜索功能将在下一阶段接入。" Style="{StaticResource BodyCopyStyle}" />
+                <TextBlock Text="文件搜索" Style="{StaticResource PageTitleStyle}" AutomationProperties.AutomationId="PageTitle" />
+                <TextBlock Text="由你选择范围，少一点翻找。只读取名称、大小和日期，不读取正文。" Style="{StaticResource BodyCopyStyle}" />
             </StackPanel>
         <Border Grid.Row="1" Style="{StaticResource SurfaceStyle}">
             <StackPanel Spacing="12">
@@ -27,16 +27,41 @@
                 <ProgressBar IsIndeterminate="{x:Bind ViewModel.IsBusy, Mode=OneWay}" />
             </StackPanel>
         </Border>
-        <TextBlock Grid.Row="2" Text="本次索引预览（最多 100 项；逻辑大小按目录项统计，链接不跟随）" Style="{StaticResource BodyCopyStyle}" />
-        <ListView Grid.Row="3" ItemsSource="{x:Bind ViewModel.Preview}" SelectionMode="None" AutomationProperties.AutomationId="IndexPreview">
+        <StackPanel Grid.Row="2" Spacing="8">
+            <TextBox Text="{x:Bind Search.Query, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="关键词、*.pt、ext:onnx、size:&gt;1GB、type:folder" AutomationProperties.AutomationId="SearchQuery" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <ComboBox SelectedIndex="0" SelectionChanged="Sort_SelectionChanged" AutomationProperties.AutomationId="SearchSort">
+                    <ComboBoxItem Content="相关性" /><ComboBoxItem Content="路径" /><ComboBoxItem Content="大小从大到小" /><ComboBoxItem Content="最近修改" />
+                </ComboBox>
+                <Button Content="搜索 / 刷新" Click="Search_Click" AutomationProperties.AutomationId="RunSearch" />
+                <CheckBox Content="包含隐藏项" IsChecked="{x:Bind Search.IncludeHidden, Mode=TwoWay}" />
+                <Button Content="上一页" Click="Previous_Click" AutomationProperties.AutomationId="PreviousSearchPage" />
+                <Button Content="下一页" Click="Next_Click" IsEnabled="{x:Bind Search.HasMore, Mode=OneWay}" AutomationProperties.AutomationId="NextSearchPage" />
+            </StackPanel>
+            <TextBlock Text="{x:Bind Search.Status, Mode=OneWay}" Style="{StaticResource BodyCopyStyle}" AutomationProperties.AutomationId="SearchStatus" />
+        </StackPanel>
+        <ListView Grid.Row="3" ItemsSource="{x:Bind Search.Results}" SelectionChanged="Result_SelectionChanged" SelectionMode="Single" DoubleTapped="Result_DoubleTapped" AutomationProperties.AutomationId="SearchResults">
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="models:FileEntry">
+                <DataTemplate x:DataType="presentation:SearchResultRow">
                     <StackPanel Padding="4" Spacing="2">
+                        <StackPanel.ContextFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="复制完整路径" Tag="{x:Bind Path}" Click="CopyPath_Click" />
+                                <MenuFlyoutItem Text="在资源管理器中显示" Tag="{x:Bind Path}" Click="Reveal_Click" />
+                                <MenuFlyoutItem Text="打开（需确认）" Tag="{x:Bind Path}" Click="Open_Click" />
+                            </MenuFlyout>
+                        </StackPanel.ContextFlyout>
                         <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" />
                         <TextBlock Text="{x:Bind Path}" TextTrimming="CharacterEllipsis" Opacity="0.7" />
+                        <TextBlock Text="{x:Bind Detail}" Opacity="0.7" />
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <StackPanel Grid.Row="4" Orientation="Horizontal" Spacing="8">
+            <Button Content="复制路径" Click="CopySelected_Click" AutomationProperties.AutomationId="CopySearchPath" />
+            <Button Content="在资源管理器中显示" Click="RevealSelected_Click" AutomationProperties.AutomationId="RevealSearchResult" />
+            <Button Content="打开…" Click="OpenSelected_Click" AutomationProperties.AutomationId="OpenSearchResult" />
+        </StackPanel>
     </Grid>
 </Page>

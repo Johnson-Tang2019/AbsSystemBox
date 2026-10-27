@@ -1,0 +1,13 @@
+﻿{
+    "configuration":  "Debug",
+    "checks":  [
+                   "10,051 real fixture files indexed; search pages remain at 100 records and native ListView is bounded",
+                   "Invalid, empty, rapid input and Chinese phrase queries verified; opening remains behind user confirmation",
+                   "Navigation and actual WinUI exit code 0"
+               ],
+    "isAdministrator":  false,
+    "isolatedStore":  true,
+    "realizedResultControls":  11,
+    "isElevated":  false,
+    "fixtureFiles":  10051
+}

@@ -1,0 +1,10 @@
+{
+  "sqliteVersion": "3.53.3",
+  "rows": 10000,
+  "repetitions": 20,
+  "btreePrefixMs": 0.07343,
+  "substringScanMs": 0.42031999999999997,
+  "trigramMs": 0.0366,
+  "twoCharacterFtsMatches": 0,
+  "shortMatchMs": 0.002715
+}

@@ -41,13 +41,16 @@ try {
     [IO.File]::Move((Join-Path $fixture 'readme.txt'),(Join-Path $fixture 'renamed.txt'))
     Click 'StartIndex'
     Wait-For { (Status) -match '扫描完成.*2 文件' } 'rescan complete'
+    (Find-Id 'SearchQuery').GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).SetValue('renamed')
     Wait-For {
         $condition = [System.Windows.Automation.PropertyCondition]::new([System.Windows.Automation.AutomationElement]::NameProperty,'renamed.txt')
         $null -ne $window.FindFirst([System.Windows.Automation.TreeScope]::Descendants,$condition)
     } 'updated preview'
-    $checks.Add('Manual rename and rescan update actual ListView preview')
+    $checks.Add('Manual rename and rescan update actual search ListView')
     Click 'ClearIndex'; Wait-For { $null -ne (Find-Id 'CloseButton') } 'clear confirmation'
     Click 'CloseButton'
+    Wait-For { $null -eq (Find-Id 'CloseButton') } 'cancelled confirmation closed'
+    Start-Sleep -Milliseconds 300
     if (-not (Test-Path (Join-Path $env:SYSBOX_TEST_INDEX_DIRECTORY 'metadata.db'))) { throw 'Cancel lost database' }
     Click 'ClearIndex'; Wait-For { $null -ne (Find-Id 'PrimaryButton') } 'clear confirmation again'
     Click 'PrimaryButton'; Wait-For { (Status) -match '索引缓存已清除' } 'cache cleared'

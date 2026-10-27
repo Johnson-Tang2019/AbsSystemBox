@@ -1,4 +1,4 @@
-# 当前架构（M4）
+# 当前架构（M5）
 
 当前有 7 个核心类库、Native 和 Presentation 类库、WinUI 桌面应用及一个测试工程。
 只运行用户态桌面进程，无后台宿主、服务、IPC 或网络监听。
@@ -18,7 +18,7 @@ UnitTests -> Abstractions, Memory, Search, Storage, Core, Presentation, Rules
 
 Abstractions 定义 DTO、Result/Error、内存/搜索/存储接口。
 Memory 已实现 WindowsMemoryMonitor 和 WindowsProcessMemoryMonitor。
-Search/Storage 的 Unavailable 实现仍返回或抛出 NOT_IMPLEMENTED；FileIndex 实现普通目录索引和 SQLite 快照；Rules 已实现有界解析、模拟、版本事务和审批。
+Search 实现 AST/参数化分页查询，Storage 仍未实现；FileIndex 实现普通目录索引和 SQLite 快照；Rules 已实现有界解析、模拟、版本事务和审批。
 Core 提供同进程 DashboardClient，尚未实现后台宿主；规则配置持久化由 Rules 管理。
 核心契约和 ViewModel 可以在非 Windows 环境测试；App 仅构建 Windows x64。
 
@@ -79,3 +79,10 @@ packaging/installer.nsi 生成当前用户 NSIS 安装器，固定产品身份�
 Directory.Build.props 是统一版本来源。App 用会话互斥体限制重复实例，安装器在运行中拒绝更新；不终止其他进程。
 scripts/build-installer.ps1 从干净提交发布 x64、自包含输出，明确补入 WinUI XBF/PRI，携带独立许可证、生成 payload 清单及源码/校验附件。
 程序与 %LOCALAPPDATA%\SysBox 用户规则分离。安装器暂存并切换程序目录，按有界清单卸载，不递归删除未知文件；详见 INSTALL.md。
+
+## M4/M5 文件模块
+
+App 注入 IndexDatabase、IFileIndexService 和 IIndexedSearchService；Presentation 的 IndexViewModel/SearchViewModel 不依赖 SQLite 或 Win32。
+FileIndex 管理 schema/连接/单写者/generation，Search 仅打开可信的只读数据库连接，公共业务接口不接受 SQL。
+查询在读事务中固定活动快照并按摘要拒绝跨代分页，UI 集合每页替换、有界保留，离开取消并屏蔽迟到结果。
+ShellFileActions 的 PIDL 用 SafeHandle 释放，只由本机明确操作调用。具体口径与边界见 INDEXING.md、SEARCH.md。
