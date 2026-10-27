@@ -12,6 +12,7 @@
     <Project Path="src/SysBox.FileIndex/SysBox.FileIndex.csproj" />
     <Project Path="src/SysBox.Memory/SysBox.Memory.csproj" />
     <Project Path="src/SysBox.Native/SysBox.Native.csproj" />
+    <Project Path="src/SysBox.NtfsLab/SysBox.NtfsLab.csproj" />
     <Project Path="src/SysBox.Presentation/SysBox.Presentation.csproj" />
     <Project Path="src/SysBox.Rules/SysBox.Rules.csproj" />
     <Project Path="src/SysBox.Search/SysBox.Search.csproj" />

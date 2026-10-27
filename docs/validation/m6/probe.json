@@ -1,0 +1,8 @@
+{
+  "platform": "Windows 11 x64",
+  "available": true,
+  "operation": "FSCTL_QUERY_USN_JOURNAL",
+  "enumeratedRecords": 0,
+  "writesToVolume": 0,
+  "isolatedVolumeTest": false
+}

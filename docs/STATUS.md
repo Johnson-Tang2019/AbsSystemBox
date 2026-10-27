@@ -143,3 +143,12 @@ M6：隔离的 NTFS/USN 实验与一致性测试。所有目标仍是 Windows；
 - Debug/Release 各 140 项测试通过；FTS5/B-tree 的 10000 名称实验记录在 validation/m5，正式查询保留短中文词子串后备方案。
 - 受限非管理员真实 WinUI 在 10051 个隔离样本文件上通过分页、防抖、中文、无结果/非法语法、确认取消、导航与 code 0 退出。
 - 具体支持语法、预算及操作验收边界见 SEARCH.md。文档用户要求仅 Windows 测试，不安排非 Windows 验收。
+
+## M6 隔离实验准备（未完成）
+
+- 已加入 INtfsVolumeReader、V2/V3 有界解析、SafeFileHandle 只读适配器、Journal 缺口检查和独立 probe 程序。
+- Windows Debug/Release 完整构建各 0 警告/0 错误，全量测试各 146 项通过；Native Journal 能力探针在 D: 真实返回成功，枚举 0 条，无卷写入。
+- 未执行 NTFS 初始枚举、增量跟踪或全盘扫描；未实现持久化 checkpoint/回放事务，不标记 M6 完成。
+- 只有现有用户 C:/D:，没有已确认的隔离 NTFS 测试卷。已准备 512 MiB 全新 VHDX 的创建脚本，未执行分区、格式化或 Journal 创建；具体目标与审查说明见 NTFS_LAB.md。
+- M7–M10 仍未实现，M11 的干净 Windows 机器/长期性能/签名等仍待完成。不能把 M4/M5 或探针通过说成文档全部任务完成。
+- M4/M5 提交 cc54f8e 的远端 Windows CI 已成功，含 publish 资源检查；M6 当前提交的 CI 另行核对，不用本地结果代替。

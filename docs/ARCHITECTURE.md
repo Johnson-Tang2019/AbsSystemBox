@@ -7,13 +7,14 @@
 Core      -> Abstractions
 Presentation -> Core, Abstractions, CommunityToolkit.Mvvm
 App       -> Presentation, Core, Abstractions, Memory, Rules, Microsoft.Extensions.DependencyInjection
-Native    -> .NET / kernel32.dll (read-only)
+Native    -> Abstractions / kernel32.dll / shell32.dll (read-only metadata and explicit desktop shell actions)
 Memory    -> Abstractions, Native
 FileIndex -> Abstractions
 Rules     -> Abstractions, YamlDotNet
 Search    -> Abstractions, FileIndex
 Storage   -> Abstractions, FileIndex
 UnitTests -> Abstractions, Memory, Search, Storage, Core, Presentation, Rules
+NtfsLab   -> Native, FileIndex (isolated probe only)
 ```
 
 Abstractions 定义 DTO、Result/Error、内存/搜索/存储接口。
@@ -86,3 +87,5 @@ App 注入 IndexDatabase、IFileIndexService 和 IIndexedSearchService；Present
 FileIndex 管理 schema/连接/单写者/generation，Search 仅打开可信的只读数据库连接，公共业务接口不接受 SQL。
 查询在读事务中固定活动快照并按摘要拒绝跨代分页，UI 集合每页替换、有界保留，离开取消并屏蔽迟到结果。
 ShellFileActions 的 PIDL 用 SafeHandle 释放，只由本机明确操作调用。具体口径与边界见 INDEXING.md、SEARCH.md。
+
+M6 实验接口 INtfsVolumeReader 与解析器尚未进入 App 组合根。NtfsLab 只查询 Journal 元数据，不能把它视为生产 NTFS 索引或安全服务；剩余工作见 NTFS_LAB.md。

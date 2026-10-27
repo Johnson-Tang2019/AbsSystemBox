@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../SysBox.Native/SysBox.Native.csproj" />
+    <ProjectReference Include="../SysBox.FileIndex/SysBox.FileIndex.csproj" />
+  </ItemGroup>
+</Project>

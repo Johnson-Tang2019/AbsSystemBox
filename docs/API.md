@@ -104,3 +104,10 @@ IIndexedSearchService.QueryAsync(SearchPageRequest,token) 返回 SearchPageResul
 QUERY_INVALID 为语法/预算错误，INDEX_NOT_READY 区分无索引，QUERY_BUDGET 为 SQLite 合作时限。
 查询运行错误仍通过 SysBoxOperationException 或存储异常表达；取消使用 OperationCanceledException。
 SEARCH.md 是语法/单位规范。仅提供本进程接口，未开放 CLI/MCP 或任意 SQL。
+
+## M6 实验端口（未接入 UI）
+
+INtfsVolumeReader.QueryJournal / Enumerate / ReadChanges 仅供隔离实验；WindowsNtfsVolumeReader 拥有 SafeFileHandle。
+UsnBufferParser.Parse 接收 8 字节续读位置加有界记录缓冲，返回版本明确的 UsnRecord；身份字符串保留 64/128 位值。
+USN_INVALID 表示拒绝损坏/未知布局；REBUILD_REQUIRED 表示 Journal/checkpoint 不匹配。
+没有提供卷许可、特权代理、生产增量索引或 Agent 远程调用。NtfsLab 的 probe 只查询元数据，固定枚举数为 0。
