@@ -1,0 +1,10 @@
+﻿{
+    "configuration":  "Release",
+    "isElevated":  false,
+    "checks":  [
+                   "Release non-administrator storage page opens with no automatic scan or fabricated sizes",
+                   "Release cached navigation and actual window exit code 0"
+               ],
+    "sourceScan":  false,
+    "isAdministrator":  false
+}

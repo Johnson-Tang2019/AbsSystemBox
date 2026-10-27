@@ -258,6 +258,13 @@
           "SysBox.Abstractions": "[0.1.0-preview.1, )",
           "SysBox.FileIndex": "[0.1.0-preview.1, )"
         }
+      },
+      "sysbox.storage": {
+        "type": "Project",
+        "dependencies": {
+          "SysBox.Abstractions": "[0.1.0-preview.1, )",
+          "SysBox.FileIndex": "[0.1.0-preview.1, )"
+        }
       }
     },
     "net10.0-windows10.0.26100/win-x64": {

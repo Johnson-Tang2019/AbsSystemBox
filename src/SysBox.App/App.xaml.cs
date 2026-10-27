@@ -10,6 +10,7 @@ using SysBox.Presentation;
 using SysBox.Rules;
 using SysBox.FileIndex;
 using SysBox.Search;
+using SysBox.Storage;
 
 namespace SysBox.App;
 
@@ -66,9 +67,12 @@ public partial class App : Application
         indexDirectory = Environment.GetEnvironmentVariable("SYSBOX_TEST_INDEX_DIRECTORY") ?? indexDirectory;
 #endif
         services.AddSingleton(new IndexDatabase(indexDirectory));
+        services.AddSingleton<IFileSizeReader, WindowsFileSizeReader>();
         services.AddSingleton<IFileIndexService, DirectoryWalkIndexer>();
         services.AddSingleton<IIndexedSearchService, IndexedSearchService>();
         services.AddTransient<SearchViewModel>();
+        services.AddSingleton<IStorageBrowser, IndexedStorageBrowser>();
+        services.AddTransient(sp => new StorageViewModel(sp.GetRequiredService<IStorageBrowser>(), () => new IndexControl()));
         services.AddTransient(sp => new IndexViewModel(sp.GetRequiredService<IFileIndexService>(), () => new IndexControl()));
         Services = services.BuildServiceProvider();
         MainWindow = new MainWindow();

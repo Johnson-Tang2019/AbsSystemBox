@@ -30,6 +30,7 @@
     <ProjectReference Include="../SysBox.Rules/SysBox.Rules.csproj" />
     <ProjectReference Include="../SysBox.FileIndex/SysBox.FileIndex.csproj" />
     <ProjectReference Include="../SysBox.Search/SysBox.Search.csproj" />
+    <ProjectReference Include="../SysBox.Storage/SysBox.Storage.csproj" />
     <ProjectReference Include="../SysBox.Presentation/SysBox.Presentation.csproj" />
   </ItemGroup>
   <!-- Keep app-generated XAML resources in unpackaged publish output as well as build output. -->

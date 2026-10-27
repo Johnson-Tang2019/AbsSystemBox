@@ -1,4 +1,4 @@
-# 当前架构（M5）
+# 当前架构（普通目录大小与磁盘页阶段）
 
 当前有 7 个核心类库、Native 和 Presentation 类库、WinUI 桌面应用及一个测试工程。
 只运行用户态桌面进程，无后台宿主、服务、IPC 或网络监听。
@@ -19,7 +19,7 @@ NtfsLab   -> Native, FileIndex (isolated probe only)
 
 Abstractions 定义 DTO、Result/Error、内存/搜索/存储接口。
 Memory 已实现 WindowsMemoryMonitor 和 WindowsProcessMemoryMonitor。
-Search 实现 AST/参数化分页查询，Storage 仍未实现；FileIndex 实现普通目录索引和 SQLite 快照；Rules 已实现有界解析、模拟、版本事务和审批。
+Search 实现 AST/参数化分页查询，Storage 实现共享快照的目录摘要/下一层排行；FileIndex 实现普通目录索引、SQLite 快照与大小汇总；Rules 已实现有界解析、模拟、版本事务和审批。
 Core 提供同进程 DashboardClient，尚未实现后台宿主；规则配置持久化由 Rules 管理。
 核心契约和 ViewModel 可以在非 Windows 环境测试；App 仅构建 Windows x64。
 
@@ -89,3 +89,9 @@ FileIndex 管理 schema/连接/单写者/generation，Search 仅打开可信的�
 ShellFileActions 的 PIDL 用 SafeHandle 释放，只由本机明确操作调用。具体口径与边界见 INDEXING.md、SEARCH.md。
 
 M6 实验接口 INtfsVolumeReader 与解析器尚未进入 App 组合根。NtfsLab 只查询 Journal 元数据，不能把它视为生产 NTFS 索引或安全服务；剩余工作见 NTFS_LAB.md。
+
+## 普通目录大小
+
+IFileSizeReader 属于 Abstractions，Native/WindowsFileSizeReader 实现属性句柄读取；FileIndex 仅使用端口，UI 不遍历文件系统。
+Migration 2/FolderTotalsBuilder 负责大小来源、后序汇总和事务发布。IndexedStorageBrowser 在单读事务返回 StorageView，StorageViewModel 管理页面生命周期与有界导航历史。
+TreemapLayout 是纯几何算法，StorageTreemap 仅绘制有界按钮并发送导航事件，不执行扫描。口径与剩余任务见 STORAGE.md。

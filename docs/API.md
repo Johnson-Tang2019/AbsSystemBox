@@ -1,4 +1,4 @@
-# 核心与界面客户端契约（M5）
+# 核心与界面客户端契约（普通目录空间分析阶段）
 
 当前仅有 C# 接口，无 CLI、IPC、MCP、HTTP 服务。
 协议版本常量为 `1.0`；对外服务正式接入时再冻结兼容性。
@@ -8,7 +8,7 @@
 | IMemoryMonitor.ReadAsync(ct) | Task&lt;Result&lt;MemorySnapshot&gt;&gt; | WindowsMemoryMonitor 在后台读取真实系统内存 |
 | IProcessMemoryMonitor.ReadAsync(ct) | Task&lt;Result&lt;ProcessMemorySnapshot&gt;&gt; | WindowsProcessMemoryMonitor 读取可访问进程并按工作集降序返回前 200 项 |
 | IFileSearchService.SearchAsync(request, ct) | IAsyncEnumerable&lt;FileSearchHit&gt; | IndexedSearchService 按有界分页流式返回；旧 Unavailable 类仅回归测试保留 |
-| IStorageAnalyzer.AnalyzeAsync(path, ct) | Task&lt;Result&lt;FolderSummary&gt;&gt; | Unavailable 实现返回 NOT_IMPLEMENTED |
+| IStorageAnalyzer.AnalyzeAsync(path, ct) | Task&lt;Result&lt;FolderSummary&gt;&gt; | IndexedStorageBrowser 提供只读快照适配；UI 使用下文 IStorageBrowser，旧 Unavailable 类仅用于回归 |
 
 所有接口传入 CancellationToken；已取消的 token 抛 OperationCanceledException。
 流式搜索运行时错误使用 SysBoxOperationException.Error 携带结构化错误。
@@ -111,3 +111,13 @@ INtfsVolumeReader.QueryJournal / Enumerate / ReadChanges 仅供隔离实验；Wi
 UsnBufferParser.Parse 接收 8 字节续读位置加有界记录缓冲，返回版本明确的 UsnRecord；身份字符串保留 64/128 位值。
 USN_INVALID 表示拒绝损坏/未知布局；REBUILD_REQUIRED 表示 Journal/checkpoint 不匹配。
 没有提供卷许可、特权代理、生产增量索引或 Agent 远程调用。NtfsLab 的 probe 只查询元数据，固定枚举数为 0。
+
+## 普通目录空间分析
+
+IFileSizeReader.Read 返回 Result<FileSizeMetadata>，包含非负逻辑长度/分配长度、链接数与时间。失败时不填造分配量。
+IStorageBrowser.AnalyzeAsync(path,control,progress,token) 扫描明确指定的普通目录；ReadAsync(path,sort,offset,limit,token) 只读活动快照。
+StorageView 包含 Summary、Children、HasMore、Generation、ScopeId、ScopeRoot、ScopeSkippedEntries 和 Notice；limit 1–200，offset 0–100000。
+StorageItem 分开表示 LogicalBytes、KnownAllocatedBytes、UnknownAllocatedFiles、FileCount、FolderCount、HardLinkedEntries、Completeness、TimestampUtc。
+ReadAsync 可附带 scopeRoot/expectedGeneration 固定逐层浏览的范围与版本；不匹配返回 STORAGE_CHANGED。
+STORAGE_NOT_READY 要求先分析或重扫，STORAGE_BUDGET 表示查询预算耗尽。取消返回 Cancelled 或 OperationCanceledException。
+Legacy IStorageAnalyzer.AnalyzeAsync 仅从已发布快照生成 FolderSummary，跳过数为所在范围保守计数；普通界面实际使用 IStorageBrowser。

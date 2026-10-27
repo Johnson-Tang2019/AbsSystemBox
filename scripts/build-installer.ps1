@@ -20,7 +20,7 @@ $compiler=& (Join-Path $PSScriptRoot 'get-nsis.ps1')
 & (Join-Path $PSScriptRoot 'dotnet.ps1') restore SysBox.slnx --locked-mode
 & (Join-Path $PSScriptRoot 'dotnet.ps1') clean src/SysBox.App/SysBox.App.csproj -c Release '-p:Platform=x64' '-v:q'
 & (Join-Path $PSScriptRoot 'dotnet.ps1') publish src/SysBox.App/SysBox.App.csproj -c Release --no-restore '-m:1' '-p:Platform=x64' "-p:Version=$Version" "-p:FileVersion=$WindowsVersion" "-p:SourceRevisionId=$revision" '-p:DebugType=None' '-p:DebugSymbols=false' "--output=$stage"
-foreach($resource in @('App.xbf','MainWindow.xbf','SysBox.App.pri','Themes/PinkTheme.xbf','Controls/BatteryCard.xbf','Views/RulesPage.xbf')){
+foreach($resource in @('App.xbf','MainWindow.xbf','SysBox.App.pri','Themes/PinkTheme.xbf','Controls/BatteryCard.xbf','Views/RulesPage.xbf','Views/SearchPage.xbf','Views/StoragePage.xbf','Controls/StorageTreemap.xbf')){
     if(-not (Test-Path -LiteralPath (Join-Path $stage $resource))){throw "Published WinUI resource missing: $resource"}
 }
 foreach($name in @('LICENSE','COPYING.md','THIRD_PARTY_NOTICES.md')){Copy-Item -LiteralPath (Join-Path $root $name) -Destination $stage}

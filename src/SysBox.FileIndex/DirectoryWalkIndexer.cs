@@ -8,7 +8,7 @@ using SysBox.Abstractions;
 
 namespace SysBox.FileIndex;
 
-public sealed class DirectoryWalkIndexer(IndexDatabase database) : IFileIndexService
+public sealed class DirectoryWalkIndexer(IndexDatabase database, IFileSizeReader? sizeReader = null) : IFileIndexService
 {
     public Task<IReadOnlyList<IndexRoot>> ReadRootsAsync(CancellationToken token) => database.ReadRootsAsync(token);
     public Task ClearAsync(CancellationToken token) => database.ClearAsync(token);
@@ -79,13 +79,26 @@ public sealed class DirectoryWalkIndexer(IndexDatabase database) : IFileIndexSer
             long? length = isDirectory ? null : ((FileInfo)info).Length;
             var attributes = info.Attributes;
             var modified = info.LastWriteTimeUtc.ToString("O");
+            FileSizeMetadata? metadata = null;
+            if (!isDirectory && sizeReader is not null)
+            {
+                token.ThrowIfCancellationRequested();
+                var result = sizeReader.Read(info.FullName);
+                if (result.IsSuccess && result.Value.LogicalBytes >= 0 && result.Value.AllocatedBytes >= 0 && result.Value.LinkCount > 0)
+                { metadata = result.Value; length = metadata.LogicalBytes; }
+            }
             command.CommandText = """
-                INSERT INTO file_objects(scope_id,generation,is_directory,attributes,logical_size,last_write_utc)
-                VALUES($s,$g,$d,$a,$l,$w) RETURNING object_id;
+                INSERT INTO file_objects(scope_id,generation,is_directory,attributes,logical_size,last_write_utc,
+                    allocated_size,size_state,size_updated_utc,link_count)
+                VALUES($s,$g,$d,$a,$l,$w,$allocated,$state,$updated,$links) RETURNING object_id;
                 """;
             command.Parameters.AddWithValue("$s", scope); command.Parameters.AddWithValue("$g", generation);
             command.Parameters.AddWithValue("$d", isDirectory); command.Parameters.AddWithValue("$a", (int)attributes);
             command.Parameters.AddWithValue("$l", (object?)length ?? DBNull.Value); command.Parameters.AddWithValue("$w", modified);
+            command.Parameters.AddWithValue("$allocated", (object?)metadata?.AllocatedBytes ?? DBNull.Value);
+            command.Parameters.AddWithValue("$state", isDirectory ? "directory" : metadata is null ? "logical-only" : "standard-info");
+            command.Parameters.AddWithValue("$updated", (metadata?.TimestampUtc ?? DateTimeOffset.UtcNow).ToString("O"));
+            command.Parameters.AddWithValue("$links", (object?)metadata?.LinkCount ?? DBNull.Value);
             var objectId = (long)command.ExecuteScalar()!;
             command.CommandText = """
                 INSERT INTO directory_entries(scope_id,generation,object_id,parent_entry_id,name,name_folded,cached_path,is_hidden)
@@ -182,6 +195,7 @@ public sealed class DirectoryWalkIndexer(IndexDatabase database) : IFileIndexSer
         command.ExecuteNonQuery();
         if (publish)
         {
+            FolderTotalsBuilder.Build(connection, final, scope, generation, token);
             command.CommandText = "UPDATE volumes SET active_generation=$g WHERE scope_id=$s; UPDATE index_state SET published_report_json=$r WHERE scope_id=$s";
             command.ExecuteNonQuery();
         }

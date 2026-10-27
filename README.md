@@ -5,7 +5,7 @@
 不依赖 Everything、WizTree、Mem Reduct 或 Fluent Reduct 运行。
 
 **当前源码：完成 M4 目录索引与 M5 文件搜索，M6 为隔离实验准备。** 已有真实内存/进程监控，以及用户选定文件夹的索引、取消/暂停、筛选搜索、分页和结果操作。
-保留七页导航、粉色毛玻璃外观及浅色/深色/跟随系统主题。规则支持校验、模拟、提案、审批和版本回滚，默认只通知。磁盘分析、NTFS 高速索引、后台与 CLI/MCP 尚未完成。
+保留七页导航、粉色毛玻璃外观及浅色/深色/跟随系统主题。规则支持校验、模拟、提案、审批和版本回滚，默认只通知。新增普通目录大小分析、逐层排行和面积图，见 [大小口径](docs/STORAGE.md)。NTFS 高速增量索引、后台与 CLI/MCP 尚未完成。
 已发布安装器仍为 M3 的 preview.1，尚未把最新源码重新发布为安装更新。
 已提供 Windows 11 x64 预览安装版，支持直接覆盖升级并保留用户配置。下载见 [Releases](https://github.com/Johnson-Tang2019/AbsSystemBox/releases)，步骤见 [安装与更新](docs/INSTALL.md)。进度以 [开发状态](docs/STATUS.md) 为准。
 

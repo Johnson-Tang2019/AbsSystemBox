@@ -1,0 +1,13 @@
+﻿{
+    "configuration":  "Debug",
+    "isElevated":  false,
+    "checks":  [
+                   "Non-administrator real WinUI analyzes only isolated fixture: 100 bytes, 4 files",
+                   "Treemap drill-down through three levels, back, forward and up retain exact totals",
+                   "Manual move/resize then rescan gives 150 bytes; empty directory has zero files and no stale tiles",
+                   "Search sees moved file in same active shared index generation",
+                   "Actual window exits with code 0"
+               ],
+    "isAdministrator":  false,
+    "isolatedStore":  true
+}

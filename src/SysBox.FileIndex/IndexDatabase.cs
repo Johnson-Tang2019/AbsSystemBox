@@ -45,7 +45,7 @@ public sealed class IndexDatabase(string directory)
             using var version = connection.CreateCommand();
             version.CommandText = "PRAGMA user_version";
             var current = Convert.ToInt32(version.ExecuteScalar());
-            if (current != 1) throw new SysBoxOperationException(new("INDEX_SCHEMA", "索引版本不受支持，请先备份缓存。"));
+            if (current is not (1 or 2)) throw new SysBoxOperationException(new("INDEX_SCHEMA", "索引版本不受支持，请先备份缓存。"));
             return connection;
         }
         catch { connection.Dispose(); throw; }
@@ -62,8 +62,9 @@ public sealed class IndexDatabase(string directory)
         using var command = connection.CreateCommand();
         command.CommandText = "PRAGMA user_version";
         var version = Convert.ToInt32(command.ExecuteScalar());
-        if (version > 1) throw new SysBoxOperationException(new("INDEX_SCHEMA", "索引版本较新，当前程序无法读取。"));
-        if (version == 1) return;
+        if (version > 2) throw new SysBoxOperationException(new("INDEX_SCHEMA", "索引版本较新，当前程序无法读取。"));
+        if (version == 2) return;
+        if (version == 1) { MigrateSizes(connection); return; }
         command.CommandText = "PRAGMA journal_mode=WAL";
         if (!string.Equals(Convert.ToString(command.ExecuteScalar()), "wal", StringComparison.OrdinalIgnoreCase))
             throw new IOException("WAL unavailable.");
@@ -89,6 +90,23 @@ public sealed class IndexDatabase(string directory)
             """;
         command.ExecuteNonQuery();
         transaction.Commit();
+        MigrateSizes(connection);
+    }
+
+    private static void MigrateSizes(SqliteConnection connection)
+    {
+        using var transaction = connection.BeginTransaction();
+        using var command = connection.CreateCommand(); command.Transaction = transaction;
+        command.CommandText = """
+            ALTER TABLE file_objects ADD COLUMN size_state TEXT NOT NULL DEFAULT 'logical-only';
+            ALTER TABLE file_objects ADD COLUMN size_updated_utc TEXT;
+            ALTER TABLE file_objects ADD COLUMN link_count INTEGER;
+            CREATE TABLE folder_totals(entry_id INTEGER PRIMARY KEY REFERENCES directory_entries(entry_id) ON DELETE CASCADE,
+                logical_bytes INTEGER NOT NULL, allocated_bytes INTEGER NOT NULL, unknown_allocated INTEGER NOT NULL,
+                files INTEGER NOT NULL, folders INTEGER NOT NULL, hardlinked_entries INTEGER NOT NULL);
+            PRAGMA user_version=2;
+            """;
+        command.ExecuteNonQuery(); transaction.Commit();
     }
 
     public Task<IReadOnlyList<IndexRoot>> ReadRootsAsync(CancellationToken token) => Task.Run<IReadOnlyList<IndexRoot>>(() =>
