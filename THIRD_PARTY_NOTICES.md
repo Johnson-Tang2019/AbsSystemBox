@@ -12,6 +12,9 @@ M3 新增 YamlDotNet 18.1.0（MIT），仅使用低层 YAML 事件解析器，�
 
 | 项目 | 精确版本 | 许可依据 | 官方来源 | 用途与分发范围 |
 |---|---|---|---|---|
+| Microsoft.Data.Sqlite / Microsoft.Data.Sqlite.Core | 10.0.14 | MIT（[存档](licenses/third-party/Microsoft.Data.Sqlite-10.0.14/LICENSE.txt)） | [上游](https://github.com/dotnet/dotnet/tree/0427b9abbead3fa64c6655eb4290c537397131fa) | 元数据数据库；Microsoft.Data.Sqlite.dll |
+| SQLitePCLRaw.core / bundle_e_sqlite3 / provider.e_sqlite3 / lib.e_sqlite3 | 2.1.13 | NuGet 元数据声明 Apache-2.0（[原文](licenses/third-party/SQLitePCLRaw-2.1.13/LICENSE.txt)） | [上游](https://github.com/ericsink/SQLitePCL.raw) | SQLite 托管桥接和本机 e_sqlite3.dll，具体输出见 runtime-files.json |
+| SQLite | 由上述固定本机包提供，实际引擎版本随数据库诊断记录 | Public domain（[上游声明存档](licenses/third-party/SQLite/copyright.html)） | [上游](https://www.sqlite.org/copyright.html) | 底层数据库；不读取文件正文，不依赖数据库服务 |
 | YamlDotNet | 18.1.0 | MIT（[存档](licenses/third-party/YamlDotNet-18.1.0/LICENSE.txt)） | [上游](https://github.com/aaubry/YamlDotNet/tree/748334a8fa7c227740018b284b71ad95cc6b7fc7) | 有界 YAML 事件解析；YamlDotNet.dll |
 | CommunityToolkit.Mvvm | 8.4.2 | MIT（[存档](licenses/third-party/CommunityToolkit.Mvvm-8.4.2/License.md)） | [上游](https://github.com/CommunityToolkit/dotnet) | ViewModel 通知和命令；CommunityToolkit.Mvvm.dll |
 | Microsoft.CodeCoverage | 17.14.1 | MIT（[存档](licenses/third-party/Microsoft.CodeCoverage-17.14.1/ThirdPartyNotices.txt)） | [上游](https://github.com/microsoft/vstest) | 仅测试基础设施，不随应用分发 |

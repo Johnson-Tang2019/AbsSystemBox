@@ -1,4 +1,4 @@
-# 当前架构（M3）
+# 当前架构（M4）
 
 当前有 7 个核心类库、Native 和 Presentation 类库、WinUI 桌面应用及一个测试工程。
 只运行用户态桌面进程，无后台宿主、服务、IPC 或网络监听。
@@ -18,7 +18,7 @@ UnitTests -> Abstractions, Memory, Search, Storage, Core, Presentation, Rules
 
 Abstractions 定义 DTO、Result/Error、内存/搜索/存储接口。
 Memory 已实现 WindowsMemoryMonitor 和 WindowsProcessMemoryMonitor。
-Search/Storage 的 Unavailable 实现仍返回或抛出 NOT_IMPLEMENTED；FileIndex 仍是空边界；Rules 已实现有界解析、模拟、版本事务和审批。
+Search/Storage 的 Unavailable 实现仍返回或抛出 NOT_IMPLEMENTED；FileIndex 实现普通目录索引和 SQLite 快照；Rules 已实现有界解析、模拟、版本事务和审批。
 Core 提供同进程 DashboardClient，尚未实现后台宿主；规则配置持久化由 Rules 管理。
 核心契约和 ViewModel 可以在非 Windows 环境测试；App 仅构建 Windows x64。
 
@@ -49,7 +49,7 @@ API 返回的进程集合有界、枚举有上限，进程失败不终止整个�
 CoreHost、CLI、MCP、可选 Service 尚未建立。
 UI 不引用原生扫描代码。后续特权组件须独立审查，不能转发任意命令。
 
-规则持久化、审计与审批已实现；通用日志与 SQLite 索引尚未实现。路径、数据结构及目标架构详见实施手册，
+规则持久化、审计与审批已实现；SQLite 普通目录索引已实现，通用日志尚未实现。路径、数据结构及目标架构详见实施手册，
 不得把规划图理解为当前运行结构。
 
 tests/Windows 中的令牌探针和受限权限启动器仅由开发验收脚本加载，不编译进入应用或开放给 IPC。

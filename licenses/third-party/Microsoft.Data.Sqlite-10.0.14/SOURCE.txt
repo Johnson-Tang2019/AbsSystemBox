@@ -1,0 +1,2 @@
+https://raw.githubusercontent.com/dotnet/dotnet/0427b9abbead3fa64c6655eb4290c537397131fa/LICENSE.TXT
+Retrieved: 2026-10-27

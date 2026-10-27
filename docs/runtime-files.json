@@ -491,12 +491,24 @@
         {
           "package": "microsoft.windowsappsdk.dwrite",
           "version": "2.1.0",
-          "file": "runtimes-framework/win-x64/native/DWriteCore.dll"
+          "file": "runtimes-framework/win-arm64ec/native/DWriteCore.dll"
         },
         {
           "package": "microsoft.windowsappsdk.dwrite",
           "version": "2.1.0",
-          "file": "runtimes-framework/win-arm64ec/native/DWriteCore.dll"
+          "file": "runtimes-framework/win-x64/native/DWriteCore.dll"
+        }
+      ]
+    },
+    {
+      "path": "e_sqlite3.dll",
+      "bytes": 1978880,
+      "sha256": "b7385d722c83fb52142a00477a726723745916d22a555711ee89834c1111fb2e",
+      "sources": [
+        {
+          "package": "sqlitepclraw.lib.e_sqlite3",
+          "version": "2.1.13",
+          "file": "runtimes/win-x64/native/e_sqlite3.dll"
         }
       ]
     },
@@ -1408,12 +1420,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Asg.SemanticIndex.AiFabric.Compatibility.dll"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Asg.SemanticIndex.AiFabric.Compatibility.dll"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Asg.SemanticIndex.AiFabric.Compatibility.dll"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Asg.SemanticIndex.AiFabric.Compatibility.dll"
         }
       ]
     },
@@ -1426,6 +1438,18 @@
           "package": "microsoft.netcore.app.runtime.win-x64",
           "version": "10.0.14",
           "file": "runtimes/win-x64/lib/net10.0/Microsoft.CSharp.dll"
+        }
+      ]
+    },
+    {
+      "path": "Microsoft.Data.Sqlite.dll",
+      "bytes": 177464,
+      "sha256": "5a0627964721a7acdf5d242fa59db4e8452305d23789dd30c5d03227a370518b",
+      "sources": [
+        {
+          "package": "microsoft.data.sqlite.core",
+          "version": "10.0.14",
+          "file": "lib/net8.0/Microsoft.Data.Sqlite.dll"
         }
       ]
     },
@@ -1509,12 +1533,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Graphics.Imaging.dll"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Graphics.Imaging.dll"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Graphics.Imaging.dll"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Graphics.Imaging.dll"
         }
       ]
     },
@@ -1550,12 +1574,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Graphics.ImagingInternal.ImageObjectRemover.winmd"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Graphics.ImagingInternal.ImageObjectRemover.winmd"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Graphics.ImagingInternal.ImageObjectRemover.winmd"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Graphics.ImagingInternal.ImageObjectRemover.winmd"
         }
       ]
     },
@@ -1567,12 +1591,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Graphics.ImagingInternal.winmd"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Graphics.ImagingInternal.winmd"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Graphics.ImagingInternal.winmd"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Graphics.ImagingInternal.winmd"
         }
       ]
     },
@@ -1584,12 +1608,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Graphics.Internal.Imaging.winmd"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Graphics.Internal.Imaging.winmd"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Graphics.Internal.Imaging.winmd"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Graphics.Internal.Imaging.winmd"
         }
       ]
     },
@@ -1733,12 +1757,7 @@
         {
           "package": "microsoft.windowsappsdk.interactiveexperiences",
           "version": "2.1.9",
-          "file": "runtimes-framework/win-x86/native/Microsoft.UI.pri"
-        },
-        {
-          "package": "microsoft.windowsappsdk.interactiveexperiences",
-          "version": "2.1.9",
-          "file": "runtimes-framework/win-x64/native/Microsoft.UI.pri"
+          "file": "runtimes-framework/win-arm64/native/Microsoft.UI.pri"
         },
         {
           "package": "microsoft.windowsappsdk.interactiveexperiences",
@@ -1748,7 +1767,12 @@
         {
           "package": "microsoft.windowsappsdk.interactiveexperiences",
           "version": "2.1.9",
-          "file": "runtimes-framework/win-arm64/native/Microsoft.UI.pri"
+          "file": "runtimes-framework/win-x64/native/Microsoft.UI.pri"
+        },
+        {
+          "package": "microsoft.windowsappsdk.interactiveexperiences",
+          "version": "2.1.9",
+          "file": "runtimes-framework/win-x86/native/Microsoft.UI.pri"
         }
       ]
     },
@@ -1808,12 +1832,7 @@
         {
           "package": "microsoft.windowsappsdk.winui",
           "version": "2.3.9",
-          "file": "runtimes-framework/win-x86/native/Microsoft.UI.Xaml/Assets/map.html"
-        },
-        {
-          "package": "microsoft.windowsappsdk.winui",
-          "version": "2.3.9",
-          "file": "runtimes-framework/win-x64/native/Microsoft.UI.Xaml/Assets/map.html"
+          "file": "runtimes-framework/win-arm64/native/Microsoft.UI.Xaml/Assets/map.html"
         },
         {
           "package": "microsoft.windowsappsdk.winui",
@@ -1823,7 +1842,12 @@
         {
           "package": "microsoft.windowsappsdk.winui",
           "version": "2.3.9",
-          "file": "runtimes-framework/win-arm64/native/Microsoft.UI.Xaml/Assets/map.html"
+          "file": "runtimes-framework/win-x64/native/Microsoft.UI.Xaml/Assets/map.html"
+        },
+        {
+          "package": "microsoft.windowsappsdk.winui",
+          "version": "2.3.9",
+          "file": "runtimes-framework/win-x86/native/Microsoft.UI.Xaml/Assets/map.html"
         }
       ]
     },
@@ -1835,12 +1859,7 @@
         {
           "package": "microsoft.windowsappsdk.winui",
           "version": "2.3.9",
-          "file": "runtimes-framework/win-x86/native/Microsoft.UI.Xaml/Assets/NoiseAsset_256x256_PNG.png"
-        },
-        {
-          "package": "microsoft.windowsappsdk.winui",
-          "version": "2.3.9",
-          "file": "runtimes-framework/win-x64/native/Microsoft.UI.Xaml/Assets/NoiseAsset_256x256_PNG.png"
+          "file": "runtimes-framework/win-arm64/native/Microsoft.UI.Xaml/Assets/NoiseAsset_256x256_PNG.png"
         },
         {
           "package": "microsoft.windowsappsdk.winui",
@@ -1850,7 +1869,12 @@
         {
           "package": "microsoft.windowsappsdk.winui",
           "version": "2.3.9",
-          "file": "runtimes-framework/win-arm64/native/Microsoft.UI.Xaml/Assets/NoiseAsset_256x256_PNG.png"
+          "file": "runtimes-framework/win-x64/native/Microsoft.UI.Xaml/Assets/NoiseAsset_256x256_PNG.png"
+        },
+        {
+          "package": "microsoft.windowsappsdk.winui",
+          "version": "2.3.9",
+          "file": "runtimes-framework/win-x86/native/Microsoft.UI.Xaml/Assets/NoiseAsset_256x256_PNG.png"
         }
       ]
     },
@@ -1874,12 +1898,7 @@
         {
           "package": "microsoft.windowsappsdk.winui",
           "version": "2.3.9",
-          "file": "runtimes-framework/win-x86/native/Microsoft.UI.Xaml.Controls.pri"
-        },
-        {
-          "package": "microsoft.windowsappsdk.winui",
-          "version": "2.3.9",
-          "file": "runtimes-framework/win-x64/native/Microsoft.UI.Xaml.Controls.pri"
+          "file": "runtimes-framework/win-arm64/native/Microsoft.UI.Xaml.Controls.pri"
         },
         {
           "package": "microsoft.windowsappsdk.winui",
@@ -1889,7 +1908,12 @@
         {
           "package": "microsoft.windowsappsdk.winui",
           "version": "2.3.9",
-          "file": "runtimes-framework/win-arm64/native/Microsoft.UI.Xaml.Controls.pri"
+          "file": "runtimes-framework/win-x64/native/Microsoft.UI.Xaml.Controls.pri"
+        },
+        {
+          "package": "microsoft.windowsappsdk.winui",
+          "version": "2.3.9",
+          "file": "runtimes-framework/win-x86/native/Microsoft.UI.Xaml.Controls.pri"
         }
       ]
     },
@@ -2045,12 +2069,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.AI.AICapabilities.dll"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.AI.AICapabilities.dll"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.AI.AICapabilities.dll"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.AI.AICapabilities.dll"
         }
       ]
     },
@@ -2062,12 +2086,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.AI.ContentModerationInternal.winmd"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.AI.ContentModerationInternal.winmd"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.AI.ContentModerationInternal.winmd"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.AI.ContentModerationInternal.winmd"
         }
       ]
     },
@@ -2079,12 +2103,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.AI.ContentSafety.dll"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.AI.ContentSafety.dll"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.AI.ContentSafety.dll"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.AI.ContentSafety.dll"
         }
       ]
     },
@@ -2144,12 +2168,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.AI.FoundationInternal.winmd"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.AI.FoundationInternal.winmd"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.AI.FoundationInternal.winmd"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.AI.FoundationInternal.winmd"
         }
       ]
     },
@@ -2161,12 +2185,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.AI.GenerativeInternal.winmd"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.AI.GenerativeInternal.winmd"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.AI.GenerativeInternal.winmd"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.AI.GenerativeInternal.winmd"
         }
       ]
     },
@@ -2178,12 +2202,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.AI.Imaging.dll"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.AI.Imaging.dll"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.AI.Imaging.dll"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.AI.Imaging.dll"
         }
       ]
     },
@@ -2260,12 +2284,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.AI.Search.Experimental.dll"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.AI.Search.Experimental.dll"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.AI.Search.Experimental.dll"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.AI.Search.Experimental.dll"
         }
       ]
     },
@@ -2277,12 +2301,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.AI.Text.dll"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.AI.Text.dll"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.AI.Text.dll"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.AI.Text.dll"
         }
       ]
     },
@@ -2318,12 +2342,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.AI.Video.dll"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.AI.Video.dll"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.AI.Video.dll"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.AI.Video.dll"
         }
       ]
     },
@@ -2383,12 +2407,12 @@
         {
           "package": "microsoft.windowsappsdk.foundation",
           "version": "2.3.12",
-          "file": "runtimes/win-x64/native/Microsoft.Windows.ApplicationModel.Background.UniversalBGTask.dll"
+          "file": "runtimes/win-arm64ec/native/Microsoft.Windows.ApplicationModel.Background.UniversalBGTask.dll"
         },
         {
           "package": "microsoft.windowsappsdk.foundation",
           "version": "2.3.12",
-          "file": "runtimes/win-arm64ec/native/Microsoft.Windows.ApplicationModel.Background.UniversalBGTask.dll"
+          "file": "runtimes/win-x64/native/Microsoft.Windows.ApplicationModel.Background.UniversalBGTask.dll"
         }
       ]
     },
@@ -2448,12 +2472,12 @@
         {
           "package": "microsoft.windowsappsdk.foundation",
           "version": "2.3.12",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.ApplicationModel.Resources.dll"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.ApplicationModel.Resources.dll"
         },
         {
           "package": "microsoft.windowsappsdk.foundation",
           "version": "2.3.12",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.ApplicationModel.Resources.dll"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.ApplicationModel.Resources.dll"
         }
       ]
     },
@@ -2645,12 +2669,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.ImageCreationInternal.winmd"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.ImageCreationInternal.winmd"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.ImageCreationInternal.winmd"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.ImageCreationInternal.winmd"
         }
       ]
     },
@@ -2662,12 +2686,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Internal.AI.ContentModeration.winmd"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Internal.AI.ContentModeration.winmd"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Internal.AI.ContentModeration.winmd"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Internal.AI.ContentModeration.winmd"
         }
       ]
     },
@@ -2679,12 +2703,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Internal.AI.Generative.winmd"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Internal.AI.Generative.winmd"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Internal.AI.Generative.winmd"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Internal.AI.Generative.winmd"
         }
       ]
     },
@@ -2696,12 +2720,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Internal.ImageCreation.winmd"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Internal.ImageCreation.winmd"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Internal.ImageCreation.winmd"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Internal.ImageCreation.winmd"
         }
       ]
     },
@@ -2713,12 +2737,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Internal.SemanticSearch.winmd"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Internal.SemanticSearch.winmd"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Internal.SemanticSearch.winmd"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Internal.SemanticSearch.winmd"
         }
       ]
     },
@@ -2730,12 +2754,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Internal.Vision.winmd"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Internal.Vision.winmd"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Internal.Vision.winmd"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Internal.Vision.winmd"
         }
       ]
     },
@@ -2795,12 +2819,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Private.Workloads.SessionManager.winmd"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Private.Workloads.SessionManager.winmd"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Private.Workloads.SessionManager.winmd"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Private.Workloads.SessionManager.winmd"
         }
       ]
     },
@@ -2812,12 +2836,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.PrivateCommon.winmd"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.PrivateCommon.winmd"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.PrivateCommon.winmd"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.PrivateCommon.winmd"
         }
       ]
     },
@@ -2865,12 +2889,12 @@
         {
           "package": "microsoft.windowsappsdk.search",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Search.dll"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Search.dll"
         },
         {
           "package": "microsoft.windowsappsdk.search",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Search.dll"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Search.dll"
         }
       ]
     },
@@ -2942,12 +2966,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.SemanticSearchInternal.winmd"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.SemanticSearchInternal.winmd"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.SemanticSearchInternal.winmd"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.SemanticSearchInternal.winmd"
         }
       ]
     },
@@ -3067,12 +3091,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.VisionInternal.winmd"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.VisionInternal.winmd"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.VisionInternal.winmd"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.VisionInternal.winmd"
         }
       ]
     },
@@ -3084,12 +3108,12 @@
         {
           "package": "microsoft.windowsappsdk.widgets",
           "version": "2.0.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Widgets.dll"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Widgets.dll"
         },
         {
           "package": "microsoft.windowsappsdk.widgets",
           "version": "2.0.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Widgets.dll"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Widgets.dll"
         }
       ]
     },
@@ -3125,12 +3149,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Workloads.dll"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Workloads.dll"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Workloads.dll"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Workloads.dll"
         }
       ]
     },
@@ -3142,7 +3166,7 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Workloads.pri"
+          "file": "runtimes-framework/win-arm64/native/Microsoft.Windows.Workloads.pri"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
@@ -3152,7 +3176,7 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64/native/Microsoft.Windows.Workloads.pri"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Workloads.pri"
         }
       ]
     },
@@ -3164,12 +3188,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Workloads.Resources.dll"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Workloads.Resources.dll"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Workloads.Resources.dll"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Workloads.Resources.dll"
         }
       ]
     },
@@ -3181,12 +3205,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Workloads.Resources_ec.dll"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Workloads.Resources_ec.dll"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.Windows.Workloads.Resources_ec.dll"
+          "file": "runtimes-framework/win-x64/native/Microsoft.Windows.Workloads.Resources_ec.dll"
         }
       ]
     },
@@ -3210,12 +3234,12 @@
         {
           "package": "microsoft.windowsappsdk.foundation",
           "version": "2.3.12",
-          "file": "runtimes/win-x64/native/Microsoft.WindowsAppRuntime.Bootstrap.dll"
+          "file": "runtimes/win-arm64ec/native/Microsoft.WindowsAppRuntime.Bootstrap.dll"
         },
         {
           "package": "microsoft.windowsappsdk.foundation",
           "version": "2.3.12",
-          "file": "runtimes/win-arm64ec/native/Microsoft.WindowsAppRuntime.Bootstrap.dll"
+          "file": "runtimes/win-x64/native/Microsoft.WindowsAppRuntime.Bootstrap.dll"
         }
       ]
     },
@@ -3239,12 +3263,12 @@
         {
           "package": "microsoft.windowsappsdk.foundation",
           "version": "2.3.12",
-          "file": "runtimes-framework/win-x64/native/Microsoft.WindowsAppRuntime.dll"
+          "file": "runtimes-framework/win-arm64ec/native/Microsoft.WindowsAppRuntime.dll"
         },
         {
           "package": "microsoft.windowsappsdk.foundation",
           "version": "2.3.12",
-          "file": "runtimes-framework/win-arm64ec/native/Microsoft.WindowsAppRuntime.dll"
+          "file": "runtimes-framework/win-x64/native/Microsoft.WindowsAppRuntime.dll"
         }
       ]
     },
@@ -3256,12 +3280,7 @@
         {
           "package": "microsoft.windowsappsdk.foundation",
           "version": "2.3.12",
-          "file": "runtimes-framework/win-x86/native/Microsoft.WindowsAppRuntime.pri"
-        },
-        {
-          "package": "microsoft.windowsappsdk.foundation",
-          "version": "2.3.12",
-          "file": "runtimes-framework/win-x64/native/Microsoft.WindowsAppRuntime.pri"
+          "file": "runtimes-framework/win-arm64/native/Microsoft.WindowsAppRuntime.pri"
         },
         {
           "package": "microsoft.windowsappsdk.foundation",
@@ -3271,7 +3290,12 @@
         {
           "package": "microsoft.windowsappsdk.foundation",
           "version": "2.3.12",
-          "file": "runtimes-framework/win-arm64/native/Microsoft.WindowsAppRuntime.pri"
+          "file": "runtimes-framework/win-x64/native/Microsoft.WindowsAppRuntime.pri"
+        },
+        {
+          "package": "microsoft.windowsappsdk.foundation",
+          "version": "2.3.12",
+          "file": "runtimes-framework/win-x86/native/Microsoft.WindowsAppRuntime.pri"
         }
       ]
     },
@@ -3367,12 +3391,12 @@
         {
           "package": "microsoft.windowsappsdk.foundation",
           "version": "2.3.12",
-          "file": "runtimes-framework/win-x64/native/MRM.dll"
+          "file": "runtimes-framework/win-arm64ec/native/MRM.dll"
         },
         {
           "package": "microsoft.windowsappsdk.foundation",
           "version": "2.3.12",
-          "file": "runtimes-framework/win-arm64ec/native/MRM.dll"
+          "file": "runtimes-framework/win-x64/native/MRM.dll"
         }
       ]
     },
@@ -3612,12 +3636,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/NPUDetect.dll"
+          "file": "runtimes-framework/win-arm64ec/native/NPUDetect.dll"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/NPUDetect.dll"
+          "file": "runtimes-framework/win-x64/native/NPUDetect.dll"
         }
       ]
     },
@@ -3689,12 +3713,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/PerceptiveStreaming.dll"
+          "file": "runtimes-framework/win-arm64ec/native/PerceptiveStreaming.dll"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/PerceptiveStreaming.dll"
+          "file": "runtimes-framework/win-x64/native/PerceptiveStreaming.dll"
         }
       ]
     },
@@ -3778,12 +3802,12 @@
         {
           "package": "microsoft.windowsappsdk.foundation",
           "version": "2.3.12",
-          "file": "runtimes-framework/win-x64/native/PushNotificationsLongRunningTask.ProxyStub.dll"
+          "file": "runtimes-framework/win-arm64ec/native/PushNotificationsLongRunningTask.ProxyStub.dll"
         },
         {
           "package": "microsoft.windowsappsdk.foundation",
           "version": "2.3.12",
-          "file": "runtimes-framework/win-arm64ec/native/PushNotificationsLongRunningTask.ProxyStub.dll"
+          "file": "runtimes-framework/win-x64/native/PushNotificationsLongRunningTask.ProxyStub.dll"
         }
       ]
     },
@@ -3819,12 +3843,12 @@
         {
           "package": "microsoft.windowsappsdk.foundation",
           "version": "2.3.12",
-          "file": "runtimes-framework/win-x64/native/RestartAgent.exe"
+          "file": "runtimes-framework/win-arm64ec/native/RestartAgent.exe"
         },
         {
           "package": "microsoft.windowsappsdk.foundation",
           "version": "2.3.12",
-          "file": "runtimes-framework/win-arm64ec/native/RestartAgent.exe"
+          "file": "runtimes-framework/win-x64/native/RestartAgent.exe"
         }
       ]
     },
@@ -3884,12 +3908,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/SessionHandleIPCProxyStub.dll"
+          "file": "runtimes-framework/win-arm64ec/native/SessionHandleIPCProxyStub.dll"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/SessionHandleIPCProxyStub.dll"
+          "file": "runtimes-framework/win-x64/native/SessionHandleIPCProxyStub.dll"
         }
       ]
     },
@@ -3962,6 +3986,42 @@
           "package": "microsoft.windowsappsdk.winui",
           "version": "2.3.9",
           "file": "runtimes-framework/win-x64/native/sq-AL/Microsoft.UI.Xaml.Phone.dll.mui"
+        }
+      ]
+    },
+    {
+      "path": "SQLitePCLRaw.batteries_v2.dll",
+      "bytes": 5120,
+      "sha256": "bc69777001eb4db81c580f62835396f67e74aaa381eef446193a904499d5310b",
+      "sources": [
+        {
+          "package": "sqlitepclraw.bundle_e_sqlite3",
+          "version": "2.1.13",
+          "file": "lib/netstandard2.0/SQLitePCLRaw.batteries_v2.dll"
+        }
+      ]
+    },
+    {
+      "path": "SQLitePCLRaw.core.dll",
+      "bytes": 51200,
+      "sha256": "50c999a1ab2afeacc93bce5ac2948d3bb630d99d23efc3cfcbd8bc11d3426eb7",
+      "sources": [
+        {
+          "package": "sqlitepclraw.core",
+          "version": "2.1.13",
+          "file": "lib/netstandard2.0/SQLitePCLRaw.core.dll"
+        }
+      ]
+    },
+    {
+      "path": "SQLitePCLRaw.provider.e_sqlite3.dll",
+      "bytes": 36864,
+      "sha256": "369ea2a63067ca06328774191e0e6dc604aec8621d09b7f7c283fbbcaf533265",
+      "sources": [
+        {
+          "package": "sqlitepclraw.provider.e_sqlite3",
+          "version": "2.1.13",
+          "file": "lib/net6.0-windows7.0/SQLitePCLRaw.provider.e_sqlite3.dll"
         }
       ]
     },
@@ -6301,12 +6361,12 @@
         {
           "package": "microsoft.web.webview2",
           "version": "1.0.3719.77",
-          "file": "runtimes/win-x64/native/WebView2Loader.dll"
+          "file": "build/native/x64/WebView2Loader.dll"
         },
         {
           "package": "microsoft.web.webview2",
           "version": "1.0.3719.77",
-          "file": "build/native/x64/WebView2Loader.dll"
+          "file": "runtimes/win-x64/native/WebView2Loader.dll"
         }
       ]
     },
@@ -6354,12 +6414,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/workloads.365.json"
+          "file": "runtimes-framework/win-arm64ec/native/workloads.365.json"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/workloads.365.json"
+          "file": "runtimes-framework/win-x64/native/workloads.365.json"
         }
       ]
     },
@@ -6371,7 +6431,7 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/workloads.j32.json"
+          "file": "runtimes-framework/win-arm64/native/workloads.j32.json"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
@@ -6381,7 +6441,7 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64/native/workloads.j32.json"
+          "file": "runtimes-framework/win-x64/native/workloads.j32.json"
         }
       ]
     },
@@ -6393,7 +6453,7 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/workloads.json"
+          "file": "runtimes-framework/win-arm64/native/workloads.json"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
@@ -6403,7 +6463,7 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64/native/workloads.json"
+          "file": "runtimes-framework/win-x64/native/workloads.json"
         }
       ]
     },
@@ -6415,12 +6475,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/workloads.lnl.json"
+          "file": "runtimes-framework/win-arm64ec/native/workloads.lnl.json"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/workloads.lnl.json"
+          "file": "runtimes-framework/win-x64/native/workloads.lnl.json"
         }
       ]
     },
@@ -6432,7 +6492,7 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/workloads.qnn.json"
+          "file": "runtimes-framework/win-arm64/native/workloads.qnn.json"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
@@ -6442,7 +6502,7 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64/native/workloads.qnn.json"
+          "file": "runtimes-framework/win-x64/native/workloads.qnn.json"
         }
       ]
     },
@@ -6454,12 +6514,12 @@
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-x64/native/workloads.stx.json"
+          "file": "runtimes-framework/win-arm64ec/native/workloads.stx.json"
         },
         {
           "package": "microsoft.windowsappsdk.ai",
           "version": "2.5.5",
-          "file": "runtimes-framework/win-arm64ec/native/workloads.stx.json"
+          "file": "runtimes-framework/win-x64/native/workloads.stx.json"
         }
       ]
     },

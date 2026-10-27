@@ -8,6 +8,7 @@ using SysBox.Memory;
 using SysBox.Native;
 using SysBox.Presentation;
 using SysBox.Rules;
+using SysBox.FileIndex;
 
 namespace SysBox.App;
 
@@ -59,6 +60,13 @@ public partial class App : Application
         services.AddSingleton<IRuleReview>(sp => sp.GetRequiredService<RuleWorkspace>());
         services.AddSingleton<RuleObserver>();
         services.AddTransient<RulesViewModel>();
+        var indexDirectory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SysBox", "index");
+#if DEBUG
+        indexDirectory = Environment.GetEnvironmentVariable("SYSBOX_TEST_INDEX_DIRECTORY") ?? indexDirectory;
+#endif
+        services.AddSingleton(new IndexDatabase(indexDirectory));
+        services.AddSingleton<IFileIndexService, DirectoryWalkIndexer>();
+        services.AddTransient(sp => new IndexViewModel(sp.GetRequiredService<IFileIndexService>(), () => new IndexControl()));
         Services = services.BuildServiceProvider();
         MainWindow = new MainWindow();
         _window = MainWindow;

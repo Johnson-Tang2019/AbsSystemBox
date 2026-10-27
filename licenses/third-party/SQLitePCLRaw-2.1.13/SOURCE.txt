@@ -1,0 +1,2 @@
+https://raw.githubusercontent.com/ericsink/SQLitePCL.raw/master/LICENSE.TXT
+Retrieved: 2026-10-27

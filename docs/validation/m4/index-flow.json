@@ -1,0 +1,13 @@
+﻿{
+    "configuration":  "Debug",
+    "isElevated":  false,
+    "checks":  [
+                   "Restricted non-administrator WinUI scans isolated directory: 2 files, 2 directories",
+                   "Manual rename and rescan update actual ListView preview",
+                   "Clear confirmation cancel and approve both verified; source file unchanged",
+                   "Cached page navigation reloads empty index state",
+                   "Actual application window exited with code 0"
+               ],
+    "isAdministrator":  false,
+    "isolatedStore":  true
+}

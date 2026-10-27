@@ -1,4 +1,4 @@
-# M0–M2 核心与界面客户端契约
+# 核心与界面客户端契约（M4）
 
 当前仅有 C# 接口，无 CLI、IPC、MCP、HTTP 服务。
 协议版本常量为 `1.0`；对外服务正式接入时再冻结兼容性。
@@ -83,3 +83,14 @@ IBatteryMonitor.ReadAsync(token) 返回 BatteryReading，State 区分 Charging/D
 ChargeRateMilliwatts、FullChargeCapacityMilliwattHours、RemainingCapacityMilliwattHours 均可空，单位不可混淆。
 Core/BatteryEstimate.From 只在正在充电时生成正的净功率及有效的当前速率充满估算；无数据保持 null。
 不是充电器总功率，没有电池控制操作。BATTERY.md 记录上游开源投影、测量口径和硬件验收边界。
+
+## M4 索引端口
+
+IFileIndexService.ScanAsync(root,options,control,progress,token) 返回 IndexProgress。
+IndexOptions 限制条目/深度/排除路径；IIndexControl 可 Pause/Resume，等待可取消。
+ReadRootsAsync 返回最多 256 个范围与最后尝试报告、活动 generation；ReadEntriesAsync(root,limit,token) 仅返回活动快照，limit 为 1–1000。
+ClearAsync 清理当前用户数据库内索引元数据，UI 调用前显示确认，不涉及源文件。
+IndexRunState 分 Running/Paused/Complete/Partial/Cancelled/Failed/LimitReached。
+报告分别记录文件/目录数、逻辑字节、权限错误、I/O 错误、跳过链接、排除数、开始/更新时间。
+普通目录身份不是 NTFS 卷/文件身份，FileId 与 ParentFileId 为空，详见 INDEXING.md。
+存储/锁错误可抛 IOException/SqliteException，UI 提供中文错误；取消按启动时机返回 Cancelled 或抛 OperationCanceledException。
