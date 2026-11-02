@@ -66,7 +66,8 @@ public sealed class IndexedStorageBrowser(IndexDatabase database, IFileIndexServ
                 throw NotReady();
             if (expectedGeneration.HasValue && revision != expectedGeneration.Value)
                 throw new SysBoxOperationException(new("STORAGE_CHANGED", "目录快照已更新，请点击读取已有快照后重新浏览。"));
-            var completeness = report.State == IndexRunState.Complete ? DataCompleteness.Complete : DataCompleteness.Partial;
+            var interrupted = IndexDatabase.InterruptedNtfsScopes(connection, transaction).Contains(scope);
+            var completeness = report.State == IndexRunState.Complete && !interrupted ? DataCompleteness.Complete : DataCompleteness.Partial;
             const string projection = """
                 SELECT e.entry_id,e.cached_path,e.name,o.is_directory,
                   CASE WHEN o.is_directory=1 THEN t.logical_bytes ELSE o.logical_size END,
@@ -134,6 +135,8 @@ public sealed class IndexedStorageBrowser(IndexDatabase database, IFileIndexServ
                 unknownUnique = sizes.GetInt64(1);
             }
             var notice = "按目录项累计；硬链接可能重复计数。已知分配量不等同于磁盘实际占用。";
+            if (interrupted)
+                notice += " NTFS 增量同步已中断，显示上次已提交大小；请在设置中检查状态，必要时手动重建。";
             if (completeness == DataCompleteness.Partial)
                 notice += $" 部分覆盖：权限拒绝 {report.AccessDenied}，读取错误 {report.IoErrors}，跳过链接 {report.ReparsePoints}，排除 {report.Excluded}。";
             if (summary.UnknownAllocatedFiles > 0)

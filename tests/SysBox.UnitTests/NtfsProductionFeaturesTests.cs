@@ -8,6 +8,29 @@ namespace SysBox.UnitTests;
 public sealed class NtfsProductionFeaturesTests
 {
     [Fact]
+    public async Task InterruptedNtfsTrackingMarksBothSearchHitsAndStorageAsHistoricalPartialData()
+    {
+        var folder = Path.Combine(Path.GetTempPath(), "SysBox-stale-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(folder);
+        try
+        {
+            var db = new IndexDatabase(folder);
+            using var volume = new Volume();
+            var live = new NtfsLiveIndex(db);
+            await live.BuildAsync(new(VolumeId, @"R:\", Id(1)), volume, new IndexControl(), null, default);
+            await live.SetFailureAsync(@"R:\", new SysBoxOperationException(new("REBUILD_REQUIRED", "Fixture gap")), default);
+            var page = await new IndexedSearchService(db).QueryAsync(new("f.txt"), default);
+            Assert.Equal(DataCompleteness.Partial, page.Completeness);
+            Assert.Equal(DataCompleteness.Partial, Assert.Single(page.Hits).Completeness);
+            Assert.Contains("增量同步已中断", page.Notice);
+            var storage = await new IndexedStorageBrowser(db, new DirectoryWalkIndexer(db)).ReadAsync(@"R:\", StorageSort.LogicalBytes, 0, 20, default);
+            Assert.Equal(50, storage.Summary.LogicalBytes);
+            Assert.Equal(DataCompleteness.Partial, storage.Summary.Completeness);
+            Assert.Contains("增量同步已中断", storage.Notice);
+        }
+        finally { Directory.Delete(folder, true); }
+    }
+    [Fact]
     public async Task ExplicitOrdinaryPublicationDetachesOnlyItsPreviousNtfsTrackingState()
     {
         var folder = Path.Combine(Path.GetTempPath(), "SysBox-mode-" + Guid.NewGuid().ToString("N"));

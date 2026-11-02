@@ -59,7 +59,8 @@ public sealed class IndexedSearchService(IndexDatabase database) : IIndexedSearc
             var snapshot = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(identity.ToString())));
             if (request.Offset > 0 && (request.Snapshot is null || request.Snapshot != snapshot))
                 throw new SysBoxOperationException(new("INDEX_CHANGED", "索引已经更新，请从第一页重新搜索。"));
-            var completeness = !pending && reports.All(p => p.State == IndexRunState.Complete) ? DataCompleteness.Complete : DataCompleteness.Partial;
+            var interrupted = IndexDatabase.InterruptedNtfsScopes(connection, transaction);
+            var completeness = !pending && interrupted.Count == 0 && reports.All(p => p.State == IndexRunState.Complete) ? DataCompleteness.Complete : DataCompleteness.Partial;
             var clauses = new List<string>();
             var index = 0;
             string Param(object value)
@@ -131,13 +132,15 @@ public sealed class IndexedSearchService(IndexDatabase database) : IIndexedSearc
                 var report = JsonSerializer.Deserialize<IndexProgress>(reader.GetString(6))!;
                 hits.Add(new(new(reader.GetString(0), reader.GetString(7) is { Length: > 0 } fileId ? fileId : null, null, reader.GetString(1), reader.GetString(2), reader.GetBoolean(3),
                     reader.IsDBNull(4) ? null : checked((ulong)reader.GetInt64(4)), reader.IsDBNull(5) ? null : DateTimeOffset.Parse(reader.GetString(5), CultureInfo.InvariantCulture)),
-                    report.UpdatedUtc, report.State == IndexRunState.Complete ? DataCompleteness.Complete : DataCompleteness.Partial));
+                    report.UpdatedUtc, report.State == IndexRunState.Complete && !interrupted.Contains(reader.GetString(0)) ? DataCompleteness.Complete : DataCompleteness.Partial));
             }
             var more = hits.Count > request.Limit;
             if (more)
                 hits.RemoveAt(hits.Count - 1);
             var shortQuery = ast.Terms.Any(t => t.Field == "name" && t.Value.EnumerateRunes().Count() < 3);
             var notice = completeness == DataCompleteness.Partial ? "部分索引可用，存在跳过项或上次扫描未完成。" : "基于最近一次手动扫描；文件可能已经移动。";
+            if (interrupted.Count > 0)
+                notice += " NTFS 增量同步已中断，当前结果为上次已提交快照；请在设置中检查状态，必要时手动重建。";
             if (shortQuery)
                 notice += " 短查询使用有时限的扫描，建议增加关键词或筛选条件。";
             return new(hits.AsReadOnly(), more, snapshot, completeness, notice, clock.Elapsed.TotalMilliseconds);

@@ -138,6 +138,20 @@ public sealed class IndexDatabase(string directory)
         command.CommandText = "PRAGMA user_version";
         return Convert.ToInt32(command.ExecuteScalar()) >= 3 ? "CASE WHEN v.snapshot_revision=0 THEN v.active_generation ELSE v.snapshot_revision END" : "v.active_generation";
     }
+    public static HashSet<string> InterruptedNtfsScopes(SqliteConnection connection, SqliteTransaction transaction)
+    {
+        using var command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText = "SELECT count(*) FROM sqlite_master WHERE name='ntfs_live'";
+        var scopes = new HashSet<string>(StringComparer.Ordinal);
+        if (Convert.ToInt64(command.ExecuteScalar()) == 0)
+            return scopes;
+        command.CommandText = "SELECT scope_id FROM ntfs_live WHERE state IN('Interrupted','RebuildRequired','LimitReached') LIMIT 256";
+        using var rows = command.ExecuteReader();
+        while (rows.Read())
+            scopes.Add(rows.GetString(0));
+        return scopes;
+    }
 
     private static void MigrateSizes(SqliteConnection connection)
     {

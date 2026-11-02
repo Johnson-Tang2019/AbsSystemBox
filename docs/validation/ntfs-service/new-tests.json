@@ -1,6 +1,6 @@
 {
   "scope": "New cases only; no repeat of accepted historical tests",
-  "totalPassed": 15,
+  "totalPassed": 16,
   "tests": [
     {
       "test": "SysBox.UnitTests.NtfsProductionFeaturesTests.JournalReplacementRequiresRebuildAndKeepsPublishedSearchResults",
@@ -74,6 +74,11 @@
     },
     {
       "test": "SysBox.UnitTests.NtfsProductionFeaturesTests.ExplicitOrdinaryPublicationDetachesOnlyItsPreviousNtfsTrackingState",
+      "outcome": "Passed",
+      "configuration": "Debug"
+    },
+    {
+      "test": "SysBox.UnitTests.NtfsProductionFeaturesTests.InterruptedNtfsTrackingMarksBothSearchHitsAndStorageAsHistoricalPartialData",
       "outcome": "Passed",
       "configuration": "Debug"
     }
