@@ -52,7 +52,7 @@ public sealed class IndexDatabase(string directory)
             using var version = connection.CreateCommand();
             version.CommandText = "PRAGMA user_version";
             var current = Convert.ToInt32(version.ExecuteScalar());
-            if (current is not (1 or 2))
+            if (current is not (1 or 2 or 3))
                 throw new SysBoxOperationException(new("INDEX_SCHEMA", "索引版本不受支持，请先备份缓存。"));
             return connection;
         }
@@ -72,13 +72,25 @@ public sealed class IndexDatabase(string directory)
         using var command = connection.CreateCommand();
         command.CommandText = "PRAGMA user_version";
         var version = Convert.ToInt32(command.ExecuteScalar());
-        if (version > 2)
+        if (version > 3)
             throw new SysBoxOperationException(new("INDEX_SCHEMA", "索引版本较新，当前程序无法读取。"));
-        if (version == 2)
+        if (version == 3)
             return;
+        if (version is 1 or 2)
+        {
+            using var backup = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = Path.Combine(DirectoryPath, $"metadata.schema{version}-{Guid.NewGuid():N}.backup.db"), Pooling = false }.ToString());
+            backup.Open();
+            connection.BackupDatabase(backup);
+        }
+        if (version == 2)
+        {
+            MigrateRevision(connection);
+            return;
+        }
         if (version == 1)
         {
             MigrateSizes(connection);
+            MigrateRevision(connection);
             return;
         }
         command.CommandText = "PRAGMA journal_mode=WAL";
@@ -107,6 +119,24 @@ public sealed class IndexDatabase(string directory)
         command.ExecuteNonQuery();
         transaction.Commit();
         MigrateSizes(connection);
+        MigrateRevision(connection);
+    }
+
+    private static void MigrateRevision(SqliteConnection connection)
+    {
+        using var transaction = connection.BeginTransaction();
+        using var command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText = "ALTER TABLE volumes ADD COLUMN snapshot_revision INTEGER NOT NULL DEFAULT 0; UPDATE volumes SET snapshot_revision=active_generation; CREATE INDEX IF NOT EXISTS ix_objects_ntfs ON file_objects(scope_id,generation,file_id); PRAGMA user_version=3;";
+        command.ExecuteNonQuery();
+        transaction.Commit();
+    }
+    public static string RevisionExpression(SqliteConnection connection, SqliteTransaction? transaction = null)
+    {
+        using var command = connection.CreateCommand();
+        command.Transaction = transaction;
+        command.CommandText = "PRAGMA user_version";
+        return Convert.ToInt32(command.ExecuteScalar()) >= 3 ? "CASE WHEN v.snapshot_revision=0 THEN v.active_generation ELSE v.snapshot_revision END" : "v.active_generation";
     }
 
     private static void MigrateSizes(SqliteConnection connection)
@@ -134,7 +164,7 @@ public sealed class IndexDatabase(string directory)
             return [];
         using var connection = Open();
         using var command = connection.CreateCommand();
-        command.CommandText = "SELECT v.root,v.active_generation,s.report_json FROM volumes v JOIN index_state s USING(scope_id) ORDER BY v.root LIMIT 256";
+        command.CommandText = $"SELECT v.root,{RevisionExpression(connection)},s.report_json FROM volumes v JOIN index_state s USING(scope_id) ORDER BY v.root LIMIT 256";
         using var reader = command.ExecuteReader();
         var roots = new List<IndexRoot>();
         while (reader.Read())
@@ -190,7 +220,7 @@ public sealed class IndexDatabase(string directory)
             using var transaction = connection.BeginTransaction();
             using var command = connection.CreateCommand();
             command.Transaction = transaction;
-            command.CommandText = "DELETE FROM directory_entries; DELETE FROM file_objects; DELETE FROM index_state; DELETE FROM volumes; DROP TABLE IF EXISTS ntfs_nodes; DROP TABLE IF EXISTS ntfs_sync;";
+            command.CommandText = "DELETE FROM directory_entries; DELETE FROM file_objects; DELETE FROM index_state; DELETE FROM volumes; DROP TABLE IF EXISTS ntfs_nodes; DROP TABLE IF EXISTS ntfs_sync; DROP TABLE IF EXISTS ntfs_live; DROP TABLE IF EXISTS ntfs_cache; DROP TABLE IF EXISTS ntfs_ids;";
             command.ExecuteNonQuery();
             transaction.Commit();
             command.Transaction = null;

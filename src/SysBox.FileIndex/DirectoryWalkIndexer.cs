@@ -61,14 +61,22 @@ public sealed class DirectoryWalkIndexer(IndexDatabase database, IFileSizeReader
             path.StartsWith(x + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase));
         void Publish(bool force = false)
         {
-            if (!force && clock.Elapsed - lastPublish < TimeSpan.FromMilliseconds(150)) return;
-            report = report with { UpdatedUtc = DateTimeOffset.UtcNow };
+            if (!force && clock.Elapsed - lastPublish < TimeSpan.FromMilliseconds(150))
+                return;
+            report = report with
+            {
+                UpdatedUtc = DateTimeOffset.UtcNow
+            };
             lastPublish = clock.Elapsed;
             progress?.Report(report);
         }
         void CommitBatch()
         {
-            transaction?.Commit(); transaction?.Dispose(); transaction = null; command.Transaction = null; batchCount = 0;
+            transaction?.Commit();
+            transaction?.Dispose();
+            transaction = null;
+            command.Transaction = null;
+            batchCount = 0;
         }
         long Insert(FileSystemInfo info, long? parent)
         {
@@ -85,16 +93,22 @@ public sealed class DirectoryWalkIndexer(IndexDatabase database, IFileSizeReader
                 token.ThrowIfCancellationRequested();
                 var result = sizeReader.Read(info.FullName);
                 if (result.IsSuccess && result.Value.LogicalBytes >= 0 && result.Value.AllocatedBytes >= 0 && result.Value.LinkCount > 0)
-                { metadata = result.Value; length = metadata.LogicalBytes; }
+                {
+                    metadata = result.Value;
+                    length = metadata.LogicalBytes;
+                }
             }
             command.CommandText = """
                 INSERT INTO file_objects(scope_id,generation,is_directory,attributes,logical_size,last_write_utc,
                     allocated_size,size_state,size_updated_utc,link_count)
                 VALUES($s,$g,$d,$a,$l,$w,$allocated,$state,$updated,$links) RETURNING object_id;
                 """;
-            command.Parameters.AddWithValue("$s", scope); command.Parameters.AddWithValue("$g", generation);
-            command.Parameters.AddWithValue("$d", isDirectory); command.Parameters.AddWithValue("$a", (int)attributes);
-            command.Parameters.AddWithValue("$l", (object?)length ?? DBNull.Value); command.Parameters.AddWithValue("$w", modified);
+            command.Parameters.AddWithValue("$s", scope);
+            command.Parameters.AddWithValue("$g", generation);
+            command.Parameters.AddWithValue("$d", isDirectory);
+            command.Parameters.AddWithValue("$a", (int)attributes);
+            command.Parameters.AddWithValue("$l", (object?)length ?? DBNull.Value);
+            command.Parameters.AddWithValue("$w", modified);
             command.Parameters.AddWithValue("$allocated", (object?)metadata?.AllocatedBytes ?? DBNull.Value);
             command.Parameters.AddWithValue("$state", isDirectory ? "directory" : metadata is null ? "logical-only" : "standard-info");
             command.Parameters.AddWithValue("$updated", (metadata?.TimestampUtc ?? DateTimeOffset.UtcNow).ToString("O"));
@@ -105,29 +119,54 @@ public sealed class DirectoryWalkIndexer(IndexDatabase database, IFileSizeReader
                 VALUES($s,$g,$o,$p,$n,$f,$path,$h) RETURNING entry_id;
                 """;
             command.Parameters.Clear();
-            command.Parameters.AddWithValue("$s", scope); command.Parameters.AddWithValue("$g", generation);
-            command.Parameters.AddWithValue("$o", objectId); command.Parameters.AddWithValue("$p", (object?)parent ?? DBNull.Value);
-            command.Parameters.AddWithValue("$n", info.Name); command.Parameters.AddWithValue("$f", info.Name.ToUpperInvariant());
-            command.Parameters.AddWithValue("$path", info.FullName); command.Parameters.AddWithValue("$h", attributes.HasFlag(FileAttributes.Hidden));
+            command.Parameters.AddWithValue("$s", scope);
+            command.Parameters.AddWithValue("$g", generation);
+            command.Parameters.AddWithValue("$o", objectId);
+            command.Parameters.AddWithValue("$p", (object?)parent ?? DBNull.Value);
+            command.Parameters.AddWithValue("$n", info.Name);
+            command.Parameters.AddWithValue("$f", info.Name.ToUpperInvariant());
+            command.Parameters.AddWithValue("$path", info.FullName);
+            command.Parameters.AddWithValue("$h", attributes.HasFlag(FileAttributes.Hidden));
             var id = (long)command.ExecuteScalar()!;
-            report = isDirectory ? report with { Directories = report.Directories + 1 } :
-                report with { Files = report.Files + 1, LogicalBytes = checked(report.LogicalBytes + length!.Value) };
-            if (++batchCount >= 256) CommitBatch();
+            report = isDirectory ? report with
+            {
+                Directories = report.Directories + 1
+            } :
+                report with
+                {
+                    Files = report.Files + 1,
+                    LogicalBytes = checked(report.LogicalBytes + length!.Value)
+                };
+            if (++batchCount >= 256)
+                CommitBatch();
             return id;
         }
         IEnumerator<FileSystemInfo> Enumerate(DirectoryInfo directory) => directory.EnumerateFileSystemInfos("*", new EnumerationOptions
-        { RecurseSubdirectories = false, IgnoreInaccessible = false, AttributesToSkip = 0, ReturnSpecialDirectories = false }).GetEnumerator();
+        {
+            RecurseSubdirectories = false,
+            IgnoreInaccessible = false,
+            AttributesToSkip = 0,
+            ReturnSpecialDirectories = false
+        }).GetEnumerator();
         void ReadError(Exception error)
         {
-            report = error is UnauthorizedAccessException ? report with { AccessDenied = report.AccessDenied + 1 } : report with { IoErrors = report.IoErrors + 1 };
+            report = error is UnauthorizedAccessException ? report with
+            {
+                AccessDenied = report.AccessDenied + 1
+            } : report with
+            {
+                IoErrors = report.IoErrors + 1
+            };
         }
         try
         {
             token.ThrowIfCancellationRequested();
             // Reject reparse ancestors as well as children; no junction is intentionally traversed.
             for (var ancestor = new DirectoryInfo(root); ancestor is not null; ancestor = ancestor.Parent)
-                if (ancestor.Attributes.HasFlag(FileAttributes.ReparsePoint)) throw new IOException("Reparse root.");
-            if (IsExcluded(root)) throw new IOException("Excluded root.");
+                if (ancestor.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                    throw new IOException("Reparse root.");
+            if (IsExcluded(root))
+                throw new IOException("Excluded root.");
             var directory = new DirectoryInfo(root);
             var rootId = Insert(directory, null);
             stack.Push((directory, rootId, 0, Enumerate(directory)));
@@ -137,34 +176,77 @@ public sealed class DirectoryWalkIndexer(IndexDatabase database, IFileSizeReader
                 token.ThrowIfCancellationRequested();
                 if (control.IsPaused)
                 {
-                    CommitBatch(); report = report with { State = IndexRunState.Paused }; Publish(true);
+                    CommitBatch();
+                    report = report with
+                    {
+                        State = IndexRunState.Paused
+                    };
+                    Publish(true);
                     control.WaitAsync(token).GetAwaiter().GetResult();
-                    report = report with { State = IndexRunState.Running }; Publish(true);
+                    report = report with
+                    {
+                        State = IndexRunState.Running
+                    };
+                    Publish(true);
                 }
                 if (report.Files + report.Directories >= options.MaxEntries)
-                { report = report with { State = IndexRunState.LimitReached }; break; }
+                {
+                    report = report with
+                    {
+                        State = IndexRunState.LimitReached
+                    };
+                    break;
+                }
                 var frame = stack.Peek();
                 FileSystemInfo info;
                 try
                 {
                     if (frame.Directory.Attributes.HasFlag(FileAttributes.ReparsePoint))
-                    { report = report with { ReparsePoints = report.ReparsePoints + 1 }; stack.Pop().Iterator.Dispose(); continue; }
-                    if (!frame.Iterator.MoveNext()) { stack.Pop().Iterator.Dispose(); continue; }
+                    {
+                        report = report with
+                        {
+                            ReparsePoints = report.ReparsePoints + 1
+                        };
+                        stack.Pop().Iterator.Dispose();
+                        continue;
+                    }
+                    if (!frame.Iterator.MoveNext())
+                    {
+                        stack.Pop().Iterator.Dispose();
+                        continue;
+                    }
                     info = frame.Iterator.Current;
                 }
                 catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
-                { ReadError(ex); stack.Pop().Iterator.Dispose(); continue; }
+                {
+                    ReadError(ex);
+                    stack.Pop().Iterator.Dispose();
+                    continue;
+                }
                 try
                 {
-                    if (info.Attributes.HasFlag(FileAttributes.ReparsePoint)) report = report with { ReparsePoints = report.ReparsePoints + 1 };
-                    else if (IsExcluded(info.FullName)) report = report with { Excluded = report.Excluded + 1 };
+                    if (info.Attributes.HasFlag(FileAttributes.ReparsePoint))
+                        report = report with
+                        {
+                            ReparsePoints = report.ReparsePoints + 1
+                        };
+                    else if (IsExcluded(info.FullName))
+                        report = report with
+                        {
+                            Excluded = report.Excluded + 1
+                        };
                     else
                     {
                         var id = Insert(info, frame.Id);
                         if (info is DirectoryInfo child)
                         {
-                            if (frame.Depth + 1 >= options.MaxDepth) report = report with { IoErrors = report.IoErrors + 1 };
-                            else stack.Push((child, id, frame.Depth + 1, Enumerate(child)));
+                            if (frame.Depth + 1 >= options.MaxDepth)
+                                report = report with
+                                {
+                                    IoErrors = report.IoErrors + 1
+                                };
+                            else
+                                stack.Push((child, id, frame.Depth + 1, Enumerate(child)));
                         }
                     }
                 }
@@ -172,23 +254,46 @@ public sealed class DirectoryWalkIndexer(IndexDatabase database, IFileSizeReader
                 Publish();
             }
             if (report.State == IndexRunState.Running)
-                report = report with { State = report.AccessDenied + report.IoErrors + report.ReparsePoints + report.Excluded > 0 ? IndexRunState.Partial : IndexRunState.Complete };
+                report = report with
+                {
+                    State = report.AccessDenied + report.IoErrors + report.ReparsePoints + report.Excluded > 0 ? IndexRunState.Partial : IndexRunState.Complete
+                };
             token.ThrowIfCancellationRequested();
             CommitBatch();
         }
         catch (OperationCanceledException) when (token.IsCancellationRequested)
-        { transaction?.Rollback(); report = report with { State = IndexRunState.Cancelled }; }
+        {
+            transaction?.Rollback();
+            report = report with
+            {
+                State = IndexRunState.Cancelled
+            };
+        }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or SqliteException or OverflowException)
-        { transaction?.Rollback(); report = report with { State = IndexRunState.Failed, Error = "目录不可读、已断开或索引写入失败；原有可用索引保留。" }; }
+        {
+            transaction?.Rollback();
+            report = report with
+            {
+                State = IndexRunState.Failed,
+                Error = "目录不可读、已断开或索引写入失败；原有可用索引保留。"
+            };
+        }
         finally
         {
-            transaction?.Dispose(); command.Transaction = null;
-            while (stack.TryPop(out var frame)) frame.Iterator.Dispose();
+            transaction?.Dispose();
+            command.Transaction = null;
+            while (stack.TryPop(out var frame))
+                frame.Iterator.Dispose();
         }
-        report = report with { UpdatedUtc = DateTimeOffset.UtcNow };
+        report = report with
+        {
+            UpdatedUtc = DateTimeOffset.UtcNow
+        };
         using var final = connection.BeginTransaction();
-        command.Transaction = final; command.Parameters.Clear();
-        command.Parameters.AddWithValue("$s", scope); command.Parameters.AddWithValue("$g", generation);
+        command.Transaction = final;
+        command.Parameters.Clear();
+        command.Parameters.AddWithValue("$s", scope);
+        command.Parameters.AddWithValue("$g", generation);
         command.Parameters.AddWithValue("$r", JsonSerializer.Serialize(report));
         var publish = report.State is IndexRunState.Complete or IndexRunState.Partial;
         command.CommandText = "INSERT INTO index_state(scope_id,report_json) VALUES($s,$r) ON CONFLICT(scope_id) DO UPDATE SET report_json=$r";
@@ -196,14 +301,22 @@ public sealed class DirectoryWalkIndexer(IndexDatabase database, IFileSizeReader
         if (publish)
         {
             FolderTotalsBuilder.Build(connection, final, scope, generation, token);
-            command.CommandText = "UPDATE volumes SET active_generation=$g WHERE scope_id=$s; UPDATE index_state SET published_report_json=$r WHERE scope_id=$s";
+            command.CommandText = "UPDATE volumes SET active_generation=$g,snapshot_revision=max($g,snapshot_revision+1),identity_kind='directory-path' WHERE scope_id=$s; UPDATE index_state SET published_report_json=$r WHERE scope_id=$s";
             command.ExecuteNonQuery();
+            command.CommandText = "SELECT count(*) FROM sqlite_master WHERE name='ntfs_live'";
+            if (Convert.ToInt64(command.ExecuteScalar()) != 0)
+            {
+                command.CommandText = "DELETE FROM ntfs_live WHERE scope_id=$s; DELETE FROM ntfs_cache WHERE scope_id=$s; DELETE FROM ntfs_ids WHERE scope_id=$s";
+                command.ExecuteNonQuery();
+            }
         }
         command.CommandText = """
             DELETE FROM directory_entries WHERE scope_id=$s AND generation<>(SELECT active_generation FROM volumes WHERE scope_id=$s);
             DELETE FROM file_objects WHERE scope_id=$s AND generation<>(SELECT active_generation FROM volumes WHERE scope_id=$s);
             """;
-        command.ExecuteNonQuery(); final.Commit(); Publish(true);
+        command.ExecuteNonQuery();
+        final.Commit();
+        Publish(true);
         return report;
     }
 }

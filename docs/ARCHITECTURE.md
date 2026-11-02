@@ -112,3 +112,11 @@ Native DesktopShell 独立 STA 消息循环拥有 HWND、图标、菜单和热�
 CleanupSchedule 为阈值/定期/冷却纯状态机，CleanupSupervisor 管理持久化和活动桌面租约，UserWorkingSetTrimmer 选择白名单候选。
 WorkingSetAccess 使用最小权限 SafeProcessHandle，再检查 PID/启动时间/用户/会话/提升权限/映像/前台后调用原生工作集收缩。
 仅桌面确认配置可启用；Agent 布尔参数不能授权。默认关闭、审计失败停用；与 YAML 的通知/提案执行分离，详见 CLEANUP.md。
+
+## NTFS 生产路径（2026-11-02）
+
+App 设置页 -> 用户态 CoreHost -> NtfsLiveIndex / BrokerClient -> 受保护 LocalSystem NtfsService -> 固定 Native 只读操作。服务不加载用户插件、不接受任意命令，也不承担用户数据库写入。Broker 单独项目供 CoreHost 与服务共享传输/授权契约；UI 只调用用户态 RPC。
+
+NtfsLiveIndex 使用共享 IndexDatabase 单写者、SQLite staging 与 NtfsPublisher；初始全量发布和增量批次的目录项/祖先汇总/revision/checkpoint 事务提交。Schema 3 迁移前备份，WAL 查询固定物理 generation 与独立 revision。普通模式成功替换同范围会撤销其旧 NTFS 跟踪。物理身份作为 BLOB，硬链接名称仍适配已有逐目录项 surrogate 行，去重统计按该身份分组。
+
+默认不安装服务、不选择卷。管理员工具配置 SID/映像/卷 GUID；桌面再次确认才建立索引。没有活动桌面租约时不续接；完全退出取消任务。缺口禁止自动全量重扫。原生权限、取消预算、服务更新/回滚及未验收场景见 NTFS.md。

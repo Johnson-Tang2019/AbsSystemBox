@@ -1,0 +1,28 @@
+[
+  {
+    "name": "Microsoft.Extensions.Hosting.WindowsServices",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in this record",
+    "authors": "Microsoft",
+    "copyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "System.ServiceProcess.ServiceController",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in this record",
+    "authors": "Microsoft",
+    "copyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  }
+]

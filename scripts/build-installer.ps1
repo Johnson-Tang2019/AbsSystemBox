@@ -20,7 +20,7 @@ $compiler=& (Join-Path $PSScriptRoot 'get-nsis.ps1')
 & (Join-Path $PSScriptRoot 'dotnet.ps1') restore SysBox.slnx --locked-mode
 & (Join-Path $PSScriptRoot 'dotnet.ps1') clean src/SysBox.App/SysBox.App.csproj -c Release '-p:Platform=x64' '-v:q'
 & (Join-Path $PSScriptRoot 'dotnet.ps1') publish src/SysBox.App/SysBox.App.csproj -c Release --no-restore '-m:1' '-p:Platform=x64' "-p:Version=$Version" "-p:FileVersion=$WindowsVersion" "-p:SourceRevisionId=$revision" '-p:DebugType=None' '-p:DebugSymbols=false' "--output=$stage"
-foreach($component in @(@{project='SysBox.CoreHost';folder='host'},@{project='SysBox.Cli';folder='cli'},@{project='SysBox.Mcp';folder='mcp'})){
+foreach($component in @(@{project='SysBox.CoreHost';folder='host'},@{project='SysBox.Cli';folder='cli'},@{project='SysBox.Mcp';folder='mcp'},@{project='SysBox.NtfsService';folder='ntfs-service'})){
     & (Join-Path $PSScriptRoot 'dotnet.ps1') publish "src/$($component.project)/$($component.project).csproj" -c Release --no-restore '-m:1' '-r' 'win-x64' '--self-contained' 'true' "-p:Version=$Version" "-p:FileVersion=$WindowsVersion" "-p:SourceRevisionId=$revision" '-p:DebugType=None' '-p:DebugSymbols=false' "--output=$(Join-Path $stage $component.folder)"
 }
 foreach($resource in @('App.xbf','MainWindow.xbf','FloatingBallWindow.xbf','QuickSearchWindow.xbf','SysBox.App.pri','Themes/PinkTheme.xbf','Controls/BatteryCard.xbf','Views/RulesPage.xbf','Views/SearchPage.xbf','Views/StoragePage.xbf','Controls/StorageTreemap.xbf')){
@@ -28,6 +28,13 @@ foreach($resource in @('App.xbf','MainWindow.xbf','FloatingBallWindow.xbf','Quic
 }
 foreach($name in @('LICENSE','COPYING.md','THIRD_PARTY_NOTICES.md')){Copy-Item -LiteralPath (Join-Path $root $name) -Destination $stage}
 Copy-Item -LiteralPath (Join-Path $root 'licenses') -Destination $stage -Recurse
+[IO.Directory]::CreateDirectory((Join-Path $stage 'scripts'))|Out-Null
+foreach($name in @('install-ntfs-service.ps1','remove-ntfs-service.ps1')){Copy-Item -LiteralPath (Join-Path $PSScriptRoot $name) -Destination (Join-Path $stage 'scripts')}
+$servicePayload=Join-Path $stage 'ntfs-service'
+foreach($name in @('LICENSE','COPYING.md','THIRD_PARTY_NOTICES.md')){Copy-Item -LiteralPath (Join-Path $root $name) -Destination $servicePayload}
+Copy-Item -LiteralPath (Join-Path $root 'licenses') -Destination $servicePayload -Recurse
+$serviceFiles=@(Get-ChildItem -LiteralPath $servicePayload -Recurse -File|ForEach-Object{@{path=$_.FullName.Substring($servicePayload.Length+1);sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash}})
+@{product='AbsSystemBox.JohnsonTang2019.Ntfs';version=$Version;files=$serviceFiles}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $servicePayload 'service-files.json') -Encoding UTF8
 [IO.Directory]::CreateDirectory((Join-Path $stage 'docs')) | Out-Null
 foreach($name in @('RULES.md','BATTERY.md','CLEANUP.md','AGENT_API.md','INSTALL.md')){Copy-Item -LiteralPath (Join-Path $root "docs/$name") -Destination (Join-Path $stage 'docs')}
 $files=@(Get-ChildItem -LiteralPath $stage -Recurse -File | Sort-Object FullName | ForEach-Object {

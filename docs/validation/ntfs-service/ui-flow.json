@@ -1,0 +1,11 @@
+{
+  "volumeScanStarted": false,
+  "serviceInstalled": false,
+  "checks": [
+    "Restricted real WinUI shows missing/untrusted service and ordinary-index fallback",
+    "Whole-volume consent can be cancelled; no metadata database or scan starts",
+    "Optional service setup rejects an empty volume before requesting administrator consent"
+  ],
+  "isAdministrator": false,
+  "isElevated": false
+}

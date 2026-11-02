@@ -15,45 +15,56 @@ public sealed class IndexedStorageBrowser(IndexDatabase database, IFileIndexServ
     public Task<StorageView> ReadAsync(string path, StorageSort sort, int offset, int limit, CancellationToken token,
         string? scopeRoot = null, long? expectedGeneration = null)
     {
-        if (offset is < 0 or > 100_000 || limit is < 1 or > 200 || !Enum.IsDefined(sort)) throw Invalid("目录分页参数无效。");
+        if (offset is < 0 or > 100_000 || limit is < 1 or > 200 || !Enum.IsDefined(sort))
+            throw Invalid("目录分页参数无效。");
         path = Path.TrimEndingDirectorySeparator(Path.GetFullPath(path));
         return Task.Run(() => Read(path, sort, offset, limit, token, scopeRoot, expectedGeneration), token);
     }
     private StorageView Read(string path, StorageSort sort, int offset, int limit, CancellationToken token, string? selectedScope, long? expectedGeneration)
     {
         token.ThrowIfCancellationRequested();
-        if (!File.Exists(Path.Combine(database.DirectoryPath, "metadata.db"))) throw NotReady();
+        if (!File.Exists(Path.Combine(database.DirectoryPath, "metadata.db")))
+            throw NotReady();
         var clock = Stopwatch.StartNew();
         try
         {
             using var connection = database.OpenReadConnection();
             SQLitePCL.raw.sqlite3_progress_handler(connection.Handle, 1000, _ => token.IsCancellationRequested || clock.Elapsed > TimeSpan.FromSeconds(3) ? 1 : 0, null);
             using var transaction = connection.BeginTransaction(deferred: true);
-            using var command = connection.CreateCommand(); command.Transaction = transaction;
+            using var command = connection.CreateCommand();
+            command.Transaction = transaction;
             command.CommandText = "PRAGMA user_version";
-            if ((long)command.ExecuteScalar()! < 2) throw NotReady();
-            command.CommandText = """
-                SELECT v.scope_id,v.root,v.active_generation,s.published_report_json
+            if ((long)command.ExecuteScalar()! < 2)
+                throw NotReady();
+            command.CommandText = $"""
+                SELECT v.scope_id,v.root,v.active_generation,s.published_report_json,{IndexDatabase.RevisionExpression(connection, transaction)}
                 FROM volumes v JOIN index_state s USING(scope_id) WHERE v.active_generation>0;
                 """;
-            string? scope = null, scopeRoot = null; long generation = 0; IndexProgress? report = null;
+            string? scope = null, scopeRoot = null;
+            long generation = 0, revision = 0;
+            IndexProgress? report = null;
             using (var roots = command.ExecuteReader())
             {
                 while (roots.Read())
                 {
                     token.ThrowIfCancellationRequested();
                     var candidate = roots.GetString(1);
-                    if (selectedScope is not null && candidate != selectedScope) continue;
-                    if ((path.Equals(candidate, StringComparison.Ordinal) || path.StartsWith(candidate + Path.DirectorySeparatorChar, StringComparison.Ordinal)) &&
+                    if (selectedScope is not null && candidate != selectedScope)
+                        continue;
+                    if ((path.Equals(candidate, StringComparison.Ordinal) || path.StartsWith(candidate.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar, StringComparison.Ordinal)) &&
                         (scopeRoot is null || candidate.Length > scopeRoot.Length))
                     {
-                        scope = roots.GetString(0); scopeRoot = candidate; generation = roots.GetInt64(2);
+                        scope = roots.GetString(0);
+                        scopeRoot = candidate;
+                        generation = roots.GetInt64(2);
+                        revision = roots.GetInt64(4);
                         report = JsonSerializer.Deserialize<IndexProgress>(roots.GetString(3));
                     }
                 }
             }
-            if (scope is null || report is null) throw NotReady();
-            if (expectedGeneration.HasValue && generation != expectedGeneration.Value)
+            if (scope is null || report is null)
+                throw NotReady();
+            if (expectedGeneration.HasValue && revision != expectedGeneration.Value)
                 throw new SysBoxOperationException(new("STORAGE_CHANGED", "目录快照已更新，请点击读取已有快照后重新浏览。"));
             var completeness = report.State == IndexRunState.Complete ? DataCompleteness.Complete : DataCompleteness.Partial;
             const string projection = """
@@ -68,35 +79,74 @@ public sealed class IndexedStorageBrowser(IndexDatabase database, IFileIndexServ
                 LEFT JOIN folder_totals t USING(entry_id)
                 """;
             command.CommandText = projection + " WHERE e.scope_id=$s AND e.generation=$g AND e.cached_path=$path";
-            command.Parameters.AddWithValue("$s", scope); command.Parameters.AddWithValue("$g", generation); command.Parameters.AddWithValue("$path", path);
-            StorageItem summary; long parentId;
+            command.Parameters.AddWithValue("$s", scope);
+            command.Parameters.AddWithValue("$g", generation);
+            command.Parameters.AddWithValue("$path", path);
+            StorageItem summary;
+            long parentId;
             StorageItem ReadItem(SqliteDataReader row)
             {
-                if (row.IsDBNull(4)) throw NotReady();
+                if (row.IsDBNull(4))
+                    throw NotReady();
                 return new(row.GetString(1), row.GetString(2), row.GetBoolean(3), row.GetInt64(4), row.GetInt64(5), row.GetInt64(6),
                     row.GetInt64(7), row.GetInt64(8), row.GetInt64(9), completeness, report.UpdatedUtc);
             }
             using (var parent = command.ExecuteReader())
             {
-                if (!parent.Read()) throw NotReady();
-                summary = ReadItem(parent); parentId = parent.GetInt64(0);
-                if (!summary.IsDirectory) throw Invalid("请选择文件夹进行空间分析。");
+                if (!parent.Read())
+                    throw NotReady();
+                summary = ReadItem(parent);
+                parentId = parent.GetInt64(0);
+                if (!summary.IsDirectory)
+                    throw Invalid("请选择文件夹进行空间分析。");
             }
             var order = sort == StorageSort.FileCount ? "8 DESC,5 DESC" : "5 DESC,8 DESC";
             command.CommandText = projection + $" WHERE e.parent_entry_id=$parent AND e.scope_id=$s AND e.generation=$g ORDER BY {order},e.name COLLATE BINARY LIMIT $limit OFFSET $offset";
-            command.Parameters.AddWithValue("$parent", parentId); command.Parameters.AddWithValue("$limit", limit + 1); command.Parameters.AddWithValue("$offset", offset);
-            using var reader = command.ExecuteReader(); var children = new List<StorageItem>();
-            while (reader.Read()) { token.ThrowIfCancellationRequested(); children.Add(ReadItem(reader)); }
-            var more = children.Count > limit; if (more) children.RemoveAt(children.Count - 1);
+            command.Parameters.AddWithValue("$parent", parentId);
+            command.Parameters.AddWithValue("$limit", limit + 1);
+            command.Parameters.AddWithValue("$offset", offset);
+            using var reader = command.ExecuteReader();
+            var children = new List<StorageItem>();
+            while (reader.Read())
+            {
+                token.ThrowIfCancellationRequested();
+                children.Add(ReadItem(reader));
+            }
+            var more = children.Count > limit;
+            if (more)
+                children.RemoveAt(children.Count - 1);
+            reader.Close();
+            long? unique = null, unknownUnique = null;
+            command.CommandText = "SELECT identity_kind FROM volumes WHERE scope_id=$s";
+            if (command.ExecuteScalar() is string kind && kind == "ntfs")
+            {
+                command.CommandText = """
+                    SELECT coalesce(sum(allocated),0),coalesce(sum(allocated IS NULL),0) FROM (
+                      SELECT max(o.allocated_size) AS allocated FROM directory_entries e JOIN file_objects o USING(object_id)
+                      WHERE e.scope_id=$s AND e.generation=$g AND o.is_directory=0 AND
+                      (e.cached_path=$path OR substr(e.cached_path,1,length($prefix))=$prefix)
+                      GROUP BY CASE WHEN o.file_id IS NULL THEN 'ENTRY:'||e.entry_id ELSE 'FILE:'||hex(o.file_id) END);
+                    """;
+                command.Parameters.AddWithValue("$prefix", path.TrimEnd('\\') + @"\");
+                using var sizes = command.ExecuteReader();
+                sizes.Read();
+                unique = sizes.GetInt64(0);
+                unknownUnique = sizes.GetInt64(1);
+            }
             var notice = "按目录项累计；硬链接可能重复计数。已知分配量不等同于磁盘实际占用。";
-            if (completeness == DataCompleteness.Partial) notice += $" 部分覆盖：权限拒绝 {report.AccessDenied}，读取错误 {report.IoErrors}，跳过链接 {report.ReparsePoints}，排除 {report.Excluded}。";
-            if (summary.UnknownAllocatedFiles > 0) notice += $" {summary.UnknownAllocatedFiles} 个文件的分配量未知；请重新分析以补齐可读元数据。";
-            return new(summary, children.AsReadOnly(), more, generation, scope, scopeRoot!,
-                report.AccessDenied + report.IoErrors + report.ReparsePoints + report.Excluded, notice);
+            if (completeness == DataCompleteness.Partial)
+                notice += $" 部分覆盖：权限拒绝 {report.AccessDenied}，读取错误 {report.IoErrors}，跳过链接 {report.ReparsePoints}，排除 {report.Excluded}。";
+            if (summary.UnknownAllocatedFiles > 0)
+                notice += $" {summary.UnknownAllocatedFiles} 个文件的分配量未知；请重新分析以补齐可读元数据。";
+            if (unique.HasValue)
+                notice += $" 按文件 ID 去重后的已知分配量 {unique.Value} 字节；未知对象 {unknownUnique}。此值不含 NTFS 元数据/系统保留空间。";
+            return new(summary, children.AsReadOnly(), more, revision, scope, scopeRoot!,
+                report.AccessDenied + report.IoErrors + report.ReparsePoints + report.Excluded, notice, unique, unknownUnique);
         }
         catch (SqliteException ex) when (ex.SqliteErrorCode == 9)
         {
-            token.ThrowIfCancellationRequested(); throw new SysBoxOperationException(new("STORAGE_BUDGET", "目录查询超时，请缩小范围后重试。"));
+            token.ThrowIfCancellationRequested();
+            throw new SysBoxOperationException(new("STORAGE_BUDGET", "目录查询超时，请缩小范围后重试。"));
         }
     }
     async Task<Result<FolderSummary>> IStorageAnalyzer.AnalyzeAsync(string path, CancellationToken token)

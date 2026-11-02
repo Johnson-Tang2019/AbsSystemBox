@@ -51,3 +51,9 @@ revision/hash 冲突拒绝覆盖；`approved=true`、`administrator=true` 等字
 
 新增集成脚本已完成标准 MCP 客户端握手/工具列举/真实调用；未修改 Codex 的用户级 MCP 配置，
 不将协议测试冒充 Codex 桌面应用已连接。完整字段与错误约定见 `API.md`。
+
+## NTFS 状态与授权边界
+
+新增 `sysbox ntfs status` 与 `sysbox ntfs capabilities`，均只读，仍使用既有 JSON/退出码。没有服务时返回 NTFS_SERVICE_UNAVAILABLE，不自动安装、不自动扫描。
+
+Agent 不能调用 ntfs.build/resume/stop；后台以 OS 验证的桌面进程身份授权，不接受 approved/isUi/administrator 字段授权。MCP 保持原只读/模拟/提案工具，没有新增卷级扫描工具。独立管理员授权和整卷隐私说明见 NTFS.md。

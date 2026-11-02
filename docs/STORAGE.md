@@ -37,3 +37,7 @@ Windows Debug/Release 构建与测试报告见 validation/m7。覆盖后序汇�
 非管理员实际窗口验证 100 字节/4 文件样本、面积图进入三层再后退/前进/返回根、移动扩容后重扫 150 字节、空目录无残留图块、搜索共享新路径及 code 0 退出。UIA 不等同于独立机器或最终像素质量验收。
 
 原生依据：[FILE_STANDARD_INFO](https://learn.microsoft.com/en-us/windows/win32/api/winbase/ns-winbase-file_standard_info)、[FILE_INFO_BY_HANDLE_CLASS](https://learn.microsoft.com/en-us/windows/win32/api/minwinbase/ne-minwinbase-file_info_by_handle_class)。未增加第三方依赖。
+
+## NTFS 增量补充
+
+生产代码已加入 USN 批次的大小/目录移动协调和旧/新祖先汇总，同一事务发布共享搜索快照。逐目录项累计之外新增实体去重分配量，非完整卷已用空间。临时不可读项可能保留最后已知大小并明确 Partial；真实隔离卷对账暂缓，见 NTFS.md。

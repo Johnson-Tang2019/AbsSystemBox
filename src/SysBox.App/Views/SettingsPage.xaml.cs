@@ -16,6 +16,8 @@ public sealed partial class SettingsPage : Page
     public SettingsPage()
     {
         InitializeComponent();
+        Loaded += async (_, _) => await ReadNtfsAsync();
+        Unloaded += (_, _) => ntfsCancellation?.Cancel();
         ThemePicker.SelectedIndex = (int)theme.Current;
         Loaded += async (_, _) => { await App.DesktopReady; if (!IsLoaded) return; BallEnabled.IsChecked = App.Desktop.Preferences.FloatingBall; TrayEnabled.IsChecked = App.Desktop.Preferences.KeepInTray; HotKeyPicker.SelectedIndex = App.Desktop.Preferences.HotKey; DesktopStatus.Text = App.Desktop.Status; };
         Loaded += async (_, _) => await ReadCleanupAsync();

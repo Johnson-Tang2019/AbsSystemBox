@@ -354,6 +354,34 @@ Section "Uninstall"
   FileClose $0
   ${TrimNewLines} $1 $1
   StrCmp $1 "${PRODUCT}" 0 un_done
+  ; Keep application files if the optional privileged registration cannot be removed.
+  System::Call 'advapi32::OpenSCManagerW(p 0,p 0,i 1)p.r0'
+  IntCmp $0 0 un_service_failed
+  System::Call 'advapi32::OpenServiceW(p r0,w "AbsSystemBox.Ntfs",i 4)p.r1 ?e'
+  Pop $2
+  System::Call 'advapi32::CloseServiceHandle(p r0)'
+  IntCmp $1 0 un_service_not_open
+  System::Call 'advapi32::CloseServiceHandle(p r1)'
+  IfSilent un_service_failed
+  IfFileExists "$INSTDIR\app\scripts\remove-ntfs-service.ps1" 0 un_service_failed
+  ClearErrors
+  ExecShellWait "runas" "$WINDIR\Sysnative\WindowsPowerShell\v1.0\powershell.exe" '-NoProfile -ExecutionPolicy Bypass -File "$INSTDIR\app\scripts\remove-ntfs-service.ps1"' SW_HIDE
+  IfErrors un_service_failed
+  System::Call 'advapi32::OpenSCManagerW(p 0,p 0,i 1)p.r0'
+  IntCmp $0 0 un_service_failed
+  System::Call 'advapi32::OpenServiceW(p r0,w "AbsSystemBox.Ntfs",i 4)p.r1 ?e'
+  Pop $2
+  System::Call 'advapi32::CloseServiceHandle(p r0)'
+  IntCmp $1 0 un_service_not_open
+  System::Call 'advapi32::CloseServiceHandle(p r1)'
+  Goto un_service_failed
+un_service_not_open:
+  IntCmp $2 1060 un_service_removed un_service_failed un_service_failed
+un_service_failed:
+  MessageBox MB_OK|MB_ICONSTOP "可选 NTFS 服务尚未移除。请确认独立管理员工具完成后重试；程序与数据保留。" /SD IDOK
+  SetErrorLevel 9
+  Abort
+un_service_removed:
   StrCpy $PayloadRoot "$INSTDIR\app"
   Call un.CleanPayload
   StrCpy $PayloadRoot "$INSTDIR\app.previous"

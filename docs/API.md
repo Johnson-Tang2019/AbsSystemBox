@@ -87,7 +87,7 @@ RuleSample.Elapsed 是单调时间；MemorySnapshot.TimestampUtc 仅展示。模
 PROPOSAL_REVIEWED、PROPOSAL_LIMIT、STORE_IO、STORE_ACCESS、STORE_CORRUPT、STORE_LIMIT。
 字段错误码包括 INPUT_SIZE、YAML_LIMIT、YAML_DEPTH、YAML_UNSAFE、YAML_DUPLICATE、YAML_SYNTAX、RULE_SCHEMA、RULE_REQUIRED、RULE_UNKNOWN、RULE_SEMANTIC。
 IRuleReview.Approve/Reject/ProposeRollback 只供可信 WinUI 使用，不在 IRuleService/facade 中，不接收 approved:Boolean。
-接口当前为同进程 .NET 契约，尚无 HTTP、CLI、MCP 或 IPC；不是已发布的 Agent 工具。
+规则契约现通过 CoreHost IPC/CLI/MCP 公开受限操作，审批仍只接受可信桌面；见 AGENT_API.md。没有 HTTP 监听。
 RULES.md 说明持久化文件、数据上限及审批边界；AGENT_API.md 说明未来 Agent 只能使用的内部工作流。
 
 ## 电池只读端口
@@ -123,7 +123,7 @@ SEARCH.md 是语法/单位规范。仅提供本进程接口，未开放 CLI/MCP 
 INtfsVolumeReader.QueryJournal / Enumerate / ReadChanges 仅供隔离实验；WindowsNtfsVolumeReader 拥有 SafeFileHandle。
 UsnBufferParser.Parse 接收 8 字节续读位置加有界记录缓冲，返回版本明确的 UsnRecord；身份字符串保留 64/128 位值。
 USN_INVALID 表示拒绝损坏/未知布局；REBUILD_REQUIRED 表示 Journal/checkpoint 不匹配。
-没有提供卷许可、特权代理、生产增量索引或 Agent 远程调用。NtfsLab 的 probe 只查询元数据，固定枚举数为 0。
+NtfsLab probe 仍只查询元数据且固定枚举数 0；新增的生产路径、授权服务及共享发布见 NTFS.md。真实卷对账尚未执行。
 
 ## 普通目录空间分析
 
@@ -134,3 +134,11 @@ StorageItem 分开表示 LogicalBytes、KnownAllocatedBytes、UnknownAllocatedFi
 ReadAsync 可附带 scopeRoot/expectedGeneration 固定逐层浏览的范围与版本；不匹配返回 STORAGE_CHANGED。
 STORAGE_NOT_READY 要求先分析或重扫，STORAGE_BUDGET 表示查询预算耗尽。取消返回 Cancelled 或 OperationCanceledException。
 Legacy IStorageAnalyzer.AnalyzeAsync 仅从已发布快照生成 FolderSummary，跳过数为所在范围保守计数；普通界面实际使用 IStorageBrowser。
+
+## NTFS 与快照 revision
+
+NtfsLiveIndex.BuildAsync / CatchUpAsync 将授权卷元数据发布到既有搜索/存储快照。INtfsMetadataReader 增加有界 ReadObjects，返回 Ready/Missing/Unavailable，字段未知时保留 null。NTFS FileId 为规范十六进制字符串，Journal/游标 UInt64 在 RPC 中为字符串。
+
+CoreHost 的 ntfs.capabilities / ntfs.status 只读；ntfs.build / ntfs.stop / ntfs.resume 只允许真实桌面映像身份。build 返回 index.job 可查询的任务 ID，取消复用 index.control。服务缺失返回 NTFS_SERVICE_UNAVAILABLE；日志失效返回 REBUILD_REQUIRED；达到资源预算为 NTFS_LIMIT。服务端白名单和授权范围见 NTFS.md。
+
+IndexRoot.Generation、StorageView.Generation 和 SearchPageResult.Snapshot 对外是快照版本凭据；物理 generation 与增量 revision 分离。增量发布同样使旧分页失效。StorageView 新增 UniqueKnownAllocatedBytes / UniqueUnknownObjects，仅对 NTFS 快照给出实体去重口径，普通目录保持 null。

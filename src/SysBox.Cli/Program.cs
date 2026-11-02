@@ -75,6 +75,16 @@ try
             {
             });
             break;
+        case "ntfs status":
+            result = await Call<JsonElement>("ntfs.status", new
+            {
+            });
+            break;
+        case "ntfs capabilities":
+            result = await Call<JsonElement>("ntfs.capabilities", new
+            {
+            });
+            break;
         case "storage children":
             result = await Call<JsonElement>("storage.children", new
             {

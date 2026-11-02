@@ -103,7 +103,7 @@ public static class PeerIdentity
         {
             var computer = new StringBuilder(256);
             // Local pipes report ERROR_PIPE_LOCAL; success identifies a network connection.
-            var remote = GetNamedPipeClientComputerNameW(pipe.SafePipeHandle, computer, 512);
+            var remote = GetNamedPipeClientComputerNameW(pipe.SafePipeHandle, computer, 256);
             if (remote || Marshal.GetLastWin32Error() != 229)
                 throw new UnauthorizedAccessException("不接受远程或无法确认来源的管道请求。");
         }

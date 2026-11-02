@@ -53,6 +53,21 @@
                     <TextBlock x:Name="CleanupStatus" TextWrapping="Wrap" AutomationProperties.AutomationId="CleanupStatus"/>
                 </StackPanel>
             </Border>
+            <Border Style="{StaticResource SurfaceStyle}">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="NTFS 高速增量索引（可选）" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <TextBlock Text="需要管理员通过独立安装工具配置只读服务和卷授权。主程序始终以当前用户运行；服务缺失时，文件搜索页的普通目录扫描仍可用。开启后读取获准整卷的文件名、大小与硬链接元数据，不读取文件正文。" Style="{StaticResource BodyCopyStyle}"/>
+                    <TextBox x:Name="NtfsRoot" Header="NTFS 卷根目录" PlaceholderText="例如 D:\；默认不选择、不扫描" AutomationProperties.AutomationId="NtfsRoot"/>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button x:Name="StartNtfs" Content="建立 / 重建整卷索引" Click="StartNtfs_Click" AutomationProperties.AutomationId="StartNtfs"/>
+                        <Button Content="停止 / 取消" Click="StopNtfs_Click" AutomationProperties.AutomationId="StopNtfs"/>
+                        <Button Content="恢复跟踪" Click="ResumeNtfs_Click" AutomationProperties.AutomationId="ResumeNtfs"/>
+                        <Button Content="刷新服务与增量状态" Click="RefreshNtfs_Click" AutomationProperties.AutomationId="RefreshNtfs"/>
+                    </StackPanel>
+                    <Button Content="配置可选只读服务（管理员确认）" Click="InstallNtfs_Click" AutomationProperties.AutomationId="InstallNtfsService"/>
+                    <TextBlock x:Name="NtfsStatus" Text="未启用；不会自动扫描整卷。" TextWrapping="Wrap" AutomationProperties.AutomationId="NtfsStatus"/>
+                </StackPanel>
+            </Border>
         </StackPanel>
     </ScrollViewer>
 </Page>

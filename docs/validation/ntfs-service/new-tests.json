@@ -1,0 +1,83 @@
+{
+  "scope": "New cases only; no repeat of accepted historical tests",
+  "totalPassed": 15,
+  "tests": [
+    {
+      "test": "SysBox.UnitTests.NtfsProductionFeaturesTests.JournalReplacementRequiresRebuildAndKeepsPublishedSearchResults",
+      "outcome": "Passed",
+      "configuration": "Debug"
+    },
+    {
+      "test": "SysBox.UnitTests.NtfsProductionFeaturesTests.SharedQueriesObserveSizeMoveAndHardlinkDeltasWithAtomicRevisionChanges",
+      "outcome": "Passed",
+      "configuration": "Debug"
+    },
+    {
+      "test": "SysBox.UnitTests.NtfsProductionFeaturesTests.HardlinkAllocationIsDeduplicatedByPhysicalIdentity",
+      "outcome": "Passed",
+      "configuration": "Debug"
+    },
+    {
+      "test": "SysBox.UnitTests.NtfsProductionFeaturesTests.ThousandMixedJournalEventsConvergeWithoutRetainingDeletedIdentities",
+      "outcome": "Passed",
+      "configuration": "Debug"
+    },
+    {
+      "test": "SysBox.ProtocolTests.NtfsBrokerFeaturesTests.CanonicalIdsAndPathsRejectDeviceEscapesAndNormalizeV2Identity",
+      "outcome": "Passed",
+      "configuration": "Debug"
+    },
+    {
+      "test": "SysBox.ProtocolTests.NtfsBrokerFeaturesTests.UnauthorizedSidImageVolumeAndDangerousMethodsNeverOpenAVolume",
+      "outcome": "Passed",
+      "configuration": "Debug"
+    },
+    {
+      "test": "SysBox.ProtocolTests.NtfsBrokerFeaturesTests.PipeAclRejectsNetworkAndDoesNotGrantEveryoneAccess",
+      "outcome": "Passed",
+      "configuration": "Debug"
+    },
+    {
+      "test": "SysBox.ProtocolTests.NtfsBrokerFeaturesTests.ForgedServicePipeIsRejectedBeforeSendingMetadataRequests",
+      "outcome": "Passed",
+      "configuration": "Debug"
+    },
+    {
+      "test": "SysBox.ProtocolTests.NtfsBrokerFeaturesTests.AgentFlagsCannotStartOrResumeNtfsAndMissingServiceKeepsOrdinaryMode",
+      "outcome": "Passed",
+      "configuration": "Debug"
+    },
+    {
+      "test": "SysBox.UnitTests.NtfsProductionFeaturesTests.DirectoryDeletionPreservesExternalHardlinkAndNewNestedEntriesPublishAtomically",
+      "outcome": "Passed",
+      "configuration": "Debug"
+    },
+    {
+      "test": "SysBox.UnitTests.NtfsProductionFeaturesTests.UnreadableMetadataIsPartialAndRetriesWithoutNewJournalEvents",
+      "outcome": "Passed",
+      "configuration": "Debug"
+    },
+    {
+      "test": "SysBox.UnitTests.NtfsProductionFeaturesTests.FailedDeltaAndCancelledRebuildRetainCheckpointAndSnapshotThenRecover",
+      "outcome": "Passed",
+      "configuration": "Debug"
+    },
+    {
+      "test": "SysBox.ProtocolTests.NtfsBrokerFeaturesTests.RealPipeCallerTokenIsVerifiedAndUntrustedImageCannotOpenAVolume",
+      "outcome": "Passed",
+      "configuration": "Debug"
+    },
+    {
+      "test": "SysBox.UnitTests.NtfsProductionFeaturesTests.SchemaTwoUpgradeRetainsBackupAndDriveLetterCaseCannotBypassStop",
+      "outcome": "Passed",
+      "configuration": "Debug"
+    },
+    {
+      "test": "SysBox.UnitTests.NtfsProductionFeaturesTests.ExplicitOrdinaryPublicationDetachesOnlyItsPreviousNtfsTrackingState",
+      "outcome": "Passed",
+      "configuration": "Debug"
+    }
+  ],
+  "realVolumeEnumerated": false,
+  "serviceRegistered": false
+}

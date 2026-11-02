@@ -71,3 +71,7 @@ M3 新增 YamlDotNet 18.1.0（MIT），仅使用低层 YAML 事件解析器，�
 
 电池读取复用已记录的 Microsoft.Windows.SDK.NET.Ref 10.0.26100.57 中的 Microsoft.Windows.SDK.NET.dll / WinRT.Runtime.dll。
 上游 [C#/WinRT 源码](https://github.com/microsoft/CsWinRT) 为 MIT；实际 SDK 包的分发条款仍以上表为准。未新增电池依赖或复制第三方电池工具代码。
+
+## 可选 Windows 服务依赖
+
+新增 Microsoft.Extensions.Hosting.WindowsServices / System.ServiceProcess.ServiceController 10.0.14，MIT。逐包完整许可证、原始 THIRD-PARTY-NOTICES 和 authors/copyright/repository commit 保存在 licenses/third-party 对应目录，汇总见 docs/ntfs-runtime-dependencies.json。沿用已有 Hosting/EventLog 依赖；原有开源与微软二进制独立条款不变。

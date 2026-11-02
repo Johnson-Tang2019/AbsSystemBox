@@ -15,6 +15,7 @@ using SysBox.Search;
 using SysBox.Storage;
 using SysBox.Transport;
 using SysBox.Core;
+using SysBox.NtfsBroker;
 
 namespace SysBox.CoreHost;
 
@@ -29,6 +30,9 @@ public sealed class CoreServer : BackgroundService
     private readonly RuleWorkspace rules;
     private readonly RuleObserver observer;
     private readonly CleanupSupervisor cleanup;
+    private readonly NtfsLiveIndex ntfs;
+    private readonly BrokerClient broker = new();
+    private string? ntfsTrackingError;
     private readonly bool demo = false;
     private readonly ConcurrentDictionary<string, Job> jobs = new();
     private readonly object jobsGate = new();
@@ -53,6 +57,7 @@ public sealed class CoreServer : BackgroundService
 #endif
         rules = new(root);
         var database = new IndexDatabase(index);
+        ntfs = new(database);
         indexer = new(database, new WindowsFileSizeReader());
         search = new(database);
         storage = new(database, indexer);
@@ -63,6 +68,7 @@ public sealed class CoreServer : BackgroundService
     {
         observer.Start();
         var cleanupLoop = cleanup.RunAsync(stoppingToken);
+        var ntfsLoop = TrackNtfsAsync(stoppingToken);
         var pending = new List<Task>();
         var idle = Task.Run(async () =>
         {
@@ -113,6 +119,7 @@ public sealed class CoreServer : BackgroundService
             await Task.WhenAll(pending);
             await idle;
             await cleanupLoop;
+            await ntfsLoop;
         }
     }
     private async Task HandleAsync(NamedPipeServerStream pipe, CancellationToken hostToken)
@@ -184,7 +191,8 @@ public sealed class CoreServer : BackgroundService
                     processId = Environment.ProcessId,
                     mode = "user",
                     cleanup = cleanup.Read(),
-                    ntfsFastIndex = false,
+                    ntfsFastIndex = ntfs.ReadStates().Any(s => s.Tracking && s.State == "Tracking"),
+                    ntfsTrackingError = Volatile.Read(ref ntfsTrackingError),
                     jobs = jobs.Values.Count(j => !j.Finished)
                 };
             case "diagnostics":
@@ -203,7 +211,7 @@ public sealed class CoreServer : BackgroundService
                         handles = process.HandleCount,
                         activeJobs = jobs.Values.Count(j => !j.Finished),
                         indexedScopes = (await indexer.ReadRootsAsync(token)).Count,
-                        ntfsFastIndex = false,
+                        ntfsFastIndex = ntfs.ReadStates().Any(s => s.Tracking && s.State == "Tracking"),
                         cleanupEnabled = cleanup.Read().Policy.Enabled
                     };
                 }
@@ -222,6 +230,22 @@ public sealed class CoreServer : BackgroundService
                 return await search.QueryAsync(Data<SearchPageRequest>(), token);
             case "index.status":
                 return await indexer.ReadRootsAsync(token);
+            case "ntfs.capabilities":
+                return await broker.CallAsync<string[]>("capabilities", new
+                {
+                }, token);
+            case "ntfs.status":
+                return ntfs.ReadStates();
+            case "ntfs.stop":
+                RequireUi();
+                await ntfs.SetTrackingAsync(Text("root"), false, token);
+                return true;
+            case "ntfs.resume":
+                RequireUi();
+                if (demo)
+                    throw new SysBoxOperationException(new("DEMO_READ_ONLY", "示例模式不允许整卷索引。"));
+                await ntfs.SetTrackingAsync(Text("root"), true, token);
+                return true;
             case "volumes":
                 {
                     var capacities = await VolumeCapacityReader.ReadAsync(token);
@@ -238,9 +262,24 @@ public sealed class CoreServer : BackgroundService
                 RequireUi();
                 await indexer.ClearAsync(token);
                 return true;
+            case "ntfs.build":
             case "index.scan":
                 {
                     var root = Path.TrimEndingDirectorySeparator(Path.GetFullPath(Text("root")));
+                    var fast = method == "ntfs.build";
+                    NtfsVolumeBinding? binding = null;
+                    if (fast)
+                    {
+                        RequireUi();
+                        if (demo)
+                            throw new SysBoxOperationException(new("DEMO_READ_ONLY", "示例模式不允许整卷索引。"));
+                        binding = NtfsObjectAccess.BindRoot(root);
+                        var allowed = await broker.CallAsync<string[]>("capabilities", new
+                        {
+                        }, token);
+                        if (!allowed.Contains(binding.VolumeId, StringComparer.OrdinalIgnoreCase))
+                            throw new UnauthorizedAccessException();
+                    }
                     if (!ui && !(await indexer.ReadRootsAsync(token)).Any(r => r.Root == root))
                         throw new SysBoxOperationException(new("SCOPE_APPROVAL_REQUIRED", "请先在桌面界面选择并索引此目录。"));
                     var options = args.TryGetProperty("options", out var configured) ? configured.Deserialize<IndexOptions>(Protocol.Json) ?? throw new ArgumentException() : new IndexOptions();
@@ -261,9 +300,16 @@ public sealed class CoreServer : BackgroundService
                     {
                         try
                         {
-                            job.Progress = await indexer.ScanAsync(root, options, job.Control, new JobProgress(p => job.Progress = p), job.Cancellation.Token);
+                            if (fast)
+                            {
+                                using var reader = broker.Open(binding!.VolumeId);
+                                job.Progress = await ntfs.BuildAsync(binding, reader, job.Control, new JobProgress(p => job.Progress = p), job.Cancellation.Token);
+                            }
+                            else
+                                job.Progress = await indexer.ScanAsync(root, options, job.Control, new JobProgress(p => job.Progress = p), job.Cancellation.Token);
                         }
                         catch (OperationCanceledException) { job.Error = new("CANCELLED", "扫描已取消，旧快照保留。"); }
+                        catch (SysBoxOperationException e) { job.Error = e.Error; }
                         catch (Exception) { job.Error = new("SCAN_FAILED", "扫描失败，旧快照保留。"); }
                         finally { job.Finished = true; }
                     });
@@ -326,5 +372,37 @@ public sealed class CoreServer : BackgroundService
     private sealed class JobProgress(Action<IndexProgress> callback) : IProgress<IndexProgress>
     {
         public void Report(IndexProgress value) => callback(value);
+    }
+    private async Task TrackNtfsAsync(CancellationToken token)
+    {
+        try
+        {
+            while (!token.IsCancellationRequested)
+            {
+                await Task.Delay(5000, token);
+                if (Volatile.Read(ref lastUi) == 0 || Stopwatch.GetElapsedTime(Volatile.Read(ref lastUi)) > TimeSpan.FromSeconds(90) || jobs.Values.Any(j => !j.Finished))
+                    continue;
+                try
+                {
+                    foreach (var state in ntfs.ReadStates().Where(s => s.Tracking && s.State is not ("RebuildRequired" or "LimitReached")))
+                    {
+                        try
+                        {
+                            var binding = NtfsObjectAccess.BindRoot(state.Root);
+                            if (binding.VolumeId != state.VolumeId || binding.RootFileId != state.RootFileId)
+                                throw new SysBoxOperationException(new("REBUILD_REQUIRED", "盘符对应的卷身份已变化。"));
+                            using var reader = broker.Open(state.VolumeId);
+                            await ntfs.CatchUpAsync(state.Root, reader, token);
+                        }
+                        catch (OperationCanceledException) when (token.IsCancellationRequested) { throw; }
+                        catch (Exception error) { await ntfs.SetFailureAsync(state.Root, error, token); }
+                    }
+                    Volatile.Write(ref ntfsTrackingError, null);
+                }
+                catch (OperationCanceledException) when (token.IsCancellationRequested) { throw; }
+                catch (Exception error) { Volatile.Write(ref ntfsTrackingError, error is SysBoxOperationException operation ? operation.Error.Code : "NTFS_INDEX_UNAVAILABLE"); }
+            }
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested) { }
     }
 }
