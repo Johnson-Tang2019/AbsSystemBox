@@ -18,13 +18,39 @@
                         <ComboBoxItem Content="深色" />
                     </ComboBox>
                     <TextBlock x:Name="AppliedThemeText" AutomationProperties.AutomationId="AppliedTheme" Style="{StaticResource BodyCopyStyle}" />
-                    <TextBlock Text="主题即时生效，本次选择在退出应用后重置。关闭系统透明效果时使用不透明背景。" Style="{StaticResource BodyCopyStyle}" />
+                    <TextBlock Text="主题即时生效并保存。关闭系统透明效果时使用不透明背景。" Style="{StaticResource BodyCopyStyle}" />
                 </StackPanel>
             </Border>
             <Border Style="{StaticResource SurfaceStyle}">
                 <StackPanel Spacing="12">
                     <TextBlock Text="由你掌控" FontSize="18" FontWeight="SemiBold" />
-                    <TextBlock Text="当前不在后台扫描，也不执行内存清理。关闭窗口即退出应用。" Style="{StaticResource BodyCopyStyle}" />
+                    <CheckBox x:Name="BallEnabled" Content="显示内存悬浮球" AutomationProperties.AutomationId="EnableFloatingBall"/>
+                    <CheckBox x:Name="TrayEnabled" Content="关闭主窗口后保留托盘（完全退出停止所有任务）" AutomationProperties.AutomationId="EnableTray"/>
+                    <ComboBox x:Name="HotKeyPicker" Header="全局快捷搜索键" AutomationProperties.AutomationId="DesktopHotKey"><ComboBoxItem Content="关闭"/><ComboBoxItem Content="Ctrl + Alt + Space"/><ComboBoxItem Content="Ctrl + Alt + Q"/><ComboBoxItem Content="Ctrl + Alt + S"/></ComboBox>
+                    <StackPanel Orientation="Horizontal" Spacing="8"><Button Content="保存桌面设置" Click="SaveDesktop_Click" AutomationProperties.AutomationId="SaveDesktop"/><Button Content="打开快捷搜索" Click="QuickSearch_Click" AutomationProperties.AutomationId="OpenQuickSearch"/><Button Content="完全退出" Click="Exit_Click" AutomationProperties.AutomationId="ExitApplication"/></StackPanel>
+                    <CheckBox x:Name="StartupEnabled" Content="登录 Windows 后启动（仅当前用户）" />
+                    <Button Content="保存登录启动设置" Click="Startup_Click"/>
+                    <TextBlock x:Name="StartupStatus" TextWrapping="Wrap"/>
+                    <TextBlock x:Name="DesktopStatus" TextWrapping="Wrap" AutomationProperties.AutomationId="DesktopStatus"/>
+                    <TextBlock Text="默认不自启动、不自动扫描；内存清理默认关闭，需在下方单独启用并确认。" Style="{StaticResource BodyCopyStyle}"/>
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource SurfaceStyle}">
+                <StackPanel Spacing="12">
+                    <TextBlock Text="内存清理（默认关闭）" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <TextBlock Text="仅调整你允许的当前用户后台进程工作集，可能增加后续调页。排除前台、系统、提升权限、其他会话和启动未满 120 秒的进程；每轮至多 2 项，每小时至多 6 轮。不会清空系统缓存或 Standby List。" Style="{StaticResource BodyCopyStyle}"/>
+                    <CheckBox x:Name="CleanupEnabled" Content="启用自动清理（保存时需要确认）" AutomationProperties.AutomationId="CleanupEnabled"/>
+                    <CheckBox x:Name="ThresholdEnabled" Content="阈值清理" IsChecked="True" AutomationProperties.AutomationId="ThresholdCleanup"/>
+                    <NumberBox x:Name="CleanupThreshold" Header="内存使用率阈值（%）" Value="85" Minimum="50" Maximum="98"/>
+                    <NumberBox x:Name="CleanupHold" Header="持续超过阈值的秒数" Value="45" Minimum="10" Maximum="3600"/>
+                    <CheckBox x:Name="PeriodicEnabled" Content="定期清理（内存使用率至少 50% 才执行）" AutomationProperties.AutomationId="PeriodicCleanup"/>
+                    <NumberBox x:Name="CleanupPeriod" Header="定期间隔（分钟）" Value="30" Minimum="5" Maximum="1440"/>
+                    <NumberBox x:Name="CleanupCooldown" Header="两轮之间的最短冷却（秒）" Value="300" Minimum="60" Maximum="86400"/>
+                    <NumberBox x:Name="CleanupMinimum" Header="目标进程最小工作集（MiB）" Value="256" Minimum="64" Maximum="65536"/>
+                    <TextBox x:Name="CleanupNames" Header="允许处理的进程名，以逗号分隔" PlaceholderText="例如 chrome.exe；为空时不允许启用" AutomationProperties.AutomationId="CleanupNames"/>
+                    <Button x:Name="SaveCleanup" Content="保存清理设置" Click="SaveCleanup_Click" AutomationProperties.AutomationId="SaveCleanup"/>
+                    <Button Content="读取清理状态与最近审计" Click="ReadCleanup_Click"/>
+                    <TextBlock x:Name="CleanupStatus" TextWrapping="Wrap" AutomationProperties.AutomationId="CleanupStatus"/>
                 </StackPanel>
             </Border>
         </StackPanel>

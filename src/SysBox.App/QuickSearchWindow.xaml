@@ -1,0 +1,12 @@
+<Window x:Class="SysBox.App.QuickSearchWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:p="using:SysBox.Presentation" Title="AbsSystemBox 快捷搜索">
+    <Window.SystemBackdrop><DesktopAcrylicBackdrop /></Window.SystemBackdrop>
+    <Grid x:Name="Root" Padding="20" RowSpacing="10" Background="{ThemeResource ShellTintBrush}" KeyDown="Root_KeyDown">
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+        <TextBox x:Name="QueryBox" PlaceholderText="搜索已建立索引的文件 · Esc 关闭" Text="{x:Bind ViewModel.Query,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" AutomationProperties.AutomationId="QuickQuery"/>
+        <TextBlock Grid.Row="1" Text="{x:Bind ViewModel.Status,Mode=OneWay}" TextWrapping="Wrap" AutomationProperties.AutomationId="QuickStatus"/>
+        <ListView x:Name="Results" Grid.Row="2" ItemsSource="{x:Bind ViewModel.Results}" SelectionChanged="Results_SelectionChanged" IsItemClickEnabled="True" ItemClick="Results_ItemClick" AutomationProperties.AutomationId="QuickResults">
+            <ListView.ItemTemplate><DataTemplate x:DataType="p:SearchResultRow"><StackPanel Padding="4"><TextBlock Text="{x:Bind Name}" FontWeight="SemiBold"/><TextBlock Text="{x:Bind Path}" TextTrimming="CharacterEllipsis" Opacity="0.7"/></StackPanel></DataTemplate></ListView.ItemTemplate>
+        </ListView>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="8"><Button Content="定位所选文件" Click="Reveal_Click"/><Button Content="返回主窗口" Click="Main_Click"/></StackPanel>
+    </Grid>
+</Window>

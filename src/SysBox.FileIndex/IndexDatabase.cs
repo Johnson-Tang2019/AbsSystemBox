@@ -26,7 +26,11 @@ public sealed class IndexDatabase(string directory)
 
     private sealed class WriterLease(FileStream stream, SemaphoreSlim semaphore) : IDisposable
     {
-        public void Dispose() { stream.Dispose(); semaphore.Release(); }
+        public void Dispose()
+        {
+            stream.Dispose();
+            semaphore.Release();
+        }
     }
 
     // Only trusted data modules use this connection. No SQL is accepted from UI/Agent callers.
@@ -36,8 +40,11 @@ public sealed class IndexDatabase(string directory)
         Directory.CreateDirectory(DirectoryPath);
         var connection = new SqliteConnection(new SqliteConnectionStringBuilder
         {
-            DataSource = Path.Combine(DirectoryPath, "metadata.db"), Pooling = false,
-            ForeignKeys = true, DefaultTimeout = 2, Mode = readOnly ? SqliteOpenMode.ReadOnly : SqliteOpenMode.ReadWriteCreate
+            DataSource = Path.Combine(DirectoryPath, "metadata.db"),
+            Pooling = false,
+            ForeignKeys = true,
+            DefaultTimeout = 2,
+            Mode = readOnly ? SqliteOpenMode.ReadOnly : SqliteOpenMode.ReadWriteCreate
         }.ToString());
         try
         {
@@ -45,7 +52,8 @@ public sealed class IndexDatabase(string directory)
             using var version = connection.CreateCommand();
             version.CommandText = "PRAGMA user_version";
             var current = Convert.ToInt32(version.ExecuteScalar());
-            if (current is not (1 or 2)) throw new SysBoxOperationException(new("INDEX_SCHEMA", "索引版本不受支持，请先备份缓存。"));
+            if (current is not (1 or 2))
+                throw new SysBoxOperationException(new("INDEX_SCHEMA", "索引版本不受支持，请先备份缓存。"));
             return connection;
         }
         catch { connection.Dispose(); throw; }
@@ -55,16 +63,24 @@ public sealed class IndexDatabase(string directory)
     {
         using var connection = new SqliteConnection(new SqliteConnectionStringBuilder
         {
-            DataSource = Path.Combine(DirectoryPath, "metadata.db"), Pooling = false,
-            ForeignKeys = true, DefaultTimeout = 2
+            DataSource = Path.Combine(DirectoryPath, "metadata.db"),
+            Pooling = false,
+            ForeignKeys = true,
+            DefaultTimeout = 2
         }.ToString());
         connection.Open();
         using var command = connection.CreateCommand();
         command.CommandText = "PRAGMA user_version";
         var version = Convert.ToInt32(command.ExecuteScalar());
-        if (version > 2) throw new SysBoxOperationException(new("INDEX_SCHEMA", "索引版本较新，当前程序无法读取。"));
-        if (version == 2) return;
-        if (version == 1) { MigrateSizes(connection); return; }
+        if (version > 2)
+            throw new SysBoxOperationException(new("INDEX_SCHEMA", "索引版本较新，当前程序无法读取。"));
+        if (version == 2)
+            return;
+        if (version == 1)
+        {
+            MigrateSizes(connection);
+            return;
+        }
         command.CommandText = "PRAGMA journal_mode=WAL";
         if (!string.Equals(Convert.ToString(command.ExecuteScalar()), "wal", StringComparison.OrdinalIgnoreCase))
             throw new IOException("WAL unavailable.");
@@ -96,7 +112,8 @@ public sealed class IndexDatabase(string directory)
     private static void MigrateSizes(SqliteConnection connection)
     {
         using var transaction = connection.BeginTransaction();
-        using var command = connection.CreateCommand(); command.Transaction = transaction;
+        using var command = connection.CreateCommand();
+        command.Transaction = transaction;
         command.CommandText = """
             ALTER TABLE file_objects ADD COLUMN size_state TEXT NOT NULL DEFAULT 'logical-only';
             ALTER TABLE file_objects ADD COLUMN size_updated_utc TEXT;
@@ -106,13 +123,15 @@ public sealed class IndexDatabase(string directory)
                 files INTEGER NOT NULL, folders INTEGER NOT NULL, hardlinked_entries INTEGER NOT NULL);
             PRAGMA user_version=2;
             """;
-        command.ExecuteNonQuery(); transaction.Commit();
+        command.ExecuteNonQuery();
+        transaction.Commit();
     }
 
     public Task<IReadOnlyList<IndexRoot>> ReadRootsAsync(CancellationToken token) => Task.Run<IReadOnlyList<IndexRoot>>(() =>
     {
         token.ThrowIfCancellationRequested();
-        if (!File.Exists(Path.Combine(DirectoryPath, "metadata.db"))) return [];
+        if (!File.Exists(Path.Combine(DirectoryPath, "metadata.db")))
+            return [];
         using var connection = Open();
         using var command = connection.CreateCommand();
         command.CommandText = "SELECT v.root,v.active_generation,s.report_json FROM volumes v JOIN index_state s USING(scope_id) ORDER BY v.root LIMIT 256";
@@ -135,7 +154,8 @@ public sealed class IndexDatabase(string directory)
         return Task.Run<IReadOnlyList<FileEntry>>(() =>
         {
             token.ThrowIfCancellationRequested();
-            if (!File.Exists(Path.Combine(DirectoryPath, "metadata.db"))) return [];
+            if (!File.Exists(Path.Combine(DirectoryPath, "metadata.db")))
+                return [];
             using var connection = Open();
             using var command = connection.CreateCommand();
             command.CommandText = """
@@ -144,7 +164,8 @@ public sealed class IndexDatabase(string directory)
                 JOIN volumes v ON v.scope_id=e.scope_id AND v.active_generation=e.generation
                 WHERE v.root=$r ORDER BY e.cached_path COLLATE BINARY LIMIT $limit;
                 """;
-            command.Parameters.AddWithValue("$r", root); command.Parameters.AddWithValue("$limit", limit);
+            command.Parameters.AddWithValue("$r", root);
+            command.Parameters.AddWithValue("$limit", limit);
             using var reader = command.ExecuteReader();
             var entries = new List<FileEntry>();
             while (reader.Read())
@@ -169,7 +190,7 @@ public sealed class IndexDatabase(string directory)
             using var transaction = connection.BeginTransaction();
             using var command = connection.CreateCommand();
             command.Transaction = transaction;
-            command.CommandText = "DELETE FROM directory_entries; DELETE FROM file_objects; DELETE FROM index_state; DELETE FROM volumes;";
+            command.CommandText = "DELETE FROM directory_entries; DELETE FROM file_objects; DELETE FROM index_state; DELETE FROM volumes; DROP TABLE IF EXISTS ntfs_nodes; DROP TABLE IF EXISTS ntfs_sync;";
             command.ExecuteNonQuery();
             transaction.Commit();
             command.Transaction = null;

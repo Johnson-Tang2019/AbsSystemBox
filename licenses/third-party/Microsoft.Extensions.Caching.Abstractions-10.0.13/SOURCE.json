@@ -1,0 +1,13 @@
+{
+  "name": "Microsoft.Extensions.Caching.Abstractions",
+  "version": "10.0.13",
+  "license": "MIT",
+  "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+  "authors": "Microsoft",
+  "copyright": "© Microsoft Corporation. All rights reserved.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dotnet/dotnet",
+    "commit": "4099f83977f4d29604a9aeb971fb0a7bc1d5f699"
+  }
+}

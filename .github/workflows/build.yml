@@ -2,6 +2,12 @@ name: Windows build and tests
 on:
   push:
   pull_request:
+  workflow_dispatch:
+    inputs:
+      test_filter:
+        description: New tests only; leave empty to reuse accepted reports
+        required: false
+        default: ''
 permissions:
   contents: read
 jobs:
@@ -17,12 +23,17 @@ jobs:
       - name: Build
         run: dotnet build SysBox.slnx -c Release --no-restore
       - name: Test
-        run: dotnet test SysBox.slnx -c Release --no-build --no-restore --logger trx --results-directory artifacts/test-results
+        if: github.event_name == 'workflow_dispatch' && inputs.test_filter != ''
+        env:
+          TEST_FILTER: ${{ inputs.test_filter }}
+        run: |
+          $filter = $env:TEST_FILTER
+          dotnet test SysBox.slnx -c Release --no-build --no-restore --filter "$filter" --logger trx --results-directory artifacts/test-results
       - name: Verify WinUI publish resources
         run: |
           dotnet publish src/SysBox.App/SysBox.App.csproj -c Release --no-restore -p:Platform=x64 -o artifacts/publish
           if ($LASTEXITCODE -ne 0) { throw 'Publish failed' }
-          foreach ($file in @('App.xbf','MainWindow.xbf','SysBox.App.pri','Themes/PinkTheme.xbf','Controls/BatteryCard.xbf','Views/RulesPage.xbf','Views/SearchPage.xbf','Views/StoragePage.xbf','Controls/StorageTreemap.xbf')) {
+          foreach ($file in @('App.xbf','MainWindow.xbf','FloatingBallWindow.xbf','QuickSearchWindow.xbf','SysBox.App.pri','Themes/PinkTheme.xbf','Controls/BatteryCard.xbf','Views/RulesPage.xbf','Views/SearchPage.xbf','Views/StoragePage.xbf','Controls/StorageTreemap.xbf')) {
             if (-not (Test-Path (Join-Path artifacts/publish $file))) { throw "Missing WinUI resource: $file" }
           }
       - uses: actions/upload-artifact@v4

@@ -1,0 +1,12 @@
+{
+  "name": "SQLitePCLRaw.bundle_e_sqlite3",
+  "version": "2.1.13",
+  "license": "Apache-2.0",
+  "licenseSource": "Shared SQLitePCLRaw 2.1.13 original Apache-2.0 license",
+  "authors": "Eric Sink",
+  "copyright": "Copyright 2014-2024 SourceGear, LLC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ericsink/SQLitePCL.raw"
+  }
+}

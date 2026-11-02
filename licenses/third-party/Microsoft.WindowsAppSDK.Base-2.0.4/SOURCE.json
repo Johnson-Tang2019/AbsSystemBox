@@ -1,0 +1,9 @@
+{
+  "name": "Microsoft.WindowsAppSDK.Base",
+  "version": "2.0.4",
+  "license": "license.txt",
+  "licenseSource": "NuGet package license file: license.txt",
+  "authors": "Microsoft",
+  "copyright": "© Microsoft Corporation. All rights reserved.",
+  "repository": {}
+}

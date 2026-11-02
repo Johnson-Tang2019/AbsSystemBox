@@ -1,12 +1,16 @@
-# 当前架构（普通目录大小与磁盘页阶段）
+# 当前架构（桌面入口、CoreHost 与 Agent 接口）
 
-当前有 7 个核心类库、Native 和 Presentation 类库、WinUI 桌面应用及一个测试工程。
-只运行用户态桌面进程，无后台宿主、服务、IPC 或网络监听。
+WinUI、CLI 与 MCP 通过 SysBox.Transport 连接用户态 CoreHost，所有扫描、数据库、搜索、大小、规则与清理业务由后台持有。
+没有 TCP/HTTP 监听，也没有已部署的特权 NTFS 服务。电池为 WinRT 平台薄适配器，桌面托盘/快捷键/工作集操作在 Native。
 
 ```text
 Core      -> Abstractions
 Presentation -> Core, Abstractions, CommunityToolkit.Mvvm
 App       -> Presentation, Core, Abstractions, Memory, Rules, Microsoft.Extensions.DependencyInjection
+Transport -> Abstractions, Rules (DTO); versioned local pipe, peer verification, fixed host launcher
+CoreHost  -> Transport, Core, Memory, Rules, FileIndex, Search, Storage (user-mode Generic Host)
+Cli       -> Transport (bounded JSON commands)
+Mcp       -> Transport, official ModelContextProtocol SDK (stdio only)
 Native    -> Abstractions / kernel32.dll / shell32.dll (read-only metadata and explicit desktop shell actions)
 Memory    -> Abstractions, Native
 FileIndex -> Abstractions
@@ -20,7 +24,7 @@ NtfsLab   -> Native, FileIndex (isolated probe only)
 Abstractions 定义 DTO、Result/Error、内存/搜索/存储接口。
 Memory 已实现 WindowsMemoryMonitor 和 WindowsProcessMemoryMonitor。
 Search 实现 AST/参数化分页查询，Storage 实现共享快照的目录摘要/下一层排行；FileIndex 实现普通目录索引、SQLite 快照与大小汇总；Rules 已实现有界解析、模拟、版本事务和审批。
-Core 提供同进程 DashboardClient，尚未实现后台宿主；规则配置持久化由 Rules 管理。
+Core 的 DashboardClient 委托远程 IMemoryMonitor；规则配置持久化由后台 Rules 管理。
 核心契约和 ViewModel 可以在非 Windows 环境测试；App 仅构建 Windows x64。
 
 App 来自官方 `winui` 模板，再按微软指南改为 unpackaged/self-contained。
@@ -30,7 +34,7 @@ ThemeService 为窗口根元素应用 System/Light/Dark；毛玻璃由 DesktopAc
 
 App 的启动组合根使用依赖注入。页面只解析 ViewModel、绑定状态和处理界面导航；
 Presentation/DashboardViewModel 位于独立纯 .NET 类库，以便对取消和异步竞争进行测试。
-Core/IDashboardClient 通过 IMemoryMonitor 调用同进程服务，后续可替换为 IPC 客户端。
+Core/IDashboardClient 通过 IMemoryMonitor 调用远程后台；以下页面生命周期延续 M2 的有界模型。
 普通模式通过 WindowsMemoryApi 调用原生只读 API；Debug --demo 才注入三种模拟客户端/采集器。
 Release 通过条件编译排除所有模拟实现。
 
@@ -47,7 +51,7 @@ Native 使用顺序布局结构体和 SafeProcessHandle。每个进程只用一�
 读取工作集、私有提交、路径和启动时间；不请求 VM_READ、终止/调整工作集权限或 SeDebugPrivilege。
 API 返回的进程集合有界、枚举有上限，进程失败不终止整个批次。
 
-CoreHost、CLI、MCP、可选 Service 尚未建立。
+CoreHost、CLI、MCP 已建立。可选特权 Service 尚未建立。
 UI 不引用原生扫描代码。后续特权组件须独立审查，不能转发任意命令。
 
 规则持久化、审计与审批已实现；SQLite 普通目录索引已实现，通用日志尚未实现。路径、数据结构及目标架构详见实施手册，
@@ -60,7 +64,7 @@ tests/Windows 中的令牌探针和受限权限启动器仅由开发验收脚本
 Abstractions 定义规则 DTO、只读采样序列和 IRuleService；Presentation/RulesViewModel 编辑与显示报告。
 Rules 中 RuleValidator 通过有界 YAML 事件流构造 JSON 树，按嵌入 Schema 和安全语义验证。
 RuleSimulator/RuleEngine 不依赖 WinUI 或原生 API，不执行清理。RuleWorkspace 独占锁及原子事务保存有效 YAML、版本、提案和审计。
-Agent-facing RuleDraftService 仅实现 IRuleService；独立 IRuleReview 只注入可信 UI，当前没有 Agent 传输层。
+Agent 传输层只开放校验/模拟/提案；后台根据系统验证的进程身份限制审批。独立 IRuleReview 由 UI 远程适配器调用。
 规则页 ContentDialog 显示不可变提案并决定批准/拒绝；取消不应用。回滚也走提案/审批并递增版本。
 
 RuleObserver 在窗口存活期间读取系统内存，保存最长 30 分钟/1024 点的轻量历史，不枚举进程。
@@ -83,7 +87,7 @@ scripts/build-installer.ps1 从干净提交发布 x64、自包含输出，明确
 
 ## M4/M5 文件模块
 
-App 注入 IndexDatabase、IFileIndexService 和 IIndexedSearchService；Presentation 的 IndexViewModel/SearchViewModel 不依赖 SQLite 或 Win32。
+App 注入远程 IFileIndexService/IIndexedSearchService/IStorageBrowser，不持有 IndexDatabase；Presentation 不依赖 SQLite 或 Win32。
 FileIndex 管理 schema/连接/单写者/generation，Search 仅打开可信的只读数据库连接，公共业务接口不接受 SQL。
 查询在读事务中固定活动快照并按摘要拒绝跨代分页，UI 集合每页替换、有界保留，离开取消并屏蔽迟到结果。
 ShellFileActions 的 PIDL 用 SafeHandle 释放，只由本机明确操作调用。具体口径与边界见 INDEXING.md、SEARCH.md。
@@ -95,3 +99,16 @@ M6 实验接口 INtfsVolumeReader 与解析器尚未进入 App 组合根。NtfsL
 IFileSizeReader 属于 Abstractions，Native/WindowsFileSizeReader 实现属性句柄读取；FileIndex 仅使用端口，UI 不遍历文件系统。
 Migration 2/FolderTotalsBuilder 负责大小来源、后序汇总和事务发布。IndexedStorageBrowser 在单读事务返回 StorageView，StorageViewModel 管理页面生命周期与有界导航历史。
 TreemapLayout 是纯几何算法，StorageTreemap 仅绘制有界按钮并发送导航事件，不执行扫描。口径与剩余任务见 STORAGE.md。
+
+## 桌面与清理
+
+DesktopController 持有主题/悬浮球/快捷搜索/关闭策略；DesktopPreferenceStore 原子保存偏好。
+Native DesktopShell 独立 STA 消息循环拥有 HWND、图标、菜单和热键 SafeHandle，Explorer TaskbarCreated 后重建图标。
+托盘拒绝时保留悬浮球与快捷搜索并禁用关闭隐藏，防止无法恢复窗口。快捷键检查全屏前台窗口，不抢占游戏焦点。
+悬浮球只读内存、每 5 秒更新、可拖动并限制工作区；不包含一键危险清理。
+每 30 秒桌面续期，后台退出撤销租约；无轮询任务 30 秒取消，后台空闲两分钟退出。
+后台固定路径启动不继承 CLI/MCP 标准句柄，避免子进程延迟 CLI stdout EOF。
+
+CleanupSchedule 为阈值/定期/冷却纯状态机，CleanupSupervisor 管理持久化和活动桌面租约，UserWorkingSetTrimmer 选择白名单候选。
+WorkingSetAccess 使用最小权限 SafeProcessHandle，再检查 PID/启动时间/用户/会话/提升权限/映像/前台后调用原生工作集收缩。
+仅桌面确认配置可启用；Agent 布尔参数不能授权。默认关闭、审计失败停用；与 YAML 的通知/提案执行分离，详见 CLEANUP.md。

@@ -1,0 +1,1 @@
+<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0-windows</TargetFramework></PropertyGroup><ItemGroup><ProjectReference Include="../SysBox.Abstractions/SysBox.Abstractions.csproj"/><ProjectReference Include="../SysBox.Rules/SysBox.Rules.csproj"/></ItemGroup></Project>

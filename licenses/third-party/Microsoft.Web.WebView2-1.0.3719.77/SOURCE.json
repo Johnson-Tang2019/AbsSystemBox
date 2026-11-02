@@ -1,0 +1,9 @@
+{
+  "name": "Microsoft.Web.WebView2",
+  "version": "1.0.3719.77",
+  "license": "LICENSE.txt",
+  "licenseSource": "NuGet package license file: LICENSE.txt",
+  "authors": "Microsoft",
+  "copyright": "© Microsoft Corporation. All rights reserved.",
+  "repository": {}
+}

@@ -12,6 +12,7 @@
             </StackPanel>
         <Border Grid.Row="1" Style="{StaticResource SurfaceStyle}">
             <StackPanel Spacing="8">
+                <ComboBox x:Name="Volumes" Header="卷容量（不自动扫描；分析时请选择卷内文件夹）" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="VolumeCapacityList"/>
                 <TextBox Text="{x:Bind ViewModel.Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="分析文件夹" PlaceholderText="选择一个文件夹，不自动扫描整卷" AutomationProperties.AutomationId="StoragePath" />
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                     <StackPanel Orientation="Horizontal" Spacing="8">
@@ -32,6 +33,7 @@
             <ComboBox SelectedIndex="0" SelectionChanged="Sort_Changed" AutomationProperties.AutomationId="StorageSort">
                 <ComboBoxItem Content="按逻辑大小" /><ComboBoxItem Content="按文件数" />
             </ComboBox>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" MaxWidth="450"><StackPanel x:Name="Breadcrumbs" Orientation="Horizontal" Spacing="4"/></ScrollViewer>
         </StackPanel>
         <Grid Grid.Row="3" ColumnSpacing="12" SizeChanged="Body_SizeChanged">
             <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>

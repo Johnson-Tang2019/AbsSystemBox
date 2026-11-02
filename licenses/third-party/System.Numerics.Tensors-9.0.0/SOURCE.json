@@ -1,0 +1,13 @@
+{
+  "name": "System.Numerics.Tensors",
+  "version": "9.0.0",
+  "license": "MIT",
+  "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+  "authors": "Microsoft",
+  "copyright": "© Microsoft Corporation. All rights reserved.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dotnet/runtime",
+    "commit": "9d5a6a9aa463d6d10b0b0ba6d5982cc82f363dc3"
+  }
+}

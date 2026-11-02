@@ -1,0 +1,7 @@
+{
+  "configuration": "Debug",
+  "checks": [
+    "Trusted restricted UI explicitly confirmed periodic fixture-only policy, persisted it and disabled it without additional approval",
+    "Diagnostic UI reads separate host health and exports real redacted JSON through the system file picker"
+  ]
+}

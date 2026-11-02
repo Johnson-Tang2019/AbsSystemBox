@@ -118,7 +118,36 @@ FunctionEnd
 !insertmacro CLEAN_PAYLOAD ""
 !insertmacro CLEAN_PAYLOAD "un."
 
+!macro CHECK_AGENTS FN
+Function ${FN}CheckAgents
+  System::Call 'kernel32::OpenMutexW(i 0x100000,i 0,w "Local\AbsSystemBox.CoreHost")p.r0 ?e'
+  Pop $1
+  ${If} $0 != 0
+    System::Call 'kernel32::CloseHandle(p r0)'
+    Goto agents_busy
+  ${ElseIf} $1 == 5
+    Goto agents_busy
+  ${EndIf}
+  System::Call 'kernel32::OpenMutexW(i 0x100000,i 0,w "Local\AbsSystemBox.Agent")p.r0 ?e'
+  Pop $1
+  ${If} $0 != 0
+    System::Call 'kernel32::CloseHandle(p r0)'
+    Goto agents_busy
+  ${ElseIf} $1 == 5
+    Goto agents_busy
+  ${EndIf}
+  Return
+agents_busy:
+  MessageBox MB_OK|MB_ICONEXCLAMATION "请先退出 AbsSystemBox、关闭 CLI/MCP 连接并等待后台退出（空闲最多两分钟），再安装、更新或卸载。" /SD IDOK
+  SetErrorLevel 4
+  Abort
+FunctionEnd
+!macroend
+!insertmacro CHECK_AGENTS ""
+!insertmacro CHECK_AGENTS "un."
+
 Function CheckBusy
+  Call CheckAgents
   System::Call 'kernel32::OpenMutexW(i 0x100000,i 0,w "Local\AbsSystemBox.Desktop")p.r0'
   IntCmp $0 0 check_file
   System::Call 'kernel32::CloseHandle(p r0)'
@@ -308,6 +337,7 @@ un_setup_busy:
   SetErrorLevel 6
   Abort
 un_setup_ready:
+  Call un.CheckAgents
   System::Call 'kernel32::OpenMutexW(i 0x100000,i 0,w "Local\AbsSystemBox.Desktop")p.r0'
   IntCmp $0 0 un_ready
   System::Call 'kernel32::CloseHandle(p r0)'
@@ -334,6 +364,10 @@ Section "Uninstall"
   Delete "$SMPROGRAMS\AbsSystemBox\卸载.lnk"
   RMDir "$SMPROGRAMS\AbsSystemBox"
   DeleteRegKey HKCU "${UNINSTALL_KEY}"
+  ReadRegStr $0 HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "AbsSystemBox"
+  StrCmp $0 '$\"$INSTDIR\app\SysBox.App.exe$\"' 0 keep_startup
+  DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "AbsSystemBox"
+keep_startup:
   Delete "$INSTDIR\.sysbox-install"
   Delete "$INSTDIR\Uninstall.exe"
   RMDir "$INSTDIR"

@@ -1,0 +1,9 @@
+{
+  "name": "Microsoft.WindowsAppSDK.DWrite",
+  "version": "2.1.0",
+  "license": "license.txt",
+  "licenseSource": "NuGet package license file: license.txt",
+  "authors": "Microsoft",
+  "copyright": "© Microsoft Corporation. All rights reserved.",
+  "repository": {}
+}

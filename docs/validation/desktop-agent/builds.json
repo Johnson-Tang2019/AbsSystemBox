@@ -1,0 +1,17 @@
+{
+  "sdk": "10.0.403",
+  "lockedRestore": "passed",
+  "scope": "Full solution compilation only, no old tests rerun",
+  "debug": {
+    "warnings": 0,
+    "errors": 0
+  },
+  "release": {
+    "warnings": 0,
+    "errors": 0
+  },
+  "sourceDirtyDuringBuild": true,
+  "installerBuilt": false,
+  "published": false,
+  "installed": false
+}

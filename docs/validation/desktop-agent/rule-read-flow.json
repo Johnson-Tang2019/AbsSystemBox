@@ -1,0 +1,7 @@
+{
+  "checks": [
+    "CLI rules read and MCP rules_read return matching active YAML revision/hash",
+    "New MCP rules_history returns bounded metadata without mutation"
+  ],
+  "toolCount": 12
+}

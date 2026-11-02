@@ -1,7 +1,20 @@
-# 核心与界面客户端契约（普通目录空间分析阶段）
+# 核心、用户管道与界面客户端契约
 
-当前仅有 C# 接口，无 CLI、IPC、MCP、HTTP 服务。
-协议版本常量为 `1.0`；对外服务正式接入时再冻结兼容性。
+当前已有 C# 端口、用户态 CoreHost、本地 Named Pipe、CLI 与 MCP stdio；无 HTTP 监听。
+线协议版本 `1.0`。四字节 little-endian 长度 + UTF-8 JSON，单帧 2 字节–8 MiB，深度最多 32；重复根字段拒绝。
+请求 `{version,method,arguments}`，响应 `{version,value,error}`。错误保留 code/message/details/retryable。
+管道按当前用户 SID 哈希和会话分区，显式 ACL 仅允许当前 SID并拒绝网络 SID，验证对端 PID/SID/会话/固定映像。
+UI 使用 RemoteMemory/RemoteProcesses/RemoteIndex/RemoteSearch/RemoteStorage/RemoteRules，业务实现均在 CoreHost。
+
+只读方法：status、diagnostics、volumes、memory.status/processes、cleanup.status、search、index.status/entries/job、storage.children、rules.read/validate/simulate/observation。
+有限写入：rules.propose；index.scan 仅接受桌面已授权的既有范围，未知范围需 UI 选择。
+可信桌面独有：cleanup.configure、index.clear、rules.approve/reject/rollback、host.stop。
+未知方法返回 METHOD_NOT_FOUND；授权来自操作系统验证的桌面映像，不读取布尔确认参数。
+后台至多 8 个并发客户端、32 个任务记录，已完成记录有界回收；扫描取消保留旧快照。
+diagnostics 只返回版本/OS/架构/权限/资源计数/索引范围数，不含路径和规则内容；volumes 只读容量，不扫描卷。
+CLI/MCP 的命令、样例和输出限制见 [AGENT_API.md](AGENT_API.md)，外层 JSON Schema 见 [cli-response.schema.json](api/cli-response.schema.json)。业务 data 对应下文 DTO；清理策略见 [CLEANUP.md](CLEANUP.md)。
+
+下文保留模块端口与历史阶段细节；“同进程”描述只适用于原始 M1 阶段。
 
 | 接口 | 返回 | 当前行为 |
 |---|---|---|
@@ -23,7 +36,7 @@ MemorySnapshot 中 CommitTotalBytes/CommitLimitBytes 与物理内存独立。
 DataCompleteness = Unknown/Partial/Complete；不能把部分数据标成完整。
 FolderSummary 当前口径为目录项的逻辑字节，未承诺占用空间或硬链接去重。
 FileSearchRequest 默认最多 100 条，允许范围 1–1000；查询文本不能为空白。
-序列化策略与分页协议将在对应里程碑实现；当前不承诺 JSON 字段命名。
+线协议使用 camelCase，字节保持数值；索引分页以活动 generation 摘要拒绝跨代读取。
 
 ## M1 同进程客户端
 
@@ -36,7 +49,7 @@ ErrorMessage/HasError、Status、Snapshot、MemorySummary。Deactivate 取消任
 若客户端返回 NOT_IMPLEMENTED，只显示中文未就绪状态，不转换为 0 或示例读数。
 读取异常使用通用错误提示，不将异常中的私有路径直接显示到界面。
 
-`SysBox.App.Services.ThemeService` 为 UI 会话提供 System/Light/Dark 主题；不写用户配置。
+`SysBox.App.Services.ThemeService` 提供 System/Light/Dark 主题；DesktopPreferenceStore 现已原子保存选择。
 Debug 的 `--demo` 只用于布局验收，不是正式功能或稳定 CLI 接口；Release 不启用它。
 
 ## M2 系统与进程内存

@@ -24,6 +24,7 @@ Build a Windows-native utility with C#, .NET 10 and WinUI 3.
 - Original code is GPL-3.0-or-later; track third-party licenses before adding dependencies.
 
 ## Verification and delivery
+Reuse existing accepted validation reports. Test only new functionality; do not rerun accepted feature tests or old UI flows. CI only runs an explicit new-test filter on manual dispatch; config/validation-scope.txt records remaining new groups.
 Run relevant build/tests. Do not invent results or equate a build with UI/runtime acceptance.
 Update docs/STATUS.md and affected API/architecture documents.
 Report changes, verification, remaining limitations and the next bounded task.

@@ -1,0 +1,13 @@
+{
+  "shortcut": "Ctrl+Alt+Q",
+  "registrationAndPreferenceSave": "passed",
+  "automaticInputProbe": {
+    "api": "SendInput",
+    "insertedEvents": 0,
+    "win32Error": 5,
+    "hotkeyMessageReceived": false
+  },
+  "actualKeyboardTrigger": "not_verified",
+  "systemPermissionSettingsChanged": false,
+  "note": "The OS denied automatic keyboard input; this is not a successful real-keyboard or tray acceptance result."
+}

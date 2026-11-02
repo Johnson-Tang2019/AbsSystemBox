@@ -1,0 +1,13 @@
+{
+  "name": "ModelContextProtocol",
+  "version": "2.3.0",
+  "license": "Apache-2.0",
+  "licenseSource": "https://raw.githubusercontent.com/modelcontextprotocol/csharp-sdk/9a327829ef066c44a0d737c58bf3c7617d7c701c/LICENSE",
+  "authors": "ModelContextProtocol",
+  "copyright": "© Model Context Protocol a Series of LF Projects, LLC.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/modelcontextprotocol/csharp-sdk",
+    "commit": "9a327829ef066c44a0d737c58bf3c7617d7c701c"
+  }
+}

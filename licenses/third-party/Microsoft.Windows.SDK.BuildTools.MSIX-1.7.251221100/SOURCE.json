@@ -1,0 +1,12 @@
+{
+  "name": "Microsoft.Windows.SDK.BuildTools.MSIX",
+  "version": "1.7.251221100",
+  "license": "sdk_license.txt",
+  "licenseSource": "NuGet package license file: sdk_license.txt",
+  "authors": "Microsoft",
+  "copyright": "© Microsoft Corporation. All rights reserved.",
+  "repository": {
+    "type": "git",
+    "commit": "3d99c4ab878d466b1742f96929ec6ccc46e6530b"
+  }
+}

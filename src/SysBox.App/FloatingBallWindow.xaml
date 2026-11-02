@@ -1,0 +1,7 @@
+<Window x:Class="SysBox.App.FloatingBallWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="AbsSystemBox 悬浮球">
+    <Window.SystemBackdrop><DesktopAcrylicBackdrop /></Window.SystemBackdrop>
+    <Grid x:Name="Ball" Background="{ThemeResource ShellTintBrush}" CornerRadius="100" PointerPressed="Ball_Pressed" PointerMoved="Ball_Moved" PointerReleased="Ball_Released" AutomationProperties.AutomationId="FloatingBall" AutomationProperties.Name="内存悬浮球，拖动调整位置，点击打开快捷搜索，右键菜单">
+        <Grid.ContextFlyout><MenuFlyout><MenuFlyoutItem Text="打开主窗口" Click="Main_Click"/><MenuFlyoutItem Text="快捷搜索" Click="Search_Click"/><MenuFlyoutItem Text="隐藏悬浮球" Click="Hide_Click"/><MenuFlyoutItem Text="完全退出" Click="Exit_Click"/></MenuFlyout></Grid.ContextFlyout>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center"><TextBlock x:Name="Percent" Text="—" FontSize="21" FontWeight="SemiBold" HorizontalAlignment="Center" IsHitTestVisible="False"/><TextBlock Text="内存" FontSize="10" HorizontalAlignment="Center" IsHitTestVisible="False"/></StackPanel>
+    </Grid>
+</Window>

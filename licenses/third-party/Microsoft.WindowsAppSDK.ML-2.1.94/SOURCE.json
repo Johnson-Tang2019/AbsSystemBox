@@ -1,0 +1,13 @@
+{
+  "name": "Microsoft.WindowsAppSDK.ML",
+  "version": "2.1.94",
+  "license": "license.txt",
+  "licenseSource": "NuGet package license file: license.txt",
+  "authors": "Microsoft",
+  "copyright": "© Microsoft Corporation. All rights reserved.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoft/windowsml",
+    "commit": "0cc53295b396ea9c054b717a6cfbcee10e4bc40f"
+  }
+}

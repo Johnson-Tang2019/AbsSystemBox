@@ -1,0 +1,18 @@
+{
+  "checks": [
+    "CLI returns real memory and versioned JSON; rejects unknown approval/cleanup commands, output limits and unapproved scopes",
+    "Official MCP SDK negotiates stdio, lists ten bounded tools, returns real memory and cleanup status with no non-protocol stdout"
+  ],
+  "tools": [
+    "sysbox_status",
+    "memory_status",
+    "memory_processes",
+    "file_search",
+    "index_status",
+    "storage_children",
+    "cleanup_status",
+    "rules_validate",
+    "rules_simulate",
+    "rules_propose"
+  ]
+}

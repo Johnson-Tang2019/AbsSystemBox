@@ -14,8 +14,14 @@
                     <TextBlock x:Name="ScaleText" AutomationProperties.AutomationId="UiScale" />
                     <TextBlock x:Name="BatteryText" TextWrapping="Wrap" AutomationProperties.AutomationId="BatterySourceStatus" />
                     <TextBlock Text="许可证：GPL-3.0-or-later" Style="{StaticResource BodyCopyStyle}" />
-                    <InfoBar IsOpen="True" IsClosable="False" Severity="Informational" Title="诊断功能开发中"
-                             Message="此处仅展示基本环境信息，尚未提供日志导出与故障检测。" />
+                    <TextBlock x:Name="HostStatus" Text="正在读取后台健康状态…" TextWrapping="Wrap" AutomationProperties.AutomationId="HostHealth" />
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <Button Content="刷新后台健康" Click="Refresh_Click" />
+                        <Button x:Name="ExportReport" Content="导出脱敏诊断" Click="Export_Click" AutomationProperties.AutomationId="ExportDiagnostics" />
+                    </StackPanel>
+                    <TextBlock x:Name="ExportStatus" Text="导出不含索引路径、文件名、进程列表或规则正文。" TextWrapping="Wrap" />
+                    <InfoBar IsOpen="True" IsClosable="False" Severity="Informational" Title="普通用户模式"
+                             Message="无需管理员或外部搜索软件。NTFS 高速索引服务尚未启用；可在索引页选择目录进行普通扫描。" />
                 </StackPanel>
             </Border>
         </StackPanel>

@@ -1,0 +1,7 @@
+{
+  "checks": [
+    "Restricted UI scope/job publication passed before a harness alias error; resumed only the unverified CLI steps without another scan",
+    "CLI after host restart reads the UI-created file index and 13-byte storage snapshot",
+    "CLI validate/simulate/propose DTOs succeed; actual execution remains zero and active revision remains 1"
+  ]
+}

@@ -53,6 +53,10 @@ M3 新增 YamlDotNet 18.1.0（MIT），仅使用低层 YAML 事件解析器，�
 
 ## 模板、平台与部署
 
+- 新用户态后台使用 Microsoft.Extensions.Hosting 10.0.14 及 Extensions 配置/日志依赖，MIT，逐包原文与 authors/copyright 在 `licenses/third-party/*/SOURCE.json`。
+- MCP 使用官方 ModelContextProtocol / ModelContextProtocol.Core 2.3.0。包元数据为 Apache-2.0；上游正在由 MIT 过渡，已按所用 commit 归档完整原始 LICENSE（同时保留适用 MIT 内容），没有将许可过渡声明删去。
+- 新增运行依赖元数据汇总见 [new-runtime-dependencies.json](docs/new-runtime-dependencies.json)。原有 SQLitePCLRaw 仍使用自身 Apache-2.0 原文，与 MCP 许可分别归档。
+
 - 微软官方 `Microsoft.WindowsAppSDK.WinUI.CSharp.Templates` 0.0.7-alpha 仅用于生成工程；运行依赖使用还原得到的稳定版本，不使用 Reactor。
   [模板来源](https://github.com/microsoft/WindowsAppSDK/tree/main/dev/Templates/Dotnet)。模板代码/默认图标保留上游 MIT 许可，见 licenses/WindowsAppSDK-source-MIT.txt。
 - .NET SDK 10.0.403 是开发工具，不提交、不随应用分发；.NET Runtime 10.0.14 通过自包含输出使用。

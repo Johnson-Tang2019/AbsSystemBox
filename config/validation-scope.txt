@@ -1,0 +1,7 @@
+# DesktopFeaturesTests, CleanupFeaturesTests, TransportFeaturesTests,
+# CleanupNativeFeaturesTests, CleanupPersistenceFeaturesTests are accepted.
+# Do not rerun these groups or old feature/UI flows.
+# NtfsSyncFeaturesTests, MalformedPeerFeaturesTests, RemoteRuleDisplayFeaturesTests,
+# RemoteObservationFeaturesTests and VolumeReadFeaturesTests are also accepted.
+# CleanupLoopFeaturesTests is accepted (controlled inputs, no system cleanup).
+# No outstanding automatic filter: add only the next genuinely new test group.

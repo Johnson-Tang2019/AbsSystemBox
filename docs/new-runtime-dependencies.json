@@ -1,0 +1,665 @@
+[
+  {
+    "name": "CommunityToolkit.Mvvm",
+    "version": "8.4.2",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "(c) .NET Foundation and Contributors. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/CommunityToolkit/dotnet",
+      "branch": "refs/heads/rel/8.4.2",
+      "commit": "35dfe7b12da0e64384bfaec7ebc0883196a89f9f"
+    }
+  },
+  {
+    "name": "Microsoft.Data.Sqlite",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Data.Sqlite.Core",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.AI.Abstractions",
+    "version": "10.11.0",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/extensions",
+      "commit": "25f07afa51034e37b334210642d7dc5f191c142d"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Caching.Abstractions",
+    "version": "10.0.13",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "4099f83977f4d29604a9aeb971fb0a7bc1d5f699"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Configuration",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Configuration.Abstractions",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Configuration.Binder",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Configuration.CommandLine",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Configuration.EnvironmentVariables",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Configuration.FileExtensions",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Configuration.Json",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Configuration.UserSecrets",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.DependencyInjection",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.DependencyInjection.Abstractions",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Diagnostics",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Diagnostics.Abstractions",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.FileProviders.Abstractions",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.FileProviders.Physical",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.FileSystemGlobbing",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Hosting",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Hosting.Abstractions",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Logging",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Logging.Abstractions",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Logging.Configuration",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Logging.Console",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Logging.Debug",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Logging.EventLog",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Logging.EventSource",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Options",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Options.ConfigurationExtensions",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Extensions.Primitives",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "Microsoft.Web.WebView2",
+    "version": "1.0.3719.77",
+    "license": "LICENSE.txt",
+    "licenseSource": "NuGet package license file: LICENSE.txt",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {}
+  },
+  {
+    "name": "Microsoft.Windows.AI.MachineLearning",
+    "version": "2.1.74",
+    "license": "license.txt",
+    "licenseSource": "NuGet package license file: license.txt",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {}
+  },
+  {
+    "name": "Microsoft.Windows.SDK.BuildTools.MSIX",
+    "version": "1.7.251221100",
+    "license": "sdk_license.txt",
+    "licenseSource": "NuGet package license file: sdk_license.txt",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "commit": "3d99c4ab878d466b1742f96929ec6ccc46e6530b"
+    }
+  },
+  {
+    "name": "Microsoft.WindowsAppSDK",
+    "version": "2.5.1",
+    "license": "license.txt",
+    "licenseSource": "NuGet package license file: license.txt",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {}
+  },
+  {
+    "name": "Microsoft.WindowsAppSDK.AI",
+    "version": "2.5.5",
+    "license": "license.txt",
+    "licenseSource": "NuGet package license file: license.txt",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {}
+  },
+  {
+    "name": "Microsoft.WindowsAppSDK.Base",
+    "version": "2.0.4",
+    "license": "license.txt",
+    "licenseSource": "NuGet package license file: license.txt",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {}
+  },
+  {
+    "name": "Microsoft.WindowsAppSDK.DWrite",
+    "version": "2.1.0",
+    "license": "license.txt",
+    "licenseSource": "NuGet package license file: license.txt",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {}
+  },
+  {
+    "name": "Microsoft.WindowsAppSDK.Foundation",
+    "version": "2.3.12",
+    "license": "license.txt",
+    "licenseSource": "NuGet package license file: license.txt",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {}
+  },
+  {
+    "name": "Microsoft.WindowsAppSDK.InteractiveExperiences",
+    "version": "2.1.9",
+    "license": "license.txt",
+    "licenseSource": "NuGet package license file: license.txt",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {}
+  },
+  {
+    "name": "Microsoft.WindowsAppSDK.ML",
+    "version": "2.1.94",
+    "license": "license.txt",
+    "licenseSource": "NuGet package license file: license.txt",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/microsoft/windowsml",
+      "commit": "0cc53295b396ea9c054b717a6cfbcee10e4bc40f"
+    }
+  },
+  {
+    "name": "Microsoft.WindowsAppSDK.Runtime",
+    "version": "2.5.1",
+    "license": "license.txt",
+    "licenseSource": "NuGet package license file: license.txt",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {}
+  },
+  {
+    "name": "Microsoft.WindowsAppSDK.Search",
+    "version": "2.5.5",
+    "license": "license.txt",
+    "licenseSource": "NuGet package license file: license.txt",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {}
+  },
+  {
+    "name": "Microsoft.WindowsAppSDK.Widgets",
+    "version": "2.0.5",
+    "license": "license.txt",
+    "licenseSource": "NuGet package license file: license.txt",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {}
+  },
+  {
+    "name": "Microsoft.WindowsAppSDK.WinUI",
+    "version": "2.3.9",
+    "license": "license.txt",
+    "licenseSource": "NuGet package license file: license.txt",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {}
+  },
+  {
+    "name": "ModelContextProtocol",
+    "version": "2.3.0",
+    "license": "Apache-2.0",
+    "licenseSource": "https://raw.githubusercontent.com/modelcontextprotocol/csharp-sdk/9a327829ef066c44a0d737c58bf3c7617d7c701c/LICENSE",
+    "authors": "ModelContextProtocol",
+    "copyright": "© Model Context Protocol a Series of LF Projects, LLC.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/modelcontextprotocol/csharp-sdk",
+      "commit": "9a327829ef066c44a0d737c58bf3c7617d7c701c"
+    }
+  },
+  {
+    "name": "ModelContextProtocol.Core",
+    "version": "2.3.0",
+    "license": "Apache-2.0",
+    "licenseSource": "https://raw.githubusercontent.com/modelcontextprotocol/csharp-sdk/9a327829ef066c44a0d737c58bf3c7617d7c701c/LICENSE",
+    "authors": "ModelContextProtocol",
+    "copyright": "© Model Context Protocol a Series of LF Projects, LLC.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/modelcontextprotocol/csharp-sdk",
+      "commit": "9a327829ef066c44a0d737c58bf3c7617d7c701c"
+    }
+  },
+  {
+    "name": "SQLitePCLRaw.bundle_e_sqlite3",
+    "version": "2.1.13",
+    "license": "Apache-2.0",
+    "licenseSource": "Shared SQLitePCLRaw 2.1.13 original Apache-2.0 license",
+    "authors": "Eric Sink",
+    "copyright": "Copyright 2014-2024 SourceGear, LLC",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/ericsink/SQLitePCL.raw"
+    }
+  },
+  {
+    "name": "SQLitePCLRaw.core",
+    "version": "2.1.13",
+    "license": "Apache-2.0",
+    "licenseSource": "Shared SQLitePCLRaw 2.1.13 original Apache-2.0 license",
+    "authors": "Eric Sink",
+    "copyright": "Copyright 2014-2024 SourceGear, LLC",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/ericsink/SQLitePCL.raw"
+    }
+  },
+  {
+    "name": "SQLitePCLRaw.lib.e_sqlite3",
+    "version": "2.1.13",
+    "license": "Apache-2.0",
+    "licenseSource": "Shared SQLitePCLRaw 2.1.13 original Apache-2.0 license",
+    "authors": "Eric Sink",
+    "copyright": "Copyright 2014-2024 SourceGear, LLC",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/ericsink/SQLitePCL.raw"
+    }
+  },
+  {
+    "name": "SQLitePCLRaw.provider.e_sqlite3",
+    "version": "2.1.13",
+    "license": "Apache-2.0",
+    "licenseSource": "Shared SQLitePCLRaw 2.1.13 original Apache-2.0 license",
+    "authors": "Eric Sink",
+    "copyright": "Copyright 2014-2024 SourceGear, LLC",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/ericsink/SQLitePCL.raw"
+    }
+  },
+  {
+    "name": "System.Diagnostics.EventLog",
+    "version": "10.0.14",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/dotnet",
+      "commit": "0427b9abbead3fa64c6655eb4290c537397131fa"
+    }
+  },
+  {
+    "name": "System.Numerics.Tensors",
+    "version": "9.0.0",
+    "license": "MIT",
+    "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+    "authors": "Microsoft",
+    "copyright": "© Microsoft Corporation. All rights reserved.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/dotnet/runtime",
+      "commit": "9d5a6a9aa463d6d10b0b0ba6d5982cc82f363dc3"
+    }
+  },
+  {
+    "name": "YamlDotNet",
+    "version": "18.1.0",
+    "license": "MIT",
+    "licenseSource": "Existing YamlDotNet 18.1.0 package license",
+    "authors": "Antoine Aubry",
+    "copyright": "Copyright (c) Antoine Aubry and contributors",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/aaubry/YamlDotNet",
+      "commit": "748334a8fa7c227740018b284b71ad95cc6b7fc7"
+    }
+  }
+]

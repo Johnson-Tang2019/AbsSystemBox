@@ -1,0 +1,12 @@
+{
+  "configuration": "Debug",
+  "isElevated": false,
+  "checks": [
+    "Restricted desktop floating ball shows real backend memory; tray success was not asserted",
+    "Quick search opens, focuses input and reports genuine no-index state through CoreHost",
+    "New threshold/periodic cleanup UI requires explicit confirmation; cancel leaves cleanup disabled",
+    "Main close closes floating/quick windows and stops its separate host"
+  ],
+  "isAdministrator": false,
+  "limitation": "Earlier tray wording corrected: restricted-token NIM_ADD returned access denied; no successful tray or Explorer recovery acceptance is claimed"
+}

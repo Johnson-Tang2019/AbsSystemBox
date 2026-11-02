@@ -1,0 +1,238 @@
+{
+  "scope": "New functionality only; old 157 accepted cases were not rerun",
+  "totalNewPassed": 24,
+  "groups": [
+    {
+      "group": "cleanup-loop-new",
+      "configuration": "Debug",
+      "counters": {
+        "total": 1,
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "error": 0,
+        "timeout": 0,
+        "aborted": 0,
+        "notExecuted": 0
+      },
+      "tests": [
+        "SysBox.UnitTests.CleanupLoopFeaturesTests.LiveSupervisorRequiresDesktopLeasePersistsBeforeExecutionAndStopsReadingWhenDisabled"
+      ]
+    },
+    {
+      "group": "cleanup-native-new",
+      "configuration": "Debug",
+      "counters": {
+        "total": 1,
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "error": 0,
+        "timeout": 0,
+        "aborted": 0,
+        "notExecuted": 0
+      },
+      "tests": [
+        "SysBox.ProtocolTests.CleanupNativeFeaturesTests.OnlyTheExplicitRestrictedFixtureCanBeTrimmedAfterMinimumAge"
+      ]
+    },
+    {
+      "group": "cleanup-persistence-new",
+      "configuration": "Debug",
+      "counters": {
+        "total": 3,
+        "executed": 3,
+        "passed": 3,
+        "failed": 0,
+        "error": 0,
+        "timeout": 0,
+        "aborted": 0,
+        "notExecuted": 0
+      },
+      "tests": [
+        "SysBox.UnitTests.CleanupPersistenceFeaturesTests.ConfigurationRoundTripsWhileAnAgentOnlyHostRemainsDisarmed",
+        "SysBox.UnitTests.CleanupPersistenceFeaturesTests.CorruptStoreIsPreservedAndCannotArmCleanup(text: \"{\\\"Policy\\\":{},\\\"Audit\\\":null,\\\"Runs\\\":[]}\")",
+        "SysBox.UnitTests.CleanupPersistenceFeaturesTests.CorruptStoreIsPreservedAndCannotArmCleanup(text: \"{\")"
+      ]
+    },
+    {
+      "group": "cleanup-schedule-new",
+      "configuration": "Debug",
+      "counters": {
+        "total": 4,
+        "executed": 4,
+        "passed": 4,
+        "failed": 0,
+        "error": 0,
+        "timeout": 0,
+        "aborted": 0,
+        "notExecuted": 0
+      },
+      "tests": [
+        "SysBox.UnitTests.CleanupFeaturesTests.CleanupIsOffByDefaultAndRequiresAllowedNames",
+        "SysBox.UnitTests.CleanupFeaturesTests.ThresholdNeedsContinuousPressureAndCooldown",
+        "SysBox.UnitTests.CleanupFeaturesTests.CleanupSettingsAndAuditStaySeparateFromRuleApprovals",
+        "SysBox.UnitTests.CleanupFeaturesTests.PeriodicCleanupStillNeedsPressureAndDoesNotRunEarly"
+      ]
+    },
+    {
+      "group": "desktop-new",
+      "configuration": "Debug",
+      "counters": {
+        "total": 2,
+        "executed": 2,
+        "passed": 2,
+        "failed": 0,
+        "error": 0,
+        "timeout": 0,
+        "aborted": 0,
+        "notExecuted": 0
+      },
+      "tests": [
+        "SysBox.UnitTests.DesktopFeaturesTests.FloatingBallClampsNegativeMonitorsAndTinyWorkAreas",
+        "SysBox.UnitTests.DesktopFeaturesTests.DesktopSettingsAreOptInAndRoundTripWithoutTouchingOtherData"
+      ]
+    },
+    {
+      "group": "malformed-peer-new",
+      "configuration": "Debug",
+      "counters": {
+        "total": 1,
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "error": 0,
+        "timeout": 0,
+        "aborted": 0,
+        "notExecuted": 0
+      },
+      "tests": [
+        "SysBox.ProtocolTests.MalformedPeerFeaturesTests.NullMethodDisconnectsOnlyItsRequestAndTheVerifiedHostRemainsAvailable"
+      ]
+    },
+    {
+      "group": "ntfs-clear-new",
+      "configuration": "Debug",
+      "counters": {
+        "total": 1,
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "error": 0,
+        "timeout": 0,
+        "aborted": 0,
+        "notExecuted": 0
+      },
+      "tests": [
+        "SysBox.UnitTests.NtfsSyncFeaturesTests.ExplicitCacheClearAlsoRemovesExperimentalNtfsMetadata"
+      ]
+    },
+    {
+      "group": "ntfs-recovery-new",
+      "configuration": "Debug",
+      "counters": {
+        "total": 2,
+        "executed": 2,
+        "passed": 2,
+        "failed": 0,
+        "error": 0,
+        "timeout": 0,
+        "aborted": 0,
+        "notExecuted": 0
+      },
+      "tests": [
+        "SysBox.UnitTests.NtfsSyncFeaturesTests.UnsupportedHardlinkChangesRequireReconciliationAndNeverSilentlyDropOtherNames",
+        "SysBox.UnitTests.NtfsSyncFeaturesTests.InterruptedReplayRestartsAtItsLastCommittedCheckpointWithoutLosingData"
+      ]
+    },
+    {
+      "group": "ntfs-sync-new",
+      "configuration": "Debug",
+      "counters": {
+        "total": 3,
+        "executed": 3,
+        "passed": 3,
+        "failed": 0,
+        "error": 0,
+        "timeout": 0,
+        "aborted": 0,
+        "notExecuted": 0
+      },
+      "tests": [
+        "SysBox.UnitTests.NtfsSyncFeaturesTests.EnumerationChangesAreReplayedBeforeGenerationIsPublishedAndRestartReplays1000Events",
+        "SysBox.UnitTests.NtfsSyncFeaturesTests.JournalReplacementDuringBuildPreservesThePreviousPublishedGeneration",
+        "SysBox.UnitTests.NtfsSyncFeaturesTests.InvalidBatchCannotAdvanceCheckpointOrPartiallyWriteItsEarlierRecords"
+      ]
+    },
+    {
+      "group": "remote-observation-new",
+      "configuration": "Debug",
+      "counters": {
+        "total": 2,
+        "executed": 2,
+        "passed": 2,
+        "failed": 0,
+        "error": 0,
+        "timeout": 0,
+        "aborted": 0,
+        "notExecuted": 0
+      },
+      "tests": [
+        "SysBox.ProtocolTests.RemoteObservationFeaturesTests.DisposalCancelsAnInflightReadAndDoesNotScheduleAnother",
+        "SysBox.ProtocolTests.RemoteObservationFeaturesTests.PropertyReadsNeverWaitForAnUnresponsiveHost"
+      ]
+    },
+    {
+      "group": "remote-rule-display-new",
+      "configuration": "Debug",
+      "counters": {
+        "total": 1,
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "error": 0,
+        "timeout": 0,
+        "aborted": 0,
+        "notExecuted": 0
+      },
+      "tests": [
+        "SysBox.UnitTests.RemoteRuleDisplayFeaturesTests.BindingSummaryReadsCachedMetadataAndCannotStartRequestsAfterHostDisconnection"
+      ]
+    },
+    {
+      "group": "transport-new",
+      "configuration": "Debug",
+      "counters": {
+        "total": 2,
+        "executed": 2,
+        "passed": 2,
+        "failed": 0,
+        "error": 0,
+        "timeout": 0,
+        "aborted": 0,
+        "notExecuted": 0
+      },
+      "tests": [
+        "SysBox.ProtocolTests.TransportFeaturesTests.AgentCannotApproveRulesEnableCleanupClearCacheOrInventMethods",
+        "SysBox.ProtocolTests.TransportFeaturesTests.FramingRejectsOversizeTruncationAndDuplicateRootFields"
+      ]
+    },
+    {
+      "group": "volume-read-new",
+      "configuration": "Debug",
+      "counters": {
+        "total": 1,
+        "executed": 1,
+        "passed": 1,
+        "failed": 0,
+        "error": 0,
+        "timeout": 0,
+        "aborted": 0,
+        "notExecuted": 0
+      },
+      "tests": [
+        "SysBox.ProtocolTests.VolumeReadFeaturesTests.ReadOnlyCapacityEndpointReturnsRealVolumesAndDirectoryScopeCoverage"
+      ]
+    }
+  ]
+}

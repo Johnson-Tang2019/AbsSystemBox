@@ -1,0 +1,14 @@
+{
+  "name": "CommunityToolkit.Mvvm",
+  "version": "8.4.2",
+  "license": "MIT",
+  "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+  "authors": "Microsoft",
+  "copyright": "(c) .NET Foundation and Contributors. All rights reserved.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/CommunityToolkit/dotnet",
+    "branch": "refs/heads/rel/8.4.2",
+    "commit": "35dfe7b12da0e64384bfaec7ebc0883196a89f9f"
+  }
+}

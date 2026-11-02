@@ -1,0 +1,13 @@
+{
+  "name": "Microsoft.Extensions.AI.Abstractions",
+  "version": "10.11.0",
+  "license": "MIT",
+  "licenseSource": "Shared .NET Foundation MIT license; package authors/copyright retained in SOURCE.json",
+  "authors": "Microsoft",
+  "copyright": "© Microsoft Corporation. All rights reserved.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dotnet/extensions",
+    "commit": "25f07afa51034e37b334210642d7dc5f191c142d"
+  }
+}

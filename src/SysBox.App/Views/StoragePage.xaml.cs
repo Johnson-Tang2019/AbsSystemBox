@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SysBox.Presentation;
 using SysBox.Abstractions;
 using Windows.Storage.Pickers;
+using SysBox.Transport;
 
 namespace SysBox.App.Views;
 
@@ -15,19 +16,48 @@ public sealed partial class StoragePage : Page, IPageLifetime
     {
         InitializeComponent();
         NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Required;
-        ViewModel.PropertyChanged += (_, args) => { if (args.PropertyName == nameof(ViewModel.Current)) SpaceMap.Update(ViewModel.Current); };
+        ViewModel.PropertyChanged += (_, args) => { if (args.PropertyName == nameof(ViewModel.Current)) { SpaceMap.Update(ViewModel.Current); UpdateBreadcrumbs(); } };
+        Loaded += async (_, _) => { try { Volumes.ItemsSource = await App.Services.GetRequiredService<RpcClient>().CallAsync<VolumeCapacity[]>("volumes", new { }); } catch { ViewModel.ReportError("暂时无法读取卷容量；仍可输入文件夹路径。"); } };
         Unloaded += (_, _) => Deactivate();
     }
     public void Deactivate() => ViewModel.Deactivate();
+    private void UpdateBreadcrumbs()
+    {
+        Breadcrumbs.Children.Clear();
+        if (ViewModel.Current is not { } view)
+            return;
+        var paths = new List<string>();
+        var current = view.Summary.Path;
+        for (var i = 0; i < 512; i++)
+        {
+            paths.Add(current);
+            if (current == view.ScopeRoot)
+                break;
+            var parent = System.IO.Path.GetDirectoryName(current);
+            if (parent is null || parent == current)
+                break;
+            current = parent;
+        }
+        paths.Reverse();
+        foreach (var path in paths)
+        {
+            var button = new Button { Content = System.IO.Path.GetFileName(path), Tag = path, Padding = new Thickness(6, 2, 6, 2) };
+            button.Click += async (_, _) => await ViewModel.LoadAsync(path);
+            Breadcrumbs.Children.Add(button);
+        }
+    }
     private async void Choose_Click(object sender, RoutedEventArgs args)
     {
-        if (ViewModel.IsBusy) return;
+        if (ViewModel.IsBusy)
+            return;
         try
         {
-            var picker = new FolderPicker(); picker.FileTypeFilter.Add("*");
+            var picker = new FolderPicker();
+            picker.FileTypeFilter.Add("*");
             WinRT.Interop.InitializeWithWindow.Initialize(picker, WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow));
             var folder = await picker.PickSingleFolderAsync();
-            if (folder is not null && IsLoaded) ViewModel.Path = folder.Path;
+            if (folder is not null && IsLoaded)
+                ViewModel.Path = folder.Path;
         }
         catch { ViewModel.ReportError("无法打开文件夹选择器，请在输入框填写目录路径。 "); }
     }
@@ -41,12 +71,22 @@ public sealed partial class StoragePage : Page, IPageLifetime
     private async void Previous_Click(object sender, RoutedEventArgs args) => await ViewModel.PreviousPageAsync();
     private async void Next_Click(object sender, RoutedEventArgs args) => await ViewModel.NextPageAsync();
     private void Sort_Changed(object sender, SelectionChangedEventArgs args) => ViewModel.Sort = (StorageSort)((ComboBox)sender).SelectedIndex;
-    private async void Child_Click(object sender, ItemClickEventArgs args) { if (args.ClickedItem is StorageRow { Item.IsDirectory: true } row) await ViewModel.LoadAsync(row.Path); }
+    private async void Child_Click(object sender, ItemClickEventArgs args)
+    {
+        if (args.ClickedItem is StorageRow { Item.IsDirectory: true } row)
+            await ViewModel.LoadAsync(row.Path);
+    }
     private async void Map_FolderInvoked(object? sender, string path) => await ViewModel.LoadAsync(path);
     private void Body_SizeChanged(object sender, SizeChangedEventArgs args)
     {
         var wide = args.NewSize.Width >= 760;
-        Grid.SetRow(ChildrenList, 0); Grid.SetColumn(ChildrenList, 0); Grid.SetColumnSpan(ChildrenList, wide ? 1 : 2); Grid.SetRowSpan(ChildrenList, wide ? 2 : 1);
-        Grid.SetRow(SpaceMap, wide ? 0 : 1); Grid.SetColumn(SpaceMap, wide ? 1 : 0); Grid.SetColumnSpan(SpaceMap, wide ? 1 : 2); Grid.SetRowSpan(SpaceMap, wide ? 2 : 1);
+        Grid.SetRow(ChildrenList, 0);
+        Grid.SetColumn(ChildrenList, 0);
+        Grid.SetColumnSpan(ChildrenList, wide ? 1 : 2);
+        Grid.SetRowSpan(ChildrenList, wide ? 2 : 1);
+        Grid.SetRow(SpaceMap, wide ? 0 : 1);
+        Grid.SetColumn(SpaceMap, wide ? 1 : 0);
+        Grid.SetColumnSpan(SpaceMap, wide ? 1 : 2);
+        Grid.SetRowSpan(SpaceMap, wide ? 2 : 1);
     }
 }
