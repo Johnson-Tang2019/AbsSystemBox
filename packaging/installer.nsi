@@ -122,6 +122,17 @@ FunctionEnd
 
 !macro CHECK_AGENTS FN
 Function ${FN}CheckAgents
+  System::Call 'kernel32::OpenMutexW(i 0x100000,i 0,w "Local\AbsSystemBox.Cleanup")p.r0 ?e'
+  Pop $1
+  ${If} $0 != 0
+    System::Call 'kernel32::CloseHandle(p r0)'
+    MessageBox MB_OK "请先完成或取消管理员内存清理。" /SD IDOK
+    SetErrorLevel 4
+    Abort
+  ${ElseIf} $1 == 5
+    SetErrorLevel 4
+    Abort
+  ${EndIf}
   System::Call 'kernel32::OpenMutexW(i 0x100000,i 0,w "Local\AbsSystemBox.CoreHost")p.r0 ?e'
   Pop $1
   ${If} $0 != 0

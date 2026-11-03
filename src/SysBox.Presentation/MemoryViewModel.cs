@@ -33,6 +33,23 @@ public sealed class MemoryViewModel : ObservableObject
     private MemorySnapshot? snapshot;
     private readonly List<ProcessMemoryRow> rowPool = [];
     private string processStatus = "尚未读取进程列表。";
+    private int processSortIndex;
+    private ProcessMemorySnapshot? lastProcesses;
+    public int ProcessSortIndex
+    {
+        get => processSortIndex;
+        set
+        {
+            if (value is < 0 or > 1)
+                return;
+            if (SetProperty(ref processSortIndex, value))
+            {
+                if (lastProcesses is not null)
+                    UpdateProcesses(ProcessMemoryOrdering.Order(lastProcesses.Entries, (ProcessMemorySort)value).ToArray());
+                _ = RefreshAsync();
+            }
+        }
+    }
 
     public MemoryViewModel(IMemoryMonitor memory, IProcessMemoryMonitor processes, ISamplingDelay delay)
     {
@@ -44,16 +61,26 @@ public sealed class MemoryViewModel : ObservableObject
         ToggleMonitoringCommand = new RelayCommand(() => { if (IsMonitoring) Stop(); else Start(); });
     }
 
-    public IAsyncRelayCommand RefreshCommand { get; }
-    public IRelayCommand CancelCommand { get; }
-    public IRelayCommand ToggleMonitoringCommand { get; }
+    public IAsyncRelayCommand RefreshCommand
+    {
+        get;
+    }
+    public IRelayCommand CancelCommand
+    {
+        get;
+    }
+    public IRelayCommand ToggleMonitoringCommand
+    {
+        get;
+    }
     public Task MonitoringTask { get; private set; } = Task.CompletedTask;
     public bool IsBusy
     {
         get => isBusy;
         private set
         {
-            if (!SetProperty(ref isBusy, value)) return;
+            if (!SetProperty(ref isBusy, value))
+                return;
             RefreshCommand.NotifyCanExecuteChanged();
             CancelCommand.NotifyCanExecuteChanged();
         }
@@ -63,7 +90,8 @@ public sealed class MemoryViewModel : ObservableObject
         get => isMonitoring;
         private set
         {
-            if (!SetProperty(ref isMonitoring, value)) return;
+            if (!SetProperty(ref isMonitoring, value))
+                return;
             OnPropertyChanged(nameof(MonitoringButtonText));
             OnPropertyChanged(nameof(MonitoringStatus));
         }
@@ -73,11 +101,21 @@ public sealed class MemoryViewModel : ObservableObject
     public string? ErrorMessage
     {
         get => errorMessage;
-        private set { if (SetProperty(ref errorMessage, value)) OnPropertyChanged(nameof(HasError)); }
+        private set
+        {
+            if (SetProperty(ref errorMessage, value))
+                OnPropertyChanged(nameof(HasError));
+        }
     }
     public bool HasError => ErrorMessage is not null;
-    public string Status { get => status; private set => SetProperty(ref status, value); }
-    public string ProcessStatus { get => processStatus; private set => SetProperty(ref processStatus, value); }
+    public string Status
+    {
+        get => status; private set => SetProperty(ref status, value);
+    }
+    public string ProcessStatus
+    {
+        get => processStatus; private set => SetProperty(ref processStatus, value);
+    }
     public MemorySnapshot? Snapshot => snapshot;
     public ObservableCollection<ProcessMemoryRow> Processes { get; } = [];
     public IReadOnlyList<MemoryHistoryPoint> History => history.Points;
@@ -95,7 +133,8 @@ public sealed class MemoryViewModel : ObservableObject
 
     public void Start()
     {
-        if (IsMonitoring) return;
+        if (IsMonitoring)
+            return;
         IsMonitoring = true;
         var cancellation = new CancellationTokenSource();
         loopCancellation = cancellation;
@@ -128,19 +167,22 @@ public sealed class MemoryViewModel : ObservableObject
 
     public async Task RefreshAsync()
     {
-        if (IsBusy) return;
+        if (IsBusy)
+            return;
         var requestGeneration = ++generation;
         using var cancellation = new CancellationTokenSource();
         readCancellation = cancellation;
         IsBusy = true;
+        var selectedSort = (ProcessMemorySort)ProcessSortIndex;
         ErrorMessage = null;
         Status = "正在读取内存与进程状态…";
         try
         {
             var memoryTask = ReadSafely(() => memory.ReadAsync(cancellation.Token), cancellation.Token);
-            var processTask = ReadSafely(() => processes.ReadAsync(cancellation.Token), cancellation.Token);
+            var processTask = ReadSafely(() => processes.ReadAsync(selectedSort, cancellation.Token), cancellation.Token);
             await Task.WhenAll(memoryTask, processTask);
-            if (requestGeneration != generation || cancellation.IsCancellationRequested) return;
+            if (requestGeneration != generation || cancellation.IsCancellationRequested)
+                return;
             var physical = await memoryTask;
             if (physical.IsSuccess)
             {
@@ -158,8 +200,10 @@ public sealed class MemoryViewModel : ObservableObject
             if (process.IsSuccess)
             {
                 var data = process.Value;
-                UpdateProcesses(data.Entries);
-                ProcessStatus = $"已读取 {data.ReadableCount} / {data.EnumeratedCount} 个进程，显示工作集前 {Processes.Count} 项。权限不足 {data.AccessDeniedCount}，退出或不可读 {data.UnavailableCount}，其他失败 {data.OtherErrorCount}，超时跳过 {data.BudgetSkippedCount}。"
+                lastProcesses = data;
+                if (selectedSort == (ProcessMemorySort)ProcessSortIndex)
+                    UpdateProcesses(data.Entries);
+                ProcessStatus = $"已读取 {data.ReadableCount} / {data.EnumeratedCount} 个进程，按{(ProcessSortIndex == 0 ? "工作集" : "私有提交")}排序，显示前 {Processes.Count} 项。权限不足 {data.AccessDeniedCount}，退出或不可读 {data.UnavailableCount}，其他失败 {data.OtherErrorCount}，超时跳过 {data.BudgetSkippedCount}。"
                     + (data.EnumerationComplete ? "" : " 进程枚举达到上限，结果不完整。");
             }
             else
@@ -175,13 +219,18 @@ public sealed class MemoryViewModel : ObservableObject
             {
                 readCancellation = null;
                 IsBusy = false;
+                if (selectedSort != (ProcessMemorySort)ProcessSortIndex && IsMonitoring)
+                    _ = RefreshAsync();
             }
         }
     }
 
     private static async Task<Result<T>> ReadSafely<T>(Func<Task<Result<T>>> read, CancellationToken ct) where T : notnull
     {
-        try { return await read(); }
+        try
+        {
+            return await read();
+        }
         catch (OperationCanceledException) when (ct.IsCancellationRequested) { throw; }
         catch (Exception) { return Result<T>.Failure(new(ErrorCodes.Unavailable, "Collection failed.")); }
     }
@@ -189,7 +238,8 @@ public sealed class MemoryViewModel : ObservableObject
     public void Cancel()
     {
         readCancellation?.Cancel();
-        if (IsBusy) Status = "已取消本次读取。";
+        if (IsBusy)
+            Status = "已取消本次读取。";
     }
 
     public void Stop()
@@ -209,6 +259,7 @@ public sealed class MemoryViewModel : ObservableObject
         Stop();
         snapshot = null;
         history.Clear();
+        lastProcesses = null;
         UpdateProcesses([]);
         ProcessStatus = "尚未读取进程列表。";
         ErrorMessage = null;
@@ -225,14 +276,18 @@ public sealed class MemoryViewModel : ObservableObject
     private void UpdateProcesses(IReadOnlyList<ProcessMemoryEntry> entries)
     {
         var count = Math.Min(entries.Count, ProcessMemorySnapshot.MaximumEntries);
-        while (rowPool.Count < count) rowPool.Add(new ProcessMemoryRow());
+        while (rowPool.Count < count)
+            rowPool.Add(new ProcessMemoryRow());
         for (var index = 0; index < rowPool.Count; index++)
             rowPool[index].Update(index < count ? entries[index] : null);
-        if (count == 0) Processes.Clear();
+        if (count == 0)
+            Processes.Clear();
         else
         {
-            while (Processes.Count > count) Processes.RemoveAt(Processes.Count - 1);
-            while (Processes.Count < count) Processes.Add(rowPool[Processes.Count]);
+            while (Processes.Count > count)
+                Processes.RemoveAt(Processes.Count - 1);
+            while (Processes.Count < count)
+                Processes.Add(rowPool[Processes.Count]);
         }
     }
 }

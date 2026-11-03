@@ -23,8 +23,14 @@ public sealed class DashboardViewModel : ObservableObject
         CancelCommand = new RelayCommand(Cancel, () => IsBusy);
     }
 
-    public IAsyncRelayCommand RefreshCommand { get; }
-    public IRelayCommand CancelCommand { get; }
+    public IAsyncRelayCommand RefreshCommand
+    {
+        get;
+    }
+    public IRelayCommand CancelCommand
+    {
+        get;
+    }
     public bool IsDemo => client.IsDemo;
     public bool IsBusy
     {
@@ -43,22 +49,27 @@ public sealed class DashboardViewModel : ObservableObject
         get => errorMessage;
         private set
         {
-            if (SetProperty(ref errorMessage, value)) OnPropertyChanged(nameof(HasError));
+            if (SetProperty(ref errorMessage, value))
+                OnPropertyChanged(nameof(HasError));
         }
     }
     public bool HasError => ErrorMessage is not null;
-    public string Status { get => status; private set => SetProperty(ref status, value); }
+    public string Status
+    {
+        get => status; private set => SetProperty(ref status, value);
+    }
     public MemorySnapshot? Snapshot
     {
         get => snapshot;
         private set
         {
-            if (SetProperty(ref snapshot, value)) OnPropertyChanged(nameof(MemorySummary));
+            if (SetProperty(ref snapshot, value))
+                OnPropertyChanged(nameof(MemorySummary));
         }
     }
     public string MemorySummary => Snapshot is { } data
         ? $"{data.AvailablePhysicalBytes / 1073741824.0:F1} / {data.TotalPhysicalBytes / 1073741824.0:F1} GiB 可用"
-        : "尚未接入";
+        : "正在读取…";
 
     public async Task RefreshAsync()
     {
@@ -67,13 +78,13 @@ public sealed class DashboardViewModel : ObservableObject
         using var request = new CancellationTokenSource();
         activeRequest = request;
         ErrorMessage = null;
-        Snapshot = null;
         IsBusy = true;
         Status = "正在读取状态…";
         try
         {
             var result = await client.ReadAsync(request.Token);
-            if (requestGeneration != generation || request.IsCancellationRequested) return;
+            if (requestGeneration != generation || request.IsCancellationRequested)
+                return;
             if (result.IsSuccess)
             {
                 Snapshot = result.Value;
@@ -89,7 +100,8 @@ public sealed class DashboardViewModel : ObservableObject
         }
         catch (OperationCanceledException) when (request.IsCancellationRequested)
         {
-            if (requestGeneration == generation) Status = "已取消读取。";
+            if (requestGeneration == generation)
+                Status = "已取消读取。";
         }
         catch (Exception)
         {
@@ -112,7 +124,8 @@ public sealed class DashboardViewModel : ObservableObject
     public void Cancel()
     {
         activeRequest?.Cancel();
-        if (IsBusy) Status = "已取消读取。";
+        if (IsBusy)
+            Status = "已取消读取。";
     }
 
     // Invalidate results even when a client does not cooperate with cancellation.

@@ -218,7 +218,7 @@ public sealed class CoreServer : BackgroundService
             case "memory.status":
                 return Pack(await memory.ReadAsync(token));
             case "memory.processes":
-                return Pack(await processes.ReadAsync(token));
+                return Pack(await processes.ReadAsync(args.TryGetProperty("sort", out var sortValue) ? sortValue.Deserialize<ProcessMemorySort>(Protocol.Json) : ProcessMemorySort.WorkingSet, token));
             case "cleanup.status":
                 return cleanup.Read();
             case "cleanup.configure":

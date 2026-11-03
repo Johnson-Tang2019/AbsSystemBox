@@ -1,0 +1,15 @@
+{
+  "name": "Fluent Reduct",
+  "repository": "https://github.com/s3hq4y/fluent-reduct",
+  "commit": "64fa85fb33d9886b8dbd74ff87bd2454e33ba090",
+  "license": "GPL-3.0-or-later",
+  "referenceFiles": [
+    "src/shared/cleanup.ts",
+    "src/shared/settings.ts",
+    "src/ui/main/memory.ts",
+    "src/ui/main/process-trim.ts",
+    "src/ui/main/ball.ts",
+    "src/ui/ball/ball.ts"
+  ],
+  "integration": "Native C# port of fixed cleanup catalog/buffer layouts and adapted protection/docking rules; no Electron, TypeScript, binary or runtime dependency"
+}

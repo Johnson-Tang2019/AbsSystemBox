@@ -23,7 +23,7 @@ public sealed partial class DiagnosticsPage : Page
         Loaded += async (_, _) =>
         {
             var reading = await App.Services.GetRequiredService<IBatteryMonitor>().ReadAsync(CancellationToken.None);
-            BatteryText.Text = $"电池报告：{reading.State} · {reading.Error ?? "Windows BatteryReport / C#/WinRT"}";
+            BatteryText.Text = SysBox.Core.BatteryHealth.Describe(reading);
         };
     }
     private async Task<JsonElement?> ReadHostAsync()

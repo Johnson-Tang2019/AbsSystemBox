@@ -23,3 +23,7 @@ scripts/battery-smoke.ps1 验证概览/内存导航、条件显示和真实 Batt
 -Configuration Release -RestrictedUser 验证受限非管理员实际运行。
 本机是无电池台式机，真实测试只能验证 NotPresent 与卡片隐藏，不能声称已在物理笔记本充电时核对功率和充满时间。
 估算与拔插状态另有纯数据测试；最终硬件验收仍需一台真实充电笔记本。
+
+## 健康度显示
+
+诊断页直接显示满充容量 / 设计容量百分比；使用 WinRT 已有 DesignCapacityInMilliwattHours，不新增驱动。NotPresent 显示“电池：无”，不可用/缺失设计容量显示明确未知原因，不用充电量冒充健康度，也不按机器外形猜测电池存在。

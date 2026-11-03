@@ -1,0 +1,12 @@
+{
+  "newTestsPassed": 6,
+  "tests": [
+    "SysBox.UnitTests.UiRevisionFeaturesTests.DockingGeometryKeepsWholeTextCircleAndFourEdgeBarsInsideTheWorkArea(scale: 2)",
+    "SysBox.UnitTests.UiRevisionFeaturesTests.BatteryHealthDistinguishesNoBatteryUnknownCapacityAndMeasuredWear",
+    "SysBox.UnitTests.UiRevisionFeaturesTests.DockingGeometryKeepsWholeTextCircleAndFourEdgeBarsInsideTheWorkArea(scale: 1)",
+    "SysBox.UnitTests.UiRevisionFeaturesTests.NineAreasRejectForgedCommandsAndUseFixedNativeBufferLayouts",
+    "SysBox.UnitTests.UiRevisionFeaturesTests.DockingGeometryKeepsWholeTextCircleAndFourEdgeBarsInsideTheWorkArea(scale: 1.5)",
+    "SysBox.UnitTests.UiRevisionFeaturesTests.PrivateCommitRankingHappensBeforeTheTwoHundredProcessLimit"
+  ],
+  "scope": "Only new revision tests; prior accepted tests reused"
+}

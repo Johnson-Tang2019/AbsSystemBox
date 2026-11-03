@@ -20,12 +20,14 @@ public sealed class RemoteMemory(RpcClient client) : IMemoryMonitor
 }
 public sealed class RemoteProcesses(RpcClient client) : IProcessMemoryMonitor
 {
-    public async Task<Result<ProcessMemorySnapshot>> ReadAsync(CancellationToken token)
+    public Task<Result<ProcessMemorySnapshot>> ReadAsync(CancellationToken token) => ReadAsync(ProcessMemorySort.WorkingSet, token);
+    public async Task<Result<ProcessMemorySnapshot>> ReadAsync(ProcessMemorySort sort, CancellationToken token)
     {
         try
         {
             var value = await client.CallAsync<WireValue<ProcessMemorySnapshot>>("memory.processes", new
             {
+                sort
             }, token).ConfigureAwait(false);
             return value.Error is { } e ? Result<ProcessMemorySnapshot>.Failure(e) : Result<ProcessMemorySnapshot>.Success(value.Value!);
         }

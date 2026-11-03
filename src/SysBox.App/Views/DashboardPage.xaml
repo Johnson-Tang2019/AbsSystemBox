@@ -6,26 +6,8 @@
         <StackPanel Spacing="24" Padding="4,4,4,12" MaxWidth="1120" HorizontalAlignment="Stretch">
             <StackPanel Spacing="6">
                 <TextBlock Text="概览" Style="{StaticResource PageTitleStyle}" AutomationProperties.AutomationId="PageTitle" />
-                <TextBlock Text="从这里，看清系统的每一面。" Style="{StaticResource BodyCopyStyle}" />
             </StackPanel>
-            <Border Style="{StaticResource SurfaceStyle}">
-                <StackPanel Spacing="18">
-                    <Grid ColumnSpacing="16">
-                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
-                        <StackPanel Spacing="8">
-                            <TextBlock Text="你的系统，尽在掌握" Style="{StaticResource SubtitleTextBlockStyle}" TextWrapping="Wrap" />
-                            <TextBlock Text="观察内存、寻找文件、理清磁盘空间。操作从知情开始。" Style="{StaticResource BodyCopyStyle}" />
-                        </StackPanel>
-                        <Border Grid.Column="1" Width="52" Height="52" Background="{ThemeResource RoseSoftBrush}" CornerRadius="16">
-                            <FontIcon Glyph="&#xE9D9;" FontSize="24" Foreground="{ThemeResource RoseBrush}" />
-                        </Border>
-                    </Grid>
-                    <InfoBar IsOpen="True" IsClosable="False" Severity="Informational" Title="只读内存观察已就绪"
-                             Message="查看真实内存与进程状态，规则默认只通知；文件搜索和磁盘空间分析仍在开发中。" />
-                </StackPanel>
-            </Border>
             <controls:BatteryCard />
-            <TextBlock Text="工作台" Style="{StaticResource SubtitleTextBlockStyle}" />
             <Grid ColumnSpacing="16" RowSpacing="16" SizeChanged="Cards_SizeChanged">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="*" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
                 <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
@@ -42,7 +24,7 @@
                     <StackPanel Spacing="12">
                         <FontIcon Glyph="&#xE721;" HorizontalAlignment="Left" Foreground="{ThemeResource RoseBrush}" />
                         <TextBlock Text="文件搜索" FontSize="18" FontWeight="SemiBold" />
-                        <TextBlock Text="尚未实现" FontSize="22" FontWeight="SemiBold" />
+                        <TextBlock x:Name="IndexSummary" Text="正在读取索引…" AutomationProperties.AutomationId="DashboardIndex" FontSize="22" FontWeight="SemiBold" />
                         <TextBlock Text="从文件名找到需要的内容" Style="{StaticResource BodyCopyStyle}" />
                         <HyperlinkButton Content="前往搜索 →" Tag="search" Click="Navigate_Click" Padding="0,4" />
                     </StackPanel>
@@ -51,18 +33,13 @@
                     <StackPanel Spacing="12">
                         <FontIcon Glyph="&#xEDA2;" HorizontalAlignment="Left" Foreground="{ThemeResource RoseBrush}" />
                         <TextBlock Text="磁盘空间" FontSize="18" FontWeight="SemiBold" />
-                        <TextBlock Text="尚未实现" FontSize="22" FontWeight="SemiBold" />
+                        <TextBlock x:Name="StorageSummary" Text="正在读取容量…" AutomationProperties.AutomationId="DashboardStorage" FontSize="22" FontWeight="SemiBold" />
                         <TextBlock Text="逐层了解文件夹的空间分布" Style="{StaticResource BodyCopyStyle}" />
                         <HyperlinkButton Content="查看磁盘 →" Tag="storage" Click="Navigate_Click" Padding="0,4" />
                     </StackPanel>
                 </Border>
             </Grid>
-            <Border Style="{StaticResource SurfaceStyle}">
-                <StackPanel Spacing="16">
-                    <Button Content="刷新状态" Command="{Binding RefreshCommand}" Style="{StaticResource AccentButtonStyle}" AutomationProperties.AutomationId="RefreshStatus" />
-                    <controls:OperationStatus />
-                </StackPanel>
-            </Border>
+            <TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap" Foreground="{ThemeResource SystemFillColorCriticalBrush}" />
         </StackPanel>
     </ScrollViewer>
 </Page>

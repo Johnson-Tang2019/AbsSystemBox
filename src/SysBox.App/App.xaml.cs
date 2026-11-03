@@ -30,6 +30,13 @@ public partial class App : Application
     protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
     {
         instanceMutex = new Mutex(false, "Local\\AbsSystemBox.Desktop");
+#if DEBUG
+        if (Guid.TryParseExact(Environment.GetEnvironmentVariable("SYSBOX_TEST_PIPE_SUFFIX"), "N", out var fixtureId))
+        {
+            instanceMutex.Dispose();
+            instanceMutex = new Mutex(false, "Local\\AbsSystemBox.Desktop.Test." + fixtureId.ToString("N"));
+        }
+#endif
         bool acquired;
         try
         {

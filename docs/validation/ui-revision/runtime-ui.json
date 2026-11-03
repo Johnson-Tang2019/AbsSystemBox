@@ -1,0 +1,14 @@
+{
+  "checks": [
+    "Overview has genuine index/capacity status and no manual refresh panel",
+    "Actual floating HWND/client are exactly 64 DIP; real percentage bounds fully fit",
+    "Memory automatically refreshes, supports commit sorting and includes disabled cleanup configuration",
+    "Battery diagnostics show health/no-battery wording without raw enum or SDK attribution"
+  ],
+  "volumeScanned": false,
+  "systemCleanupExecuted": false,
+  "ballPixelSize": 64,
+  "isAdministrator": false,
+  "ballDpi": 96,
+  "isElevated": false
+}

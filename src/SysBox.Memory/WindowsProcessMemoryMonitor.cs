@@ -12,9 +12,15 @@ public sealed class WindowsProcessMemoryMonitor(IWindowsMemoryApi api) : IProces
     public static readonly TimeSpan CollectionBudget = TimeSpan.FromSeconds(3);
 
     public Task<Result<ProcessMemorySnapshot>> ReadAsync(CancellationToken cancellationToken) =>
-        Task.Run(() => Read(cancellationToken), cancellationToken);
+        ReadAsync(ProcessMemorySort.WorkingSet, cancellationToken);
+    public Task<Result<ProcessMemorySnapshot>> ReadAsync(ProcessMemorySort sort, CancellationToken token)
+    {
+        if (!Enum.IsDefined(sort))
+            throw new ArgumentOutOfRangeException(nameof(sort));
+        return Task.Run(() => Read(sort, token), token);
+    }
 
-    private Result<ProcessMemorySnapshot> Read(CancellationToken ct)
+    private Result<ProcessMemorySnapshot> Read(ProcessMemorySort sort, CancellationToken ct)
     {
         ct.ThrowIfCancellationRequested();
         if (!api.IsSupported)
@@ -45,14 +51,17 @@ public sealed class WindowsProcessMemoryMonitor(IWindowsMemoryApi api) : IProces
                 }
                 catch (Win32Exception error)
                 {
-                    if (error.NativeErrorCode == 5) denied++;
-                    else if (error.NativeErrorCode is 6 or 87 or 1168 or 299) unavailable++;
-                    else other++;
+                    if (error.NativeErrorCode == 5)
+                        denied++;
+                    else if (error.NativeErrorCode is 6 or 87 or 1168 or 299)
+                        unavailable++;
+                    else
+                        other++;
                 }
             }
             ct.ThrowIfCancellationRequested();
             return Result<ProcessMemorySnapshot>.Success(new(DateTimeOffset.UtcNow,
-                entries.OrderByDescending(x => x.WorkingSetBytes).ThenBy(x => x.ProcessId).Take(DisplayLimit).ToArray(),
+                ProcessMemoryOrdering.Order(entries, sort).Take(DisplayLimit).ToArray(),
                 batch.Ids.Count, entries.Count, denied, unavailable, other, skipped, batch.IsComplete,
                 batch.IsComplete && denied + unavailable + other + skipped == 0 ? DataCompleteness.Complete : DataCompleteness.Partial));
         }

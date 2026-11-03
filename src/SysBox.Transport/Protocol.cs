@@ -91,6 +91,13 @@ public static class Protocol
 
 public static class PeerIdentity
 {
+    public static uint ProcessId(PipeStream pipe, bool server)
+    {
+        uint pid;
+        if (!(server ? GetNamedPipeServerProcessId(pipe.SafePipeHandle, out pid) : GetNamedPipeClientProcessId(pipe.SafePipeHandle, out pid)))
+            throw new UnauthorizedAccessException("无法确认对端进程。");
+        return pid;
+    }
     [DllImport("kernel32.dll", SetLastError = true)] private static extern bool GetNamedPipeClientProcessId(SafePipeHandle pipe, out uint pid);
     [DllImport("kernel32.dll", SetLastError = true)] private static extern bool GetNamedPipeServerProcessId(SafePipeHandle pipe, out uint pid);
     [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)] private static extern bool GetNamedPipeClientComputerNameW(SafePipeHandle pipe, StringBuilder name, uint size);

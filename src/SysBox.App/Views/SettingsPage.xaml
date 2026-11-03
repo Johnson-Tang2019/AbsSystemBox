@@ -32,25 +32,7 @@
                     <Button Content="保存登录启动设置" Click="Startup_Click"/>
                     <TextBlock x:Name="StartupStatus" TextWrapping="Wrap"/>
                     <TextBlock x:Name="DesktopStatus" TextWrapping="Wrap" AutomationProperties.AutomationId="DesktopStatus"/>
-                    <TextBlock Text="默认不自启动、不自动扫描；内存清理默认关闭，需在下方单独启用并确认。" Style="{StaticResource BodyCopyStyle}"/>
-                </StackPanel>
-            </Border>
-            <Border Style="{StaticResource SurfaceStyle}">
-                <StackPanel Spacing="12">
-                    <TextBlock Text="内存清理（默认关闭）" Style="{StaticResource SubtitleTextBlockStyle}"/>
-                    <TextBlock Text="仅调整你允许的当前用户后台进程工作集，可能增加后续调页。排除前台、系统、提升权限、其他会话和启动未满 120 秒的进程；每轮至多 2 项，每小时至多 6 轮。不会清空系统缓存或 Standby List。" Style="{StaticResource BodyCopyStyle}"/>
-                    <CheckBox x:Name="CleanupEnabled" Content="启用自动清理（保存时需要确认）" AutomationProperties.AutomationId="CleanupEnabled"/>
-                    <CheckBox x:Name="ThresholdEnabled" Content="阈值清理" IsChecked="True" AutomationProperties.AutomationId="ThresholdCleanup"/>
-                    <NumberBox x:Name="CleanupThreshold" Header="内存使用率阈值（%）" Value="85" Minimum="50" Maximum="98"/>
-                    <NumberBox x:Name="CleanupHold" Header="持续超过阈值的秒数" Value="45" Minimum="10" Maximum="3600"/>
-                    <CheckBox x:Name="PeriodicEnabled" Content="定期清理（内存使用率至少 50% 才执行）" AutomationProperties.AutomationId="PeriodicCleanup"/>
-                    <NumberBox x:Name="CleanupPeriod" Header="定期间隔（分钟）" Value="30" Minimum="5" Maximum="1440"/>
-                    <NumberBox x:Name="CleanupCooldown" Header="两轮之间的最短冷却（秒）" Value="300" Minimum="60" Maximum="86400"/>
-                    <NumberBox x:Name="CleanupMinimum" Header="目标进程最小工作集（MiB）" Value="256" Minimum="64" Maximum="65536"/>
-                    <TextBox x:Name="CleanupNames" Header="允许处理的进程名，以逗号分隔" PlaceholderText="例如 chrome.exe；为空时不允许启用" AutomationProperties.AutomationId="CleanupNames"/>
-                    <Button x:Name="SaveCleanup" Content="保存清理设置" Click="SaveCleanup_Click" AutomationProperties.AutomationId="SaveCleanup"/>
-                    <Button Content="读取清理状态与最近审计" Click="ReadCleanup_Click"/>
-                    <TextBlock x:Name="CleanupStatus" TextWrapping="Wrap" AutomationProperties.AutomationId="CleanupStatus"/>
+                    <TextBlock Text="默认不自启动、不自动扫描；内存清理默认关闭，请到内存页单独配置并确认。" Style="{StaticResource BodyCopyStyle}"/>
                 </StackPanel>
             </Border>
             <Border Style="{StaticResource SurfaceStyle}">

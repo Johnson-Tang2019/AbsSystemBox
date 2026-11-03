@@ -142,3 +142,9 @@ NtfsLiveIndex.BuildAsync / CatchUpAsync 将授权卷元数据发布到既有搜�
 CoreHost 的 ntfs.capabilities / ntfs.status 只读；ntfs.build / ntfs.stop / ntfs.resume 只允许真实桌面映像身份。build 返回 index.job 可查询的任务 ID，取消复用 index.control。服务缺失返回 NTFS_SERVICE_UNAVAILABLE；日志失效返回 REBUILD_REQUIRED；达到资源预算为 NTFS_LIMIT。服务端白名单和授权范围见 NTFS.md。
 
 IndexRoot.Generation、StorageView.Generation 和 SearchPageResult.Snapshot 对外是快照版本凭据；物理 generation 与增量 revision 分离。增量发布同样使旧分页失效。StorageView 新增 UniqueKnownAllocatedBytes / UniqueUnknownObjects，仅对 NTFS 快照给出实体去重口径，普通目录保持 null。
+
+## 0.3 增量契约
+
+memory.processes 可选 sort=WorkingSet/PrivateCommit（枚举），默认保持工作集；后台在 Top-200 截断前排序，字段错误正常拒绝。BatteryReading 新增可空 DesignCapacityMilliwattHours；不提供设计容量则不计算健康度。
+
+九类系统清理没有公开的 CoreHost/CLI/MCP 端点；只供真实 UI 发起随机单次管道和原生管理员确认。现有 cleanup.configure 的可信桌面授权边界不变。

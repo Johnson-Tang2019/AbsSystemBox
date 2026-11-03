@@ -6,19 +6,8 @@
         <StackPanel Spacing="24" Padding="4,4,4,12">
             <StackPanel Spacing="6">
                 <TextBlock Text="内存" Style="{StaticResource PageTitleStyle}" AutomationProperties.AutomationId="PageTitle" />
-                <TextBlock Text="观察真实内存与进程占用。仅查询，不清理。" Style="{StaticResource BodyCopyStyle}" />
             </StackPanel>
             <controls:BatteryCard />
-            <Border Style="{StaticResource SurfaceStyle}">
-                <StackPanel Spacing="16">
-                    <StackPanel Orientation="Horizontal" Spacing="12">
-                        <Button Content="{Binding MonitoringButtonText}" Command="{Binding ToggleMonitoringCommand}" AutomationProperties.AutomationId="ToggleMonitoring" />
-                        <Button Content="立即刷新" Command="{Binding RefreshCommand}" Style="{StaticResource AccentButtonStyle}" AutomationProperties.AutomationId="RefreshStatus" />
-                    </StackPanel>
-                    <TextBlock Text="{Binding MonitoringStatus}" AutomationProperties.AutomationId="MonitoringStatus" Style="{StaticResource BodyCopyStyle}" />
-                    <controls:OperationStatus />
-                </StackPanel>
-            </Border>
             <Grid ColumnSpacing="16" RowSpacing="16" SizeChanged="Metrics_SizeChanged">
                 <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="*" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
                 <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
@@ -46,25 +35,28 @@
                     </StackPanel>
                 </Border>
             </Grid>
+            <controls:MemoryCleanupPanel x:Name="CleanupPanel" />
+            <TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap" />
             <Border Style="{StaticResource SurfaceStyle}">
                 <StackPanel Spacing="14">
                     <TextBlock Text="内存使用趋势" Style="{StaticResource SubtitleTextBlockStyle}" />
                     <TextBlock Text="{Binding LastUpdated}" Style="{StaticResource BodyCopyStyle}" AutomationProperties.AutomationId="LastSample" />
                     <controls:MemoryHistoryChart Samples="{Binding History}" />
                     <TextBlock Text="{Binding SampleCount}" Style="{StaticResource BodyCopyStyle}" AutomationProperties.AutomationId="SampleCount" />
-                    <TextBlock Text="按实际采样时间绘制，最多保留 60 点；停止后可手动刷新。" Style="{StaticResource BodyCopyStyle}" />
+                    <TextBlock Text="自动采样，最多保留 60 点。" Style="{StaticResource BodyCopyStyle}" />
                 </StackPanel>
             </Border>
             <Border Style="{StaticResource SurfaceStyle}">
                 <StackPanel Spacing="16">
                     <TextBlock Text="进程内存" Style="{StaticResource SubtitleTextBlockStyle}" />
+                    <ComboBox Header="排序依据" SelectedIndex="{Binding ProcessSortIndex, Mode=TwoWay}" AutomationProperties.AutomationId="ProcessSort"><ComboBoxItem Content="工作集，从高到低"/><ComboBoxItem Content="私有提交，从高到低"/></ComboBox>
                     <TextBlock Text="{Binding ProcessStatus}" Style="{StaticResource BodyCopyStyle}" AutomationProperties.AutomationId="ProcessCoverage" />
                     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
                         <StackPanel MinWidth="720" Spacing="8">
                             <Grid ColumnSpacing="12" Padding="12,8" Background="{ThemeResource RoseSoftBrush}" CornerRadius="8">
                                 <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="64" /><ColumnDefinition Width="120" /><ColumnDefinition Width="120" /><ColumnDefinition Width="100" /></Grid.ColumnDefinitions>
                                 <TextBlock Text="名称" /><TextBlock Grid.Column="1" Text="PID" />
-                                <TextBlock Grid.Column="2" Text="工作集 ↓" /><TextBlock Grid.Column="3" Text="私有提交" />
+                                <TextBlock Grid.Column="2" Text="工作集" /><TextBlock Grid.Column="3" Text="私有提交" />
                                 <TextBlock Grid.Column="4" Text="启动时间" />
                             </Grid>
                             <ListView ItemsSource="{Binding Processes}" Height="360" SelectionMode="None" HorizontalContentAlignment="Stretch" AutomationProperties.AutomationId="ProcessList">

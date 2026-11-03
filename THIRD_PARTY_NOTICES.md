@@ -79,3 +79,7 @@ M3 新增 YamlDotNet 18.1.0（MIT），仅使用低层 YAML 事件解析器，�
 当前软件图标采用用户提供的粉色工具箱图片，本地透明处理与来源记录见 docs/ASSETS.md；微软模板通知仍予保留。
 
 图标资源重建使用开发工具 Pillow 13.0.0（MIT-CMU），其完整许可证/捆绑通知及包元数据保存在 licenses/devtools/Pillow-13.0.0。Pillow 不作为软件运行依赖，不打包其 Python 代码或动态库。
+
+## Fluent Reduct 规则与行为适配
+
+按用户要求参考 s3hq4y/fluent-reduct 的固定提交 64fa85fb33d9886b8dbd74ff87bd2454e33ba090，将九类内存操作目录/顺序、原生请求布局、进程保护及悬浮窗尺寸/贴边行为移植或适配为 C# / WinUI / Win32。上游 GPL-3.0-or-later，原文与来源文件列表保存在 licenses/third-party/FluentReduct-64fa85f。没有引入 Electron、koffi、Node.js 或上游二进制；原有“不复制 Fluent Reduct”说明仅描述该适配之前的历史实现。

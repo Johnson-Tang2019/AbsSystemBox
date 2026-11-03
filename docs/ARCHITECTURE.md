@@ -120,3 +120,11 @@ App 设置页 -> 用户态 CoreHost -> NtfsLiveIndex / BrokerClient -> 受保护
 NtfsLiveIndex 使用共享 IndexDatabase 单写者、SQLite staging 与 NtfsPublisher；初始全量发布和增量批次的目录项/祖先汇总/revision/checkpoint 事务提交。Schema 3 迁移前备份，WAL 查询固定物理 generation 与独立 revision。普通模式成功替换同范围会撤销其旧 NTFS 跟踪。物理身份作为 BLOB，硬链接名称仍适配已有逐目录项 surrogate 行，去重统计按该身份分组。
 
 默认不安装服务、不选择卷。管理员工具配置 SID/映像/卷 GUID；桌面再次确认才建立索引。没有活动桌面租约时不续接；完全退出取消任务。缺口禁止自动全量重扫。原生权限、取消预算、服务更新/回滚及未验收场景见 NTFS.md。
+
+## 0.3 界面与一次性管理员清理
+
+概览由可取消的页面生命周期循环读取用户后台内存/索引/卷能力，不扫描文件；内存页保留后台自动采样，工作集/私有提交排序在截断 200 条之前完成。电池 DTO 增加可空设计容量，健康度由满充/设计容量计算；无电池与不可用区分。
+
+MemoryCleanupPanel 从设置页移到内存页。自动进程清理仍由用户 CoreHost 执行；九类系统清理由独立 SysBox.CleanupHelper 一次性提升，NTFS 服务保持只读。UI 创建随机 nonce 管道，显式 SID/System ACL、Network 拒绝，校验 helper PID/映像；helper 校验同用户/会话及真实 UI 映像，等待原生默认“否”的管理员确认，再调用固定枚举的 native API。没有任意命令、设备控制码或 Agent 授权字段；父进程退出/超时取消后续步骤，互斥量阻止运行中更新。
+
+悬浮窗使用 Win32 subclass 修正最小尺寸与非客户区，直接设置 HWND 边界并转交 SafeHandle 管理的圆形/条形区域，避免 AppWindow.ResizeClient 对旧边框的估算。WinUI 绘制现有粉色主题进度环；64 DIP 球体、14x56 贴边条、鼠标物理坐标拖动及 DPI 变化重排。

@@ -26,7 +26,8 @@ public sealed partial class MainWindow : Window
         Navigation.SelectedItem = Navigation.MenuItems[0];
         Closed += (_, _) =>
         {
-            if (RootFrame.Content is IPageLifetime page) page.Deactivate();
+            if (RootFrame.Content is IPageLifetime page)
+                page.Deactivate();
             RootFrame.Content = null;
         };
     }
@@ -44,7 +45,8 @@ public sealed partial class MainWindow : Window
 
     private void Navigation_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
     {
-        if (args.SelectedItemContainer?.Tag is not string route) return;
+        if (args.SelectedItemContainer?.Tag is not string route)
+            return;
         Navigate(route);
     }
 
@@ -52,7 +54,27 @@ public sealed partial class MainWindow : Window
     {
         var item = Navigation.MenuItems.Concat(Navigation.FooterMenuItems)
             .OfType<NavigationViewItem>().FirstOrDefault(item => (string)item.Tag == route);
-        if (item is not null) Navigation.SelectedItem = item;
+        if (item is not null)
+            Navigation.SelectedItem = item;
+    }
+    public void RequestMemoryCleanup()
+    {
+        App.Desktop.ShowMain();
+        SelectPage("memory");
+        DispatcherQueue.TryEnqueue(async () =>
+        {
+            if (RootFrame.Content is MemoryPage page)
+            {
+                if (!page.IsLoaded)
+                {
+                    RoutedEventHandler? loaded = null;
+                    loaded = async (_, _) => { page.Loaded -= loaded; await page.RequestSystemCleanupAsync(); };
+                    page.Loaded += loaded;
+                }
+                else
+                    await page.RequestSystemCleanupAsync();
+            }
+        });
     }
 
     private void Navigate(string route)
@@ -67,11 +89,14 @@ public sealed partial class MainWindow : Window
             "settings" => typeof(SettingsPage),
             _ => typeof(DashboardPage)
         };
-        if (RootFrame.CurrentSourcePageType == pageType) return;
-        if (RootFrame.Content is IPageLifetime page) page.Deactivate();
+        if (RootFrame.CurrentSourcePageType == pageType)
+            return;
+        if (RootFrame.Content is IPageLifetime page)
+            page.Deactivate();
         RootFrame.Navigate(pageType);
         // There are seven fixed destinations: keep at most one view of each, never an unbounded back stack.
-        if (RootFrame.Content is Page current) current.NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Required;
+        if (RootFrame.Content is Page current)
+            current.NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Required;
         RootFrame.BackStack.Clear();
     }
 }

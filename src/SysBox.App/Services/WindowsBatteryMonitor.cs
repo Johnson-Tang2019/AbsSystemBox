@@ -10,13 +10,14 @@ namespace SysBox.App.Services;
 // No direct device IOCTL, driver, WMI command or battery control operation is used.
 public sealed class WindowsBatteryMonitor : IBatteryMonitor
 {
-    public Task<BatteryReading> ReadAsync(CancellationToken cancellationToken) => Task.Run(()=>
+    public Task<BatteryReading> ReadAsync(CancellationToken cancellationToken) => Task.Run(() =>
     {
         cancellationToken.ThrowIfCancellationRequested();
         try
         {
             var battery = Battery.AggregateBattery;
-            if(battery is null) return new BatteryReading(BatteryChargeState.NotPresent,null,null,null,DateTimeOffset.UtcNow);
+            if (battery is null)
+                return new BatteryReading(BatteryChargeState.NotPresent, null, null, null, DateTimeOffset.UtcNow);
             var report = battery.GetReport();
             var state = report.Status switch
             {
@@ -25,12 +26,14 @@ public sealed class WindowsBatteryMonitor : IBatteryMonitor
                 BatteryStatus.NotPresent => BatteryChargeState.NotPresent,
                 _ => BatteryChargeState.Idle
             };
-            return new BatteryReading(state,report.ChargeRateInMilliwatts,report.FullChargeCapacityInMilliwattHours,
-                report.RemainingCapacityInMilliwattHours,DateTimeOffset.UtcNow);
+            return new BatteryReading(state, report.ChargeRateInMilliwatts, report.FullChargeCapacityInMilliwattHours,
+                report.RemainingCapacityInMilliwattHours, DateTimeOffset.UtcNow, DesignCapacityMilliwattHours: report.DesignCapacityInMilliwattHours);
         }
-        catch(Exception e) when(e is COMException or UnauthorizedAccessException or NotSupportedException)
-        { return new BatteryReading(BatteryChargeState.Unavailable,null,null,null,DateTimeOffset.UtcNow,"电池报告不可用。"); }
-    },cancellationToken);
+        catch (Exception e) when (e is COMException or UnauthorizedAccessException or NotSupportedException)
+        {
+            return new BatteryReading(BatteryChargeState.Unavailable, null, null, null, DateTimeOffset.UtcNow, "电池报告不可用。");
+        }
+    }, cancellationToken);
 }
 #if DEBUG
 public sealed class DemoBatteryMonitor : IBatteryMonitor
@@ -38,7 +41,7 @@ public sealed class DemoBatteryMonitor : IBatteryMonitor
     public Task<BatteryReading> ReadAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        return Task.FromResult(new BatteryReading(BatteryChargeState.Charging,45000,75000,30000,DateTimeOffset.UtcNow));
+        return Task.FromResult(new BatteryReading(BatteryChargeState.Charging, 45000, 75000, 30000, DateTimeOffset.UtcNow));
     }
 }
 #endif

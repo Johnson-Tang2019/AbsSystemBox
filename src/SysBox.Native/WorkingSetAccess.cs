@@ -21,7 +21,7 @@ public static class WorkingSetAccess
         CleanupAttempt Skip(string reason, ulong? before = null) => new(pid, expectedName, now, before, null, false, reason);
         if (!OperatingSystem.IsWindows() || pid is 0 or 4 || pid == Environment.ProcessId)
             return Skip("系统或自身进程已保护。");
-        var forbidden = new[] { "system", "registry", "smss.exe", "csrss.exe", "wininit.exe", "winlogon.exe", "services.exe", "lsass.exe", "svchost.exe", "dwm.exe", "explorer.exe", "msmpeng.exe", "code.exe", "codex.exe", "java.exe", "javaw.exe", "clash-verge.exe" };
+        var forbidden = new[] { "system", "registry", "memory compression", "idle", "fontdrvhost.exe", "audiodg.exe", "smss.exe", "csrss.exe", "wininit.exe", "winlogon.exe", "services.exe", "lsass.exe", "svchost.exe", "dwm.exe", "explorer.exe", "msmpeng.exe", "code.exe", "codex.exe", "java.exe", "javaw.exe", "clash-verge.exe" };
         if (expectedName.StartsWith("sysbox", StringComparison.OrdinalIgnoreCase) || expectedName.StartsWith("absSystemBox", StringComparison.OrdinalIgnoreCase) || forbidden.Contains(expectedName, StringComparer.OrdinalIgnoreCase))
             return Skip("受保护进程已排除。");
         if (now - expectedStart < TimeSpan.FromSeconds(120))
