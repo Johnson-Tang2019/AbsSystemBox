@@ -20,7 +20,7 @@
 
         <TitleBar x:Name="AppTitleBar" Title="AbsSystemBox">
             <TitleBar.IconSource>
-                <ImageIconSource ImageSource="Assets/AppIcon.ico" />
+                <ImageIconSource ImageSource="Assets/AppIcon.png" />
             </TitleBar.IconSource>
         </TitleBar>
 
@@ -30,9 +30,7 @@
                         AlwaysShowHeader="False" SelectionChanged="Navigation_SelectionChanged">
             <NavigationView.PaneHeader>
                 <StackPanel Orientation="Horizontal" Spacing="12" Margin="16,8,12,24">
-                    <Border Background="{ThemeResource RoseSoftBrush}" CornerRadius="10" Width="36" Height="36">
-                        <FontIcon Glyph="&#xE80F;" FontSize="18" Foreground="{ThemeResource RoseBrush}" />
-                    </Border>
+                    <Image Source="Assets/AppIcon.png" Width="36" Height="36" AutomationProperties.Name="AbsSystemBox 图标" />
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock Text="系统工具箱" FontWeight="SemiBold" />
                         <TextBlock Text="轻盈 · 清晰 · 可控" FontSize="11" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />

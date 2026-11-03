@@ -1,0 +1,20 @@
+{
+  "windowsVersion": "0.2.0.1",
+  "sourceRevision": "fca0c77da8f7d4ce2941aca770b910fc75793397",
+  "realVolumeEnumerated": false,
+  "userDataFilesPreserved": 2,
+  "installed": true,
+  "version": "0.2.0-preview.1",
+  "serviceInstalled": false,
+  "isAdministrator": false,
+  "isElevated": false,
+  "newInstalledVersionUi": true,
+  "installerSha256": "f44b6c94aca5f0968fd7d0d9a0404a854172d1eec9fbd33383339d77de1f2497",
+  "previousVersion": "0.1.0-preview.1",
+  "startMenuShortcut": true,
+  "cleanExit": true,
+  "stableInstallLocation": true,
+  "payloadFilesVerified": 1804,
+  "installedCoreHostHealthy": true
+}
+

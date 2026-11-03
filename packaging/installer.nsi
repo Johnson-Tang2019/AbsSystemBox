@@ -22,6 +22,8 @@ VIAddVersionKey /LANG=2052 "FileDescription" "AbsSystemBox 用户安装程序"
 VIAddVersionKey /LANG=2052 "FileVersion" "${VERSION}"
 VIAddVersionKey /LANG=2052 "LegalCopyright" "GPL-3.0-or-later; third-party terms included"
 !define MUI_ABORTWARNING
+!define MUI_ICON "${APPDIR}\Assets\AppIcon.ico"
+!define MUI_UNICON "${APPDIR}\Assets\AppIcon.ico"
 !define MUI_INSTFILESPAGE_COLORS "C54679 FFF5F9"
 !insertmacro MUI_PAGE_WELCOME
 !define MUI_LICENSEPAGE_CHECKBOX
@@ -312,6 +314,7 @@ switch_new:
   WriteRegStr HKCU "${UNINSTALL_KEY}" "DisplayIcon" "$INSTDIR\app\SysBox.App.exe"
   WriteRegDWORD HKCU "${UNINSTALL_KEY}" "NoModify" 1
   WriteRegDWORD HKCU "${UNINSTALL_KEY}" "NoRepair" 1
+  System::Call 'shell32::SHChangeNotify(i 0x08000000,i 0,p 0,p 0)'
   StrCpy $PayloadRoot "$INSTDIR\app.previous"
   Call CleanPayload
   SetErrorLevel 0

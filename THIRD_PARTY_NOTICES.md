@@ -58,7 +58,7 @@ M3 新增 YamlDotNet 18.1.0（MIT），仅使用低层 YAML 事件解析器，�
 - 新增运行依赖元数据汇总见 [new-runtime-dependencies.json](docs/new-runtime-dependencies.json)。原有 SQLitePCLRaw 仍使用自身 Apache-2.0 原文，与 MCP 许可分别归档。
 
 - 微软官方 `Microsoft.WindowsAppSDK.WinUI.CSharp.Templates` 0.0.7-alpha 仅用于生成工程；运行依赖使用还原得到的稳定版本，不使用 Reactor。
-  [模板来源](https://github.com/microsoft/WindowsAppSDK/tree/main/dev/Templates/Dotnet)。模板代码/默认图标保留上游 MIT 许可，见 licenses/WindowsAppSDK-source-MIT.txt。
+  [模板来源](https://github.com/microsoft/WindowsAppSDK/tree/main/dev/Templates/Dotnet)。模板代码保留上游 MIT 许可，见 licenses/WindowsAppSDK-source-MIT.txt。
 - .NET SDK 10.0.403 是开发工具，不提交、不随应用分发；.NET Runtime 10.0.14 通过自包含输出使用。
   SDK 原始许可和第三方通知见 licenses/dotnet/。
 - Windows App SDK 各包附带 Microsoft Software License Terms 及第三方 NOTICE；原文逐包归档，不能用开源仓库的 MIT 替代二进制包条款。
@@ -75,3 +75,7 @@ M3 新增 YamlDotNet 18.1.0（MIT），仅使用低层 YAML 事件解析器，�
 ## 可选 Windows 服务依赖
 
 新增 Microsoft.Extensions.Hosting.WindowsServices / System.ServiceProcess.ServiceController 10.0.14，MIT。逐包完整许可证、原始 THIRD-PARTY-NOTICES 和 authors/copyright/repository commit 保存在 licenses/third-party 对应目录，汇总见 docs/ntfs-runtime-dependencies.json。沿用已有 Hosting/EventLog 依赖；原有开源与微软二进制独立条款不变。
+
+当前软件图标采用用户提供的粉色工具箱图片，本地透明处理与来源记录见 docs/ASSETS.md；微软模板通知仍予保留。
+
+图标资源重建使用开发工具 Pillow 13.0.0（MIT-CMU），其完整许可证/捆绑通知及包元数据保存在 licenses/devtools/Pillow-13.0.0。Pillow 不作为软件运行依赖，不打包其 Python 代码或动态库。

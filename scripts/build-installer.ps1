@@ -36,7 +36,7 @@ Copy-Item -LiteralPath (Join-Path $root 'licenses') -Destination $servicePayload
 $serviceFiles=@(Get-ChildItem -LiteralPath $servicePayload -Recurse -File|Where-Object{$_.FullName-ne(Join-Path $servicePayload 'service-files.json')}|ForEach-Object{@{path=$_.FullName.Substring($servicePayload.Length+1);sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash}})
 @{product='AbsSystemBox.JohnsonTang2019.Ntfs';version=$Version;files=$serviceFiles}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $servicePayload 'service-files.json') -Encoding UTF8
 [IO.Directory]::CreateDirectory((Join-Path $stage 'docs')) | Out-Null
-foreach($name in @('RULES.md','BATTERY.md','CLEANUP.md','AGENT_API.md','INSTALL.md','NTFS.md')){Copy-Item -LiteralPath (Join-Path $root "docs/$name") -Destination (Join-Path $stage 'docs')}
+foreach($name in @('RULES.md','BATTERY.md','CLEANUP.md','AGENT_API.md','INSTALL.md','NTFS.md','ASSETS.md')){Copy-Item -LiteralPath (Join-Path $root "docs/$name") -Destination (Join-Path $stage 'docs')}
 $files=@(Get-ChildItem -LiteralPath $stage -Recurse -File | Sort-Object FullName | ForEach-Object {
     $relative=$_.FullName.Substring($stage.Length+1)
     if($relative.Length -gt 800 -or $relative.Contains("`n") -or $relative.Contains("`r")){throw 'Unsafe installer manifest path'}

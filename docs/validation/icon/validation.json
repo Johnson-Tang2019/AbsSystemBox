@@ -1,0 +1,58 @@
+{
+  "source": "artwork/app-icon-source.png",
+  "sourceSha256": "705cddf79ef19de3c781787cf20e96412bc542f38285dc89f507f640175dcd64",
+  "method": "User-approved local geometric alpha mask; no thresholding or recoloring",
+  "maskBounds": [
+    111,
+    112,
+    1143,
+    1151
+  ],
+  "cornerRadius": 300,
+  "supersampling": 4,
+  "opaquePixelsPreservedExactly": 989564,
+  "pngMode": "RGBA",
+  "transparentCorners": true,
+  "icoSizes": [
+    [
+      16,
+      16
+    ],
+    [
+      20,
+      20
+    ],
+    [
+      24,
+      24
+    ],
+    [
+      32,
+      32
+    ],
+    [
+      40,
+      40
+    ],
+    [
+      48,
+      48
+    ],
+    [
+      64,
+      64
+    ],
+    [
+      96,
+      96
+    ],
+    [
+      128,
+      128
+    ],
+    [
+      256,
+      256
+    ]
+  ]
+}
