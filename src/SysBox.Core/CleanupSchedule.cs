@@ -10,11 +10,13 @@ public sealed class CleanupSchedule
     {
         if (policy.ThresholdPercent is < 50 or > 98 || policy.HoldSeconds is < 10 or > 3600 || policy.PeriodMinutes is < 5 or > 1440 ||
            policy.CooldownSeconds is < 60 or > 86400 || policy.MinimumWorkingSetMb is < 64 or > 65536 || policy.MaximumTargets is < 1 or > 2 ||
-           (policy.AllowedProcesses?.Length ?? 0) > 32 || policy.AllowedProcesses?.Any(n => !Regex.IsMatch(n, @"^[\p{L}\p{N}_.-]{1,64}\.exe$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)) == true)
+           !Enum.IsDefined(policy.ProcessScope) || !ValidNames(policy.AllowedProcesses) || !ValidNames(policy.ExcludedProcesses))
             throw new ArgumentException("清理参数超出范围或进程名无效。");
-        if (policy.Enabled && (!policy.Threshold && !policy.Periodic || policy.AllowedProcesses is not { Length: > 0 }))
-            throw new ArgumentException("启用前请选择清理方式并填写允许处理的进程名。");
+        if (policy.Enabled && (!policy.Threshold && !policy.Periodic || policy.ProcessScope == CleanupProcessScope.LegacyAllowList && policy.AllowedProcesses is not { Length: > 0 }))
+            throw new ArgumentException("请选择阈值或定期清理；旧白名单模式还需指定允许的进程。");
     }
+    private static bool ValidNames(string[]? names) => (names?.Length ?? 0) <= 32 &&
+        names?.Any(n => string.IsNullOrWhiteSpace(n) || !Regex.IsMatch(n, @"^[\p{L}\p{N}_.-]{1,64}\.exe$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)) != true;
     public bool ShouldRun(CleanupPolicy policy, TimeSpan elapsed, double usagePercent)
     {
         Validate(policy);

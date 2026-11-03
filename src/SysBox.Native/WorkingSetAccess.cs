@@ -7,6 +7,9 @@ namespace SysBox.Native;
 
 public static class WorkingSetAccess
 {
+    public static bool IsProtectedName(string name) => name.StartsWith("sysbox", StringComparison.OrdinalIgnoreCase) ||
+        name.StartsWith("absSystemBox", StringComparison.OrdinalIgnoreCase) || ProtectedNames.Contains(name, StringComparer.OrdinalIgnoreCase);
+    private static readonly string[] ProtectedNames = ["system", "registry", "memory compression", "idle", "fontdrvhost.exe", "audiodg.exe", "smss.exe", "csrss.exe", "wininit.exe", "winlogon.exe", "services.exe", "lsass.exe", "svchost.exe", "dwm.exe", "explorer.exe", "msmpeng.exe", "code.exe", "codex.exe", "java.exe", "javaw.exe", "clash-verge.exe"];
     [DllImport("kernel32.dll", EntryPoint = "K32EmptyWorkingSet", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)] private static extern bool EmptyWorkingSet(SafeProcessHandle process);
     [DllImport("advapi32.dll", SetLastError = true)]
@@ -21,8 +24,7 @@ public static class WorkingSetAccess
         CleanupAttempt Skip(string reason, ulong? before = null) => new(pid, expectedName, now, before, null, false, reason);
         if (!OperatingSystem.IsWindows() || pid is 0 or 4 || pid == Environment.ProcessId)
             return Skip("系统或自身进程已保护。");
-        var forbidden = new[] { "system", "registry", "memory compression", "idle", "fontdrvhost.exe", "audiodg.exe", "smss.exe", "csrss.exe", "wininit.exe", "winlogon.exe", "services.exe", "lsass.exe", "svchost.exe", "dwm.exe", "explorer.exe", "msmpeng.exe", "code.exe", "codex.exe", "java.exe", "javaw.exe", "clash-verge.exe" };
-        if (expectedName.StartsWith("sysbox", StringComparison.OrdinalIgnoreCase) || expectedName.StartsWith("absSystemBox", StringComparison.OrdinalIgnoreCase) || forbidden.Contains(expectedName, StringComparer.OrdinalIgnoreCase))
+        if (IsProtectedName(expectedName))
             return Skip("受保护进程已排除。");
         if (now - expectedStart < TimeSpan.FromSeconds(120))
             return Skip("进程启动未满 120 秒。");

@@ -51,7 +51,7 @@ public sealed partial class DashboardPage : Page, IPageLifetime
                     }, token);
                     token.ThrowIfCancellationRequested();
                     var ready = volumes.Where(v => v.TotalBytes is > 0 && v.AvailableBytes is not null).ToArray();
-                    StorageSummary.Text = ready.Length == 0 ? "容量暂不可用" : $"{ready.Length} 个卷 · 可用 {ready.Sum(v => v.AvailableBytes!.Value) / 1073741824.0:F1} GiB";
+                    StorageSummary.Text = ready.Length == 0 ? "容量暂不可用" : $"{ready.Length} 个卷 · 可用 {SysBox.Presentation.SizeFormatting.Format(ready.Sum(v => v.AvailableBytes!.Value))}";
                 }
                 catch (OperationCanceledException) { throw; }
                 catch { StorageSummary.Text = "容量暂不可用"; }

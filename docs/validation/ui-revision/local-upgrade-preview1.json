@@ -1,0 +1,19 @@
+{
+  "newInstalledVersionUi": true,
+  "cleanExit": true,
+  "installerSha256": "96601eb9a962519412b2b85f2b0d1aa0cc83db0680a904b6183ffa347fd851d2",
+  "windowsVersion": "0.3.0.1",
+  "installed": true,
+  "realVolumeEnumerated": false,
+  "version": "0.3.0-preview.1",
+  "startMenuShortcut": true,
+  "isAdministrator": false,
+  "previousVersion": "0.2.0-preview.2",
+  "stableInstallLocation": true,
+  "isElevated": false,
+  "payloadFilesVerified": 2012,
+  "sourceRevision": "6992c2ed95d82cc4925a9b63dd51ad64ccca2df5",
+  "serviceInstalled": false,
+  "userDataFilesPreserved": 4,
+  "installedCoreHostHealthy": true
+}

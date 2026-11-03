@@ -14,6 +14,16 @@ namespace SysBox.App.Controls;
 public sealed partial class MemoryCleanupPanel
 {
     private bool systemCleaning;
+    private void SelectFluent_Click(object sender, RoutedEventArgs args) => SelectAreas(MemoryCleanupCatalog.IsDefault);
+    private void SelectPcl_Click(object sender, RoutedEventArgs args) => SelectAreas(MemoryCleanupCatalog.IsPclCombination);
+    private void SelectAreas(Func<MemoryCleanupArea, bool> selected)
+    {
+        if (systemCleaning)
+            return;
+        foreach (var option in AreaOptions.Children.OfType<CheckBox>())
+            option.IsChecked = selected((MemoryCleanupArea)option.Tag);
+        SystemResult.Text = "已选择组合；尚未执行，执行时仍需本次管理员确认。";
+    }
     private void InitializeSystemAreas()
     {
         foreach (var area in MemoryCleanupCatalog.Order)

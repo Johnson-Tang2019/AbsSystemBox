@@ -4,6 +4,8 @@
 
 ## 数据口径
 
+0.3.0-preview.2 起，摘要、子项、进度、卷列表及面积图提示自动使用 GB/MB/KB/B（每级 1000，最多两位小数）。索引与 RPC 仍保留完整字节整数，逻辑/已分配大小和部分覆盖、未知值保持区分。此显示口径与内存页明确使用的 GiB/MiB 不同。
+
 目录索引和空间分析共享 `%LOCALAPPDATA%\SysBox\index\metadata.db`。WindowsFileSizeReader 使用 FILE_READ_ATTRIBUTES 和 SafeFileHandle 读取 FileStandardInfo 的 EndOfFile、AllocationSize、NumberOfLinks。结构大小检查为 24 字节，BOOLEAN 为单字节；FileAttributeTagInfo 为 8 字节。只打开重解析点本身并拒绝采集链接，不读取正文，不申请备份或调试权限。
 
 原生大小不可得时保留枚举的逻辑长度，分配量保持 NULL；size_state 区分 logical-only / standard-info，记录采集时间。没有 USN 的条目不填造 lastKnownUsn。

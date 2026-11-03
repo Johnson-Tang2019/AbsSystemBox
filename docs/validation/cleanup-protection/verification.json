@@ -1,0 +1,15 @@
+{
+  "newTestsPassed": 4,
+  "filter": "CleanupProtectionRevisionTests",
+  "debugBuild": {
+    "warnings": 0,
+    "errors": 0
+  },
+  "releaseBuild": {
+    "warnings": 0,
+    "errors": 0
+  },
+  "previousAcceptedTests": "reused; not rerun",
+  "actualSystemCacheCleanup": false,
+  "fullVolumeScan": false
+}

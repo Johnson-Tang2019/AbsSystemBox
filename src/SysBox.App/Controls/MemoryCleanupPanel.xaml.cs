@@ -32,9 +32,11 @@ public sealed partial class MemoryCleanupPanel : UserControl
             CleanupPeriod.Value = p.PeriodMinutes;
             CleanupCooldown.Value = p.CooldownSeconds;
             CleanupMinimum.Value = p.MinimumWorkingSetMb;
-            CleanupNames.Text = string.Join(", ", p.AllowedProcesses ?? []);
+            CleanupNames.Text = string.Join(", ", p.ExcludedProcesses ?? []);
             cleanupLoaded = true;
-            CleanupStatus.Text = state.Status + "\n" + string.Join("\n", state.Recent.TakeLast(8).Select(a => $"{a.TimestampUtc.ToLocalTime():HH:mm:ss} {a.Name}（{a.ProcessId}）：{a.Reason} 工作集 {a.BeforeBytes?.ToString() ?? "未知"} → {a.AfterBytes?.ToString() ?? "未知"} 字节"));
+            CleanupStatus.Text = state.Status + (p.ProcessScope == CleanupProcessScope.LegacyAllowList && p.AllowedProcesses is { Length: > 0 }
+                ? "\n当前仍保留旧白名单范围；保存并重新确认后改用保护与排除名单。" : "") + "\n" +
+                string.Join("\n", state.Recent.TakeLast(8).Select(a => $"{a.TimestampUtc.ToLocalTime():HH:mm:ss} {a.Name}（{a.ProcessId}）：{a.Reason} 工作集 {a.BeforeBytes?.ToString() ?? "未知"} → {a.AfterBytes?.ToString() ?? "未知"} 字节"));
         }
         catch (Exception e)
         {
@@ -64,11 +66,12 @@ public sealed partial class MemoryCleanupPanel : UserControl
         {
             var policy = new CleanupPolicy(CleanupEnabled.IsChecked == true, ThresholdEnabled.IsChecked == true, PeriodicEnabled.IsChecked == true,
                 checked((int)CleanupThreshold.Value), checked((int)CleanupHold.Value), checked((int)CleanupPeriod.Value), checked((int)CleanupCooldown.Value), checked((int)CleanupMinimum.Value), 2,
-                CleanupNames.Text.Split([',', '，', ';'], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries));
+                AllowedProcesses: null, ProcessScope: CleanupProcessScope.ProtectedBackground,
+                ExcludedProcesses: CleanupNames.Text.Split([',', '，', ';', '；'], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries));
             CleanupSchedule.Validate(policy);
             if (policy.Enabled)
             {
-                var dialog = new ContentDialog { Title = "启用自动工作集清理？", Content = $"允许的进程：{string.Join(", ", policy.AllowedProcesses!)}\n阈值：{policy.ThresholdPercent}% 持续 {policy.HoldSeconds} 秒；定期：{(policy.Periodic ? policy.PeriodMinutes + " 分钟" : "关闭")}。\n可能增加后续调页，不保证释放物理内存。后台、前台保护、冷却和审计限制始终生效。", PrimaryButtonText = "确认启用", CloseButtonText = "取消", DefaultButton = ContentDialogButton.Close, XamlRoot = XamlRoot };
+                var dialog = new ContentDialog { Title = "启用自动工作集清理？", Content = $"范围：当前用户未受保护的后台进程。\n自定义排除：{(policy.ExcludedProcesses is { Length: > 0 } ? string.Join(", ", policy.ExcludedProcesses) : "无，使用默认保护")}\n阈值：{(policy.Threshold ? policy.ThresholdPercent + "% 持续 " + policy.HoldSeconds + " 秒" : "关闭")}；定期：{(policy.Periodic ? policy.PeriodMinutes + " 分钟" : "关闭")}。\n可能增加后续调页，不保证释放物理内存。前台、系统和游戏 Java 保护、冷却和审计限制始终生效。", PrimaryButtonText = "确认启用", CloseButtonText = "取消", DefaultButton = ContentDialogButton.Close, XamlRoot = XamlRoot };
                 Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(dialog, "CleanupApproval");
                 if (await dialog.ShowAsync() != ContentDialogResult.Primary)
                     return;

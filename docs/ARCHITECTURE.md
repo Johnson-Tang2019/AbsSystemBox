@@ -128,3 +128,5 @@ NtfsLiveIndex 使用共享 IndexDatabase 单写者、SQLite staging 与 NtfsPubl
 MemoryCleanupPanel 从设置页移到内存页。自动进程清理仍由用户 CoreHost 执行；九类系统清理由独立 SysBox.CleanupHelper 一次性提升，NTFS 服务保持只读。UI 创建随机 nonce 管道，显式 SID/System ACL、Network 拒绝，校验 helper PID/映像；helper 校验同用户/会话及真实 UI 映像，等待原生默认“否”的管理员确认，再调用固定枚举的 native API。没有任意命令、设备控制码或 Agent 授权字段；父进程退出/超时取消后续步骤，互斥量阻止运行中更新。
 
 悬浮窗使用 Win32 subclass 修正最小尺寸与非客户区，直接设置 HWND 边界并转交 SafeHandle 管理的圆形/条形区域，避免 AppWindow.ResizeClient 对旧边框的估算。WinUI 绘制现有粉色主题进度环；64 DIP 球体、14x56 贴边条、鼠标物理坐标拖动及 DPI 变化重排。
+
+0.3.0-preview.2：自动清理的进程选择显式区分历史白名单与保护/排除模式，缺失字段保留旧范围，UI 保存并确认后迁移。PCL 组合只映射既有七项枚举，不引入另一套特权调用。磁盘页面和索引状态在 Presentation 格式化为十进制 GB/MB/KB/B；数据库与 RPC 继续传原始字节，未知分配量和部分覆盖语义不变。

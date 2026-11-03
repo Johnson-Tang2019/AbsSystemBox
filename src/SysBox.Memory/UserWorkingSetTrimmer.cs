@@ -8,7 +8,7 @@ public sealed class UserWorkingSetTrimmer(IProcessMemoryMonitor processes) : IWo
 {
     public IReadOnlyList<CleanupAttempt> TrimAllowed(CleanupPolicy policy, CancellationToken token)
     {
-        if (!policy.Enabled || policy.AllowedProcesses is not { Length: > 0 } || policy.MaximumTargets is < 1 or > 2)
+        if (!policy.Enabled || !Enum.IsDefined(policy.ProcessScope) || policy.MaximumTargets is < 1 or > 2)
             return [];
         var snapshot = processes.ReadAsync(token).GetAwaiter().GetResult();
         if (!snapshot.IsSuccess)
@@ -23,7 +23,7 @@ public sealed class UserWorkingSetTrimmer(IProcessMemoryMonitor processes) : IWo
             if (entry.ImagePath is null || entry.StartTimeUtc is null || entry.WorkingSetBytes < (ulong)policy.MinimumWorkingSetMb * 1048576)
                 continue;
             var name = Path.GetFileName(entry.ImagePath);
-            if (!policy.AllowedProcesses.Contains(name, StringComparer.OrdinalIgnoreCase))
+            if (!policy.AllowsProcess(name) || WorkingSetAccess.IsProtectedName(name))
                 continue;
             try
             {

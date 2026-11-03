@@ -17,7 +17,7 @@ public sealed partial class StoragePage : Page, IPageLifetime
         InitializeComponent();
         NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Required;
         ViewModel.PropertyChanged += (_, args) => { if (args.PropertyName == nameof(ViewModel.Current)) { SpaceMap.Update(ViewModel.Current); UpdateBreadcrumbs(); } };
-        Loaded += async (_, _) => { try { Volumes.ItemsSource = await App.Services.GetRequiredService<RpcClient>().CallAsync<VolumeCapacity[]>("volumes", new { }); } catch { ViewModel.ReportError("暂时无法读取卷容量；仍可输入文件夹路径。"); } };
+        Loaded += async (_, _) => { try { Volumes.ItemsSource = (await App.Services.GetRequiredService<RpcClient>().CallAsync<VolumeCapacity[]>("volumes", new { })).Select(v => new VolumeCapacityRow(v)).ToArray(); } catch { ViewModel.ReportError("暂时无法读取卷容量；仍可输入文件夹路径。"); } };
         Unloaded += (_, _) => Deactivate();
     }
     public void Deactivate() => ViewModel.Deactivate();

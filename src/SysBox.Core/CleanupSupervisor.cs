@@ -41,7 +41,8 @@ public sealed class CleanupSupervisor
         CleanupSchedule.Validate(policy);
         policy = policy with
         {
-            AllowedProcesses = policy.AllowedProcesses?.Select(p => p.ToLowerInvariant()).Distinct().ToArray()
+            AllowedProcesses = policy.AllowedProcesses?.Select(p => p.ToLowerInvariant()).Distinct().ToArray(),
+            ExcludedProcesses = policy.ExcludedProcesses?.Select(p => p.ToLowerInvariant()).Distinct().ToArray()
         };
         lock (gate)
         {
@@ -53,7 +54,9 @@ public sealed class CleanupSupervisor
             state = next;
             schedule = new();
             scheduleOrigin = Stopwatch.GetTimestamp();
-            status = policy.Enabled ? "已启用，等待持续压力或定时条件；仅处理白名单后台进程。" : "清理已停用。";
+            status = !policy.Enabled ? "清理已停用。" : policy.ProcessScope == CleanupProcessScope.ProtectedBackground
+                ? "已启用，等待持续压力或定时条件；保护前台和系统进程，并排除自定义进程。"
+                : "已启用，等待持续压力或定时条件；仍按旧白名单处理后台进程。";
             return Read();
         }
     }

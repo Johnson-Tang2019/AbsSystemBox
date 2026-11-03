@@ -1,0 +1,11 @@
+{
+  "storageFixtureBytes": 1201500,
+  "emptyExclusionsReachApproval": true,
+  "cancellationPreservesLegacy": true,
+  "isElevated": false,
+  "pclPresetSelectionOnly": true,
+  "systemCleanupExecuted": false,
+  "disabledExclusionsPersist": true,
+  "volumeScanned": false,
+  "storageKbMbRuntime": true
+}

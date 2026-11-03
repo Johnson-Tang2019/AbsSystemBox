@@ -31,4 +31,7 @@ public static class MemoryCleanupCatalog
         return Order.Where(chosen.Contains).ToArray();
     }
     public static bool IsDefault(MemoryCleanupArea area) => area is not (MemoryCleanupArea.ProcessWorkingSets or MemoryCleanupArea.ModifiedPages or MemoryCleanupArea.Standby);
+    // Observed operation combination from PCL-CE 2.10.4; no upstream implementation is copied.
+    public static bool IsPclCombination(MemoryCleanupArea area) => area is MemoryCleanupArea.WorkingSets or MemoryCleanupArea.ModifiedFileCache or
+        MemoryCleanupArea.ModifiedPages or MemoryCleanupArea.StandbyPriorityZero or MemoryCleanupArea.Standby or MemoryCleanupArea.RegistryCache or MemoryCleanupArea.CombineMemory;
 }

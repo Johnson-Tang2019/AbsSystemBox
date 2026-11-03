@@ -148,3 +148,5 @@ IndexRoot.Generation、StorageView.Generation 和 SearchPageResult.Snapshot 对�
 memory.processes 可选 sort=WorkingSet/PrivateCommit（枚举），默认保持工作集；后台在 Top-200 截断前排序，字段错误正常拒绝。BatteryReading 新增可空 DesignCapacityMilliwattHours；不提供设计容量则不计算健康度。
 
 九类系统清理没有公开的 CoreHost/CLI/MCP 端点；只供真实 UI 发起随机单次管道和原生管理员确认。现有 cleanup.configure 的可信桌面授权边界不变。
+
+0.3.0-preview.2 的 CleanupPolicy 增加 ProcessScope（0=LegacyAllowList，1=ProtectedBackground）和可选 ExcludedProcesses。缺失 scope 的历史存储继续使用旧白名单，不隐式扩大启用范围；新界面保存保护模式时需要重新进行桌面启用确认。排除名按大小写不敏感匹配、至多 32 个无路径 `.exe`，空列表有效，未知 scope 拒绝。系统默认保护仍在原生执行前复核，不受此枚举授权改变。
