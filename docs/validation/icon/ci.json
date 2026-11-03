@@ -1,0 +1,11 @@
+{
+  "sourceRevision": "4e90b28e7beb32aa7b6ebd52b03bae771996a982",
+  "runId": 41553406974,
+  "jobId": 125646297806,
+  "url": "https://github.com/Johnson-Tang2019/AbsSystemBox/actions/runs/41553406974",
+  "conclusion": "success",
+  "lockedRestore": "success",
+  "releaseBuild": "success",
+  "winuiPublishResources": "success",
+  "businessTests": "skipped per user instruction; prior acceptance reused"
+}

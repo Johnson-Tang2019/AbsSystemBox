@@ -1,6 +1,7 @@
 # 安装、覆盖更新与版本
 
 预览版面向 Windows 11 x64。下载 GitHub Release 的 win-x64-setup.exe，运行后按提示安装。
+当前交付为 [0.2.0-preview.2](https://github.com/Johnson-Tang2019/AbsSystemBox/releases/tag/v0.2.0-preview.2)，开始菜单名称为 **AbsSystemBox**，使用透明粉色工具箱图标。
 安装包包含 .NET/Windows App SDK 运行组件，无需预先安装 SDK、注册服务或申请管理员权限。
 当前尚未购买代码签名证书，安装包未签名，Windows 可能显示未知发布者提示；请核对官方仓库来源和 SHA256SUMS.txt。
 没有自动下载或静默后台更新。登录启动与工作集清理默认关闭，需要用户在设置中单独启用。

@@ -6,7 +6,7 @@
 
 **当前源码：普通目录索引/搜索/空间分析、桌面悬浮球与用户后台/Agent 接口。** 已有真实内存/进程监控，以及用户选定文件夹的索引、取消/暂停、筛选搜索、分页和结果操作。
 保留七页导航、粉色毛玻璃外观及浅色/深色/跟随系统主题。规则支持校验、模拟、提案、审批和版本回滚，默认只通知。阈值/定期清理需单独启用。普通目录大小分析见 [大小口径](docs/STORAGE.md)，CLI/MCP 见 [Agent 接口](docs/AGENT_API.md)。已接入 NTFS 高速增量索引和可选只读特权服务；默认关闭，隔离卷及 SCM 实机验收仍暂缓，见 [NTFS 说明](docs/NTFS.md)。
-已发布安装器仍为 M3 的 preview.1，尚未把最新源码重新发布为安装更新。
+最新公开安装版为 [0.2.0-preview.2](https://github.com/Johnson-Tang2019/AbsSystemBox/releases/tag/v0.2.0-preview.2)，包含新的透明粉色工具箱图标和上述功能，已在本机直接覆盖升级并保留配置。NTFS 真实卷及 SCM 生命周期验收的边界仍保留。
 已提供 Windows 11 x64 预览安装版，支持直接覆盖升级并保留用户配置。下载见 [Releases](https://github.com/Johnson-Tang2019/AbsSystemBox/releases)，步骤见 [安装与更新](docs/INSTALL.md)。进度以 [开发状态](docs/STATUS.md) 为准。
 
 内存页进入时开始采样，每轮完成后等待 5 秒再刷新；可停止、手动刷新和取消当前读取。
