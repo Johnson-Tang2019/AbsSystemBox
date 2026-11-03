@@ -1,0 +1,19 @@
+{
+  "installedCoreHostHealthy": true,
+  "realVolumeEnumerated": false,
+  "isElevated": false,
+  "payloadFilesVerified": 2012,
+  "userDataFilesPreserved": 9,
+  "installerSha256": "7eec1393488f5639cc731cffbe211c6cfc888863e22d8cd59d0f7b4aedf55e23",
+  "sourceRevision": "4bc7259c4938a307e7da9d245897a4e3f0a5fefa",
+  "installed": true,
+  "windowsVersion": "0.3.0.2",
+  "cleanExit": true,
+  "isAdministrator": false,
+  "version": "0.3.0-preview.2",
+  "serviceInstalled": false,
+  "stableInstallLocation": true,
+  "startMenuShortcut": true,
+  "newInstalledVersionUi": true,
+  "previousVersion": "0.3.0-preview.1"
+}

@@ -224,3 +224,10 @@ NTFS 卷级验证暂缓，不创建或格式化测试盘；只有全部功能完
 - 新增四项定向测试通过；真实普通用户窗口验证空排除进入确认、取消保留旧配置、禁用状态保存排除项、组合只选择不执行，以及仅 1,201,500 字节专用文件夹的 KB/MB 显示。新 UI 脚本一次断言写法修正后通过；既有业务测试不重复运行。
 - 0.3.0-preview.1 已在本机从 0.2.0-preview.2 覆盖安装，2012 个文件哈希一致、4 个用户数据文件保持；真实非管理员窗口/后台与正常退出通过。源码 6992c2e 的 GitHub 构建成功，该版本仍为未公开草稿，追加功能在 0.3.0-preview.2 一并交付，结果随后补记。
 - 证据见 validation/ui-revision 与 validation/cleanup-protection。未自动执行真实缓存/Standby 清理，未创建/挂载测试卷，未注册 NTFS 服务，真实卷及 SCM 生命周期等此前暂缓边界保持。
+
+### 0.3.0-preview.2 交付完成
+
+- 源码修订 4bc7259c4938a307e7da9d245897a4e3f0a5fefa 已推送；[GitHub Windows 构建](https://github.com/Johnson-Tang2019/AbsSystemBox/actions/runs/41572809425) 成功，含 WinUI publish 资源检查，旧业务测试未重复执行。本地 Debug/Release 均为 0 警告/0 错误。
+- [公开预览发布](https://github.com/Johnson-Tang2019/AbsSystemBox/releases/tag/v0.3.0-preview.2) 包含安装器、对应源码、manifest 与 SHA256SUMS，四个远端文件大小/摘要均匹配本地。安装器 98,448,337 字节，SHA-256 为 `7eec1393488f5639cc731cffbe211c6cfc888863e22d8cd59d0f7b4aedf55e23`。
+- 干净源码安装包 2012 个文件及 405 个服务负载文件哈希核对通过，六个程序均自包含。已在本机从中间 preview.1 覆盖更新至 preview.2；9 个用户数据文件保持，安装身份和目录稳定，实际非管理员新版本窗口、独立后台、正常退出通过。快捷方式验证仅文件与目标，不表示 Windows 搜索收录。
+- 发布上传的间歇 TLS 失败已通过保留证书校验的直接连接完成，不修改系统代理或全局 Git 配置。源码标签与安装包保持一致；本段及交付 JSON 为发布后的文档记录，不重建相同版本安装包。未验收边界沿用上节。

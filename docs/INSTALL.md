@@ -1,10 +1,11 @@
 # 安装、覆盖更新与版本
 
 预览版面向 Windows 11 x64。下载 GitHub Release 的 win-x64-setup.exe，运行后按提示安装。
-当前交付为 [0.2.0-preview.2](https://github.com/Johnson-Tang2019/AbsSystemBox/releases/tag/v0.2.0-preview.2)，开始菜单名称为 **AbsSystemBox**，使用透明粉色工具箱图标。
+当前交付为 [0.3.0-preview.2](https://github.com/Johnson-Tang2019/AbsSystemBox/releases/tag/v0.3.0-preview.2)，开始菜单快捷方式名称为 **AbsSystemBox**，使用透明粉色工具箱图标。
 安装包包含 .NET/Windows App SDK 运行组件，无需预先安装 SDK、注册服务或申请管理员权限。
 当前尚未购买代码签名证书，安装包未签名，Windows 可能显示未知发布者提示；请核对官方仓库来源和 SHA256SUMS.txt。
-没有自动下载或静默后台更新。登录启动与工作集清理默认关闭，需要用户在设置中单独启用。
+没有自动下载或静默后台更新。登录启动与工作集清理默认关闭，分别在设置页与内存页单独启用。
+安装包包含一次性管理员清理组件 `app/cleanup/SysBox.CleanupHelper.exe`，普通安装和主窗口仍不提权；九类系统清理每次独立请求管理员授权及本次操作确认。
 
 默认安装到当前用户 `%LOCALAPPDATA%\Programs\AbsSystemBox`，在开始菜单及“已安装的应用”中登记。
 只修改当前用户登记，不提供所有用户/管理员安装模式。
@@ -30,6 +31,8 @@ Directory.Build.props 是统一版本来源：Version 为语义版本，FileVers
 每次正式更新同时递增 Version 与 FileVersion；预览计数例如 0.1.0-preview.1 → 0.1.0-preview.2 对应 0.1.0.1 → 0.1.0.2。
 产品身份 AbsSystemBox.JohnsonTang2019 不随版本改变。诊断页显示语义版本，卸载登记同时保存四段数字版本，升级比较使用数字版本。
 规则文件自己的 revision/schema_version 独立管理，不能用程序版本覆盖用户规则修订。
+
+本机已由 0.3.0-preview.1 覆盖至 0.3.0-preview.2 / 0.3.0.2，2012 个清单文件哈希一致，9 个用户数据文件保持，真实普通用户窗口显示新版本且后台在线、正常退出。开始菜单验证仅覆盖快捷方式文件/目标存在，不等同于 Windows 搜索目录已收录，见 validation/cleanup-protection。
 
 构建安装包：在 Windows 开发环境执行 scripts/build-installer.ps1，要求干净、已提交的源码。
 脚本固定 NSIS 3.12 并按官方公布 SHA-256 核验下载；项目内工具缓存不提交。
