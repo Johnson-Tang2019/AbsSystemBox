@@ -138,3 +138,5 @@ FluentBallState 直接移植 Fluent Reduct 64fa85f 的 anchor、move、commit、
 WinUI 适配固定 64 DIP HWND/合成面，贴边只把原生可见/命中区域切换为 14x56 DIP；CompactWindow 缓存边界与 region，采样仅更新读数，不移动窗口、不重建 region。明确 HTCLIENT、MA_NOACTIVATE 和 WinUI Passthrough 输入区域，拖动只更新位置；region 成功后将 SafeHandle 所有权交给 OS。移出球体外接矩形后以 350 ms 检查收起，防止圆形角落触发连续展开/收起。专用粉色实色底保证小窗不依赖 Acrylic 合成恢复，主窗口保留毛玻璃。
 
 概览卡片始终竖向排列；内存/磁盘渐变进度条显示真实已用百分比，高对比度使用系统高亮色。DashboardCapacity 先按字节汇总有效卷再计算占比，容量不一致、未就绪/未知卷不计入分母，明确显示部分可读卷；无有效数据时隐藏用量条，不以 0% 冒充硬件结果。未增加文件扫描或新的 RPC/特权入口。
+
+0.3.0-preview.4 的磁盘卡片改为逐盘展示，DashboardVolumeUsage 为已有 volumes 返回的每个本地/可移动盘生成一行，不再只显示汇总比例。可读盘独立显示已用百分比与可用/总容量；未就绪、读取失败或异常容量仍保留盘符/状态行并隐藏未知比例条。容量采集与 RPC 契约保持不变。首页用量条统一 MinHeight/Height=10 DIP，覆盖 ProgressBarTrackHeight 以加粗实际轨道与前景，保留渐变及高对比度系统色。

@@ -50,14 +50,14 @@ public sealed partial class DashboardPage : Page, IPageLifetime
                     {
                     }, token);
                     token.ThrowIfCancellationRequested();
-                    var capacity = DashboardCapacity.FromVolumes(volumes);
-                    StorageSummary.Text = capacity.ReadyVolumes == 0 ? "容量暂不可用" : $"{capacity.ReadyVolumes} 个卷 · 可用 {capacity.AvailableBytes / 1_000_000_000m:N2} / {capacity.TotalBytes / 1_000_000_000m:N2} GB";
-                    StorageUsageBar.Visibility = capacity.UsedPercent.HasValue ? Visibility.Visible : Visibility.Collapsed;
-                    StorageUsageBar.Value = capacity.UsedPercent ?? 0;
-                    StorageUsageText.Text = capacity.UsedPercent is { } used ? $"磁盘已用 {used:F1}%" + (capacity.ReadyVolumes < capacity.ReportedVolumes ? $"（仅计入可读取的 {capacity.ReadyVolumes}/{capacity.ReportedVolumes} 个卷）" : "") : "磁盘用量暂不可用";
+                    var rows = DashboardVolumeUsage.FromVolumes(volumes);
+                    StorageSummary.Text = $"检测到 {rows.Length} 个盘";
+                    VolumeUsageList.ItemsSource = rows;
+                    StorageError.Visibility = rows.Length == 0 ? Visibility.Visible : Visibility.Collapsed;
+                    StorageError.Text = "未检测到可显示的盘。";
                 }
                 catch (OperationCanceledException) { throw; }
-                catch { StorageSummary.Text = "容量暂不可用"; StorageUsageBar.Visibility = Visibility.Collapsed; StorageUsageText.Text = "磁盘用量暂不可用"; }
+                catch { StorageSummary.Text = "容量暂不可用"; VolumeUsageList.ItemsSource = null; StorageError.Visibility = Visibility.Visible; StorageError.Text = "暂时无法读取磁盘列表。"; }
                 await Task.Delay(5000, token);
             }
         }

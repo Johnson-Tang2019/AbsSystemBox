@@ -17,6 +17,11 @@ public static class DockWindowProbe
     [DllImport("user32.dll")] public static extern bool GetCursorPos(out Point point);
     [DllImport("user32.dll")] public static extern IntPtr WindowFromPoint(Point point);
     [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr window, out uint processId);
+    [DllImport("user32.dll", SetLastError = true)] private static extern bool SetWindowPos(IntPtr window, IntPtr after, int x, int y, int width, int height, uint flags);
+    public static void ShowOnTop(IntPtr window)
+    {
+        if (!SetWindowPos(window, (IntPtr)(-1), 0, 0, 0, 0, 0x53)) throw new Win32Exception();
+    }
     [DllImport("user32.dll")] private static extern bool GetWindowRect(IntPtr window, out Rect rect);
     [DllImport("user32.dll")] public static extern uint GetDpiForWindow(IntPtr window);
     [DllImport("user32.dll")] private static extern int GetWindowRgn(IntPtr window, RegionHandle region);

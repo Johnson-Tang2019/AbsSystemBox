@@ -7,3 +7,4 @@
 # No outstanding automatic filter: add only the next genuinely new test group.
 # FloatingDockRecoveryTests and DashboardUsageTests accepted 2026-11-05 (7 new cases).
 # Reuse docs/validation/dock-recovery; no remaining new groups to dispatch.
+# DashboardDriveRowsTests accepted 2026-11-05 (2 new cases); reuse validation/drive-rows.

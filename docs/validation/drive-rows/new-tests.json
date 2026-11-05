@@ -1,0 +1,9 @@
+{
+  "passed": 2,
+  "filter": "FullyQualifiedName~DashboardDriveRowsTests",
+  "tests": [
+    "SysBox.UnitTests.DashboardDriveRowsTests.EveryReportedDriveGetsItsOwnRowIncludingNotReadyAndUnreadableDrives",
+    "SysBox.UnitTests.DashboardDriveRowsTests.PerDrivePercentKeepsFullAndEmptyVolumesButRejectsInvalidCapacity"
+  ],
+  "oldTests": "reused, not rerun"
+}
