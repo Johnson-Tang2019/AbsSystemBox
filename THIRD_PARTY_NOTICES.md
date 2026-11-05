@@ -84,4 +84,6 @@ M3 新增 YamlDotNet 18.1.0（MIT），仅使用低层 YAML 事件解析器，�
 
 按用户要求参考 s3hq4y/fluent-reduct 的固定提交 64fa85fb33d9886b8dbd74ff87bd2454e33ba090，将九类内存操作目录/顺序、原生请求布局、进程保护及悬浮窗尺寸/贴边行为移植或适配为 C# / WinUI / Win32。上游 GPL-3.0-or-later，原文与来源文件列表保存在 licenses/third-party/FluentReduct-64fa85f。没有引入 Electron、koffi、Node.js 或上游二进制；原有“不复制 Fluent Reduct”说明仅描述该适配之前的历史实现。
 
+0.3.0-preview.3 进一步直接移植该提交 `src/ui/main/ball.ts` 的状态转换以及 `src/ui/ball/ball.ts` 的拖动/点击交互。原始两份源码和 blob SHA 已存档在上述目录，C# 版本标注改动与出处；WinUI 绘制、固定合成面/命中区域及旧位置数据兼容由本项目适配。主/渲染器不作为 TypeScript 或 Electron 代码执行。
+
 PCL 清理组合仅参考 PCL-Community/PCL-CE 2.10.4（bc10f7679307e647195ad90c6f50155a29f43445）公开展示的七种 Windows 操作，映射到现有的本项目实现。未复制其 VB 源码、结构体、权限代码或二进制；历史标签未检出明确许可文件，不将当前 dev 的 Apache-2.0 反推为旧标签授权。来源记录见 docs/references/PCL_MEMORY.md，无新增 PCL 运行或构建依赖。

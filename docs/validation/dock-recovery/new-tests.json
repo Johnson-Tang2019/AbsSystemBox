@@ -1,0 +1,14 @@
+{
+  "passed": 7,
+  "filter": "FullyQualifiedName~FloatingDockRecoveryTests|FullyQualifiedName~DashboardUsageTests",
+  "tests": [
+    "SysBox.UnitTests.DashboardUsageTests.ProgressPreservesEmptyFullAndLargeVolumesWithoutOverflow",
+    "SysBox.UnitTests.FloatingDockRecoveryTests.RepeatedCollapseRetainsCompositorBoundsAndRestrictsOnlyTheVisibleRegion(scale: 1.25)",
+    "SysBox.UnitTests.FloatingDockRecoveryTests.UpstreamTransitionsRestoreOnlySavedDockingDetachOnMoveAndCollapseOnCommit",
+    "SysBox.UnitTests.FloatingDockRecoveryTests.RepeatedCollapseRetainsCompositorBoundsAndRestrictsOnlyTheVisibleRegion(scale: 2)",
+    "SysBox.UnitTests.FloatingDockRecoveryTests.RepeatedCollapseRetainsCompositorBoundsAndRestrictsOnlyTheVisibleRegion(scale: 1.75)",
+    "SysBox.UnitTests.FloatingDockRecoveryTests.RepeatedCollapseRetainsCompositorBoundsAndRestrictsOnlyTheVisibleRegion(scale: 1)",
+    "SysBox.UnitTests.DashboardUsageTests.DiskProgressWeightsVolumeCapacityAndMarksUnreadableVolumes"
+  ],
+  "oldAcceptedTests": "reused, not rerun"
+}

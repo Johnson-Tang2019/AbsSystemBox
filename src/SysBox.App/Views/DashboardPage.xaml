@@ -8,37 +8,39 @@
                 <TextBlock Text="概览" Style="{StaticResource PageTitleStyle}" AutomationProperties.AutomationId="PageTitle" />
             </StackPanel>
             <controls:BatteryCard />
-            <Grid ColumnSpacing="16" RowSpacing="16" SizeChanged="Cards_SizeChanged">
-                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="*" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
-                <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
-                <Border x:Name="MemoryCard" Grid.ColumnSpan="3" Style="{StaticResource SurfaceStyle}">
+            <StackPanel Spacing="16" AutomationProperties.AutomationId="DashboardCards">
+                <Border x:Name="MemoryCard" Style="{StaticResource SurfaceStyle}" AutomationProperties.AutomationId="DashboardMemoryCard">
                     <StackPanel Spacing="12">
                         <FontIcon Glyph="&#xE950;" HorizontalAlignment="Left" Foreground="{ThemeResource RoseBrush}" />
-                        <TextBlock Text="内存观察" FontSize="18" FontWeight="SemiBold" />
+                        <TextBlock Text="内存观察" FontSize="18" FontWeight="SemiBold" AutomationProperties.AutomationId="DashboardMemoryTitle"/>
                         <TextBlock Text="{Binding MemorySummary}" TextWrapping="Wrap" FontSize="22" FontWeight="SemiBold" />
+                        <ProgressBar x:Name="MemoryUsageBar" Minimum="0" Maximum="100" Height="10" CornerRadius="5" Visibility="Collapsed" Foreground="{ThemeResource UsageGradientBrush}" Background="{ThemeResource RoseSoftBrush}" AutomationProperties.AutomationId="DashboardMemoryUsage"/>
+                        <TextBlock x:Name="MemoryUsageText" Text="内存用量暂不可用" AutomationProperties.AutomationId="DashboardMemoryUsageText"/>
                         <TextBlock Text="了解内存压力与进程占用" Style="{StaticResource BodyCopyStyle}" />
                         <HyperlinkButton Content="查看内存 →" Tag="memory" Click="Navigate_Click" Padding="0,4" />
                     </StackPanel>
                 </Border>
-                <Border x:Name="SearchCard" Grid.Row="1" Grid.ColumnSpan="3" Style="{StaticResource SurfaceStyle}">
+                <Border x:Name="SearchCard" Style="{StaticResource SurfaceStyle}" AutomationProperties.AutomationId="DashboardSearchCard">
                     <StackPanel Spacing="12">
                         <FontIcon Glyph="&#xE721;" HorizontalAlignment="Left" Foreground="{ThemeResource RoseBrush}" />
-                        <TextBlock Text="文件搜索" FontSize="18" FontWeight="SemiBold" />
-                        <TextBlock x:Name="IndexSummary" Text="正在读取索引…" AutomationProperties.AutomationId="DashboardIndex" FontSize="22" FontWeight="SemiBold" />
+                        <TextBlock Text="文件搜索" FontSize="18" FontWeight="SemiBold" AutomationProperties.AutomationId="DashboardSearchTitle"/>
+                        <TextBlock x:Name="IndexSummary" Text="正在读取索引…" TextWrapping="Wrap" AutomationProperties.AutomationId="DashboardIndex" FontSize="22" FontWeight="SemiBold" />
                         <TextBlock Text="从文件名找到需要的内容" Style="{StaticResource BodyCopyStyle}" />
                         <HyperlinkButton Content="前往搜索 →" Tag="search" Click="Navigate_Click" Padding="0,4" />
                     </StackPanel>
                 </Border>
-                <Border x:Name="StorageCard" Grid.Row="2" Grid.ColumnSpan="3" Style="{StaticResource SurfaceStyle}">
+                <Border x:Name="StorageCard" Style="{StaticResource SurfaceStyle}" AutomationProperties.AutomationId="DashboardStorageCard">
                     <StackPanel Spacing="12">
                         <FontIcon Glyph="&#xEDA2;" HorizontalAlignment="Left" Foreground="{ThemeResource RoseBrush}" />
-                        <TextBlock Text="磁盘空间" FontSize="18" FontWeight="SemiBold" />
-                        <TextBlock x:Name="StorageSummary" Text="正在读取容量…" AutomationProperties.AutomationId="DashboardStorage" FontSize="22" FontWeight="SemiBold" />
+                        <TextBlock Text="磁盘空间" FontSize="18" FontWeight="SemiBold" AutomationProperties.AutomationId="DashboardStorageTitle"/>
+                        <TextBlock x:Name="StorageSummary" Text="正在读取容量…" TextWrapping="Wrap" AutomationProperties.AutomationId="DashboardStorage" FontSize="22" FontWeight="SemiBold" />
+                        <ProgressBar x:Name="StorageUsageBar" Minimum="0" Maximum="100" Height="10" CornerRadius="5" Visibility="Collapsed" Foreground="{ThemeResource UsageGradientBrush}" Background="{ThemeResource RoseSoftBrush}" AutomationProperties.AutomationId="DashboardStorageUsage"/>
+                        <TextBlock x:Name="StorageUsageText" Text="磁盘用量暂不可用" TextWrapping="Wrap" AutomationProperties.AutomationId="DashboardStorageUsageText"/>
                         <TextBlock Text="逐层了解文件夹的空间分布" Style="{StaticResource BodyCopyStyle}" />
                         <HyperlinkButton Content="查看磁盘 →" Tag="storage" Click="Navigate_Click" Padding="0,4" />
                     </StackPanel>
                 </Border>
-            </Grid>
+            </StackPanel>
             <TextBlock Text="{Binding ErrorMessage}" TextWrapping="Wrap" Foreground="{ThemeResource SystemFillColorCriticalBrush}" />
         </StackPanel>
     </ScrollViewer>

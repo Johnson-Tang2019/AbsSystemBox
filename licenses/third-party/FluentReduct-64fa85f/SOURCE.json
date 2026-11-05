@@ -11,5 +11,9 @@
     "src/ui/main/ball.ts",
     "src/ui/ball/ball.ts"
   ],
-  "integration": "Native C# port of fixed cleanup catalog/buffer layouts and adapted protection/docking rules; no Electron, TypeScript, binary or runtime dependency"
+  "integration": "Native C# port of fixed cleanup catalog/buffer layouts, main-ball anchor/move/commit/hover/restore/reflow state and renderer pointer/click rules. Native fixed-size composition surface and bounded leave checks adapt window clipping to WinUI. No Electron, TypeScript, binary or runtime dependency.",
+  "ballSourceBlobs": {
+    "src/ui/main/ball.ts": "efc98bd76858349b94d19fd71fb087ba2278159f",
+    "src/ui/ball/ball.ts": "3111a9459f4ae2c5ca093c58abe762ba5491f9b2"
+  }
 }

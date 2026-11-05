@@ -16,6 +16,10 @@
             <SolidColorBrush x:Key="SurfaceStrokeBrush" Color="#24B52D68" />
             <SolidColorBrush x:Key="RoseBrush" Color="#B52D68" />
             <SolidColorBrush x:Key="RoseSoftBrush" Color="#1CB52D68" />
+            <SolidColorBrush x:Key="FloatingSurfaceBrush" Color="#FFFCEFF6" />
+            <LinearGradientBrush x:Key="UsageGradientBrush" StartPoint="0,0" EndPoint="1,0">
+                <GradientStop Color="#F6BED6" Offset="0"/><GradientStop Color="#DE71A4" Offset="0.5"/><GradientStop Color="#B52D68" Offset="1"/>
+            </LinearGradientBrush>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Default">
             <Color x:Key="SystemAccentColor">#FF9FC8</Color>
@@ -31,6 +35,10 @@
             <SolidColorBrush x:Key="SurfaceStrokeBrush" Color="#38FF9FC8" />
             <SolidColorBrush x:Key="RoseBrush" Color="#FF9FC8" />
             <SolidColorBrush x:Key="RoseSoftBrush" Color="#26FF9FC8" />
+            <SolidColorBrush x:Key="FloatingSurfaceBrush" Color="#FF332830" />
+            <LinearGradientBrush x:Key="UsageGradientBrush" StartPoint="0,0" EndPoint="1,0">
+                <GradientStop Color="#C46394" Offset="0"/><GradientStop Color="#F09EC3" Offset="0.5"/><GradientStop Color="#FFD4E8" Offset="1"/>
+            </LinearGradientBrush>
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <SolidColorBrush x:Key="ShellTintBrush" Color="{ThemeResource SystemColorWindowColor}" />
@@ -39,6 +47,8 @@
             <SolidColorBrush x:Key="SurfaceStrokeBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
             <SolidColorBrush x:Key="RoseBrush" Color="{ThemeResource SystemColorHighlightColor}" />
             <SolidColorBrush x:Key="RoseSoftBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="FloatingSurfaceBrush" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="UsageGradientBrush" Color="{ThemeResource SystemColorHighlightColor}" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
     <Style x:Key="SurfaceStyle" TargetType="Border">

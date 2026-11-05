@@ -7,8 +7,22 @@ public enum BallEdge
     None, Left, Right, Top, Bottom
 }
 public sealed record BallRectangle(int X, int Y, int Width, int Height);
+public sealed record FloatingBallFrame(BallRectangle Window, BallRectangle Region);
 public static class FloatingBallLayout
 {
+    public static FloatingBallFrame Frame(double cx, double cy, BallEdge edge, bool collapsed, double scale, int left, int top, int width, int height)
+    {
+        // Keep the compositor surface at ball size; only the visible/hit-test region changes.
+        var window = Arrange(cx, cy, edge, false, scale, left, top, width, height);
+        if (!collapsed || edge == BallEdge.None)
+            return new(window, new(0, 0, window.Width, window.Height));
+        var vertical = edge is BallEdge.Left or BallEdge.Right;
+        var w = (int)Math.Ceiling((vertical ? 14 : 56) * scale);
+        var h = (int)Math.Ceiling((vertical ? 56 : 14) * scale);
+        var x = edge == BallEdge.Left ? 0 : edge == BallEdge.Right ? window.Width - w : (window.Width - w) / 2;
+        var y = edge == BallEdge.Top ? 0 : edge == BallEdge.Bottom ? window.Height - h : (window.Height - h) / 2;
+        return new(window, new(x, y, w, h));
+    }
     public static BallRectangle Arrange(double cx, double cy, BallEdge edge, bool collapsed, double scale, int left, int top, int width, int height)
     {
         if (!double.IsFinite(scale) || scale is < 0.5 or > 5 || width < 1 || height < 1)

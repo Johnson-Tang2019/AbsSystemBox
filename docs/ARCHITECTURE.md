@@ -105,7 +105,7 @@ TreemapLayout 是纯几何算法，StorageTreemap 仅绘制有界按钮并发送
 DesktopController 持有主题/悬浮球/快捷搜索/关闭策略；DesktopPreferenceStore 原子保存偏好。
 Native DesktopShell 独立 STA 消息循环拥有 HWND、图标、菜单和热键 SafeHandle，Explorer TaskbarCreated 后重建图标。
 托盘拒绝时保留悬浮球与快捷搜索并禁用关闭隐藏，防止无法恢复窗口。快捷键检查全屏前台窗口，不抢占游戏焦点。
-悬浮球只读内存、每 5 秒更新、可拖动并限制工作区；不包含一键危险清理。
+悬浮球每 1.5 秒只读采样，可拖动并限制工作区；单击/右键打开主窗口，双击只请求现有清理流程，仍需每次独立管理员授权与确认。
 每 30 秒桌面续期，后台退出撤销租约；无轮询任务 30 秒取消，后台空闲两分钟退出。
 后台固定路径启动不继承 CLI/MCP 标准句柄，避免子进程延迟 CLI stdout EOF。
 
@@ -130,3 +130,11 @@ MemoryCleanupPanel 从设置页移到内存页。自动进程清理仍由用户 
 悬浮窗使用 Win32 subclass 修正最小尺寸与非客户区，直接设置 HWND 边界并转交 SafeHandle 管理的圆形/条形区域，避免 AppWindow.ResizeClient 对旧边框的估算。WinUI 绘制现有粉色主题进度环；64 DIP 球体、14x56 贴边条、鼠标物理坐标拖动及 DPI 变化重排。
 
 0.3.0-preview.2：自动清理的进程选择显式区分历史白名单与保护/排除模式，缺失字段保留旧范围，UI 保存并确认后迁移。PCL 组合只映射既有七项枚举，不引入另一套特权调用。磁盘页面和索引状态在 Presentation 格式化为十进制 GB/MB/KB/B；数据库与 RPC 继续传原始字节，未知分配量和部分覆盖语义不变。
+
+## 0.3.0-preview.3 悬浮球与概览
+
+FluentBallState 直接移植 Fluent Reduct 64fa85f 的 anchor、move、commit、hover、restore、reflow 状态逻辑；鼠标抓取偏移、4 DIP 欧氏距离阈值、250 ms 单/双击分辨及右键行为来自其 renderer。原始两份 TypeScript 源码、blob SHA 和 GPL 原文随授权目录保存，不加载上游运行时。单击/右键打开主窗口，双击请求现有清理，球内仅保留百分比。旧 BallX/BallY 仍表示 64 DIP 可见球体左上角，未引入 Electron 的 4 DIP 影子边距。
+
+WinUI 适配固定 64 DIP HWND/合成面，贴边只把原生可见/命中区域切换为 14x56 DIP；CompactWindow 缓存边界与 region，采样仅更新读数，不移动窗口、不重建 region。明确 HTCLIENT、MA_NOACTIVATE 和 WinUI Passthrough 输入区域，拖动只更新位置；region 成功后将 SafeHandle 所有权交给 OS。移出球体外接矩形后以 350 ms 检查收起，防止圆形角落触发连续展开/收起。专用粉色实色底保证小窗不依赖 Acrylic 合成恢复，主窗口保留毛玻璃。
+
+概览卡片始终竖向排列；内存/磁盘渐变进度条显示真实已用百分比，高对比度使用系统高亮色。DashboardCapacity 先按字节汇总有效卷再计算占比，容量不一致、未就绪/未知卷不计入分母，明确显示部分可读卷；无有效数据时隐藏用量条，不以 0% 冒充硬件结果。未增加文件扫描或新的 RPC/特权入口。

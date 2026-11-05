@@ -1,0 +1,34 @@
+{
+  "stableWindowPixels": 64,
+  "edges": 4,
+  "cycles": 32,
+  "gdiBefore": 44,
+  "rightClickOpensMain": true,
+  "memoryUsage": 70.14931066531486,
+  "systemCleanupExecuted": false,
+  "isElevated": false,
+  "singleClickOpensMain": true,
+  "diskUsage": 18.701922801634097,
+  "verticalOverview": true,
+  "volumeScanned": false,
+  "gdiAfter": 44,
+  "restoredCaptures": [
+    {
+      "blackFraction": 0.0,
+      "edge": "left"
+    },
+    {
+      "blackFraction": 0.0,
+      "edge": "right"
+    },
+    {
+      "blackFraction": 0.0,
+      "edge": "top"
+    },
+    {
+      "blackFraction": 0.0,
+      "edge": "bottom"
+    }
+  ],
+  "dpi": 96
+}

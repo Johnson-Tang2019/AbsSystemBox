@@ -17,8 +17,8 @@ public sealed partial class DashboardPage : Page, IPageLifetime
     {
         InitializeComponent();
         DataContext = ViewModel;
-        Loaded += (_, _) => { sampling?.Cancel(); sampling = new(); _ = RefreshLoopAsync(sampling.Token); };
-        Unloaded += (_, _) => Deactivate();
+        Loaded += (_, _) => { ViewModel.PropertyChanged -= ViewModel_Changed; ViewModel.PropertyChanged += ViewModel_Changed; sampling?.Cancel(); sampling = new(); _ = RefreshLoopAsync(sampling.Token); };
+        Unloaded += (_, _) => { Deactivate(); ViewModel.PropertyChanged -= ViewModel_Changed; };
     }
 
     public void Deactivate()
@@ -50,26 +50,27 @@ public sealed partial class DashboardPage : Page, IPageLifetime
                     {
                     }, token);
                     token.ThrowIfCancellationRequested();
-                    var ready = volumes.Where(v => v.TotalBytes is > 0 && v.AvailableBytes is not null).ToArray();
-                    StorageSummary.Text = ready.Length == 0 ? "容量暂不可用" : $"{ready.Length} 个卷 · 可用 {SysBox.Presentation.SizeFormatting.Format(ready.Sum(v => v.AvailableBytes!.Value))}";
+                    var capacity = DashboardCapacity.FromVolumes(volumes);
+                    StorageSummary.Text = capacity.ReadyVolumes == 0 ? "容量暂不可用" : $"{capacity.ReadyVolumes} 个卷 · 可用 {capacity.AvailableBytes / 1_000_000_000m:N2} / {capacity.TotalBytes / 1_000_000_000m:N2} GB";
+                    StorageUsageBar.Visibility = capacity.UsedPercent.HasValue ? Visibility.Visible : Visibility.Collapsed;
+                    StorageUsageBar.Value = capacity.UsedPercent ?? 0;
+                    StorageUsageText.Text = capacity.UsedPercent is { } used ? $"磁盘已用 {used:F1}%" + (capacity.ReadyVolumes < capacity.ReportedVolumes ? $"（仅计入可读取的 {capacity.ReadyVolumes}/{capacity.ReportedVolumes} 个卷）" : "") : "磁盘用量暂不可用";
                 }
                 catch (OperationCanceledException) { throw; }
-                catch { StorageSummary.Text = "容量暂不可用"; }
+                catch { StorageSummary.Text = "容量暂不可用"; StorageUsageBar.Visibility = Visibility.Collapsed; StorageUsageText.Text = "磁盘用量暂不可用"; }
                 await Task.Delay(5000, token);
             }
         }
         catch (OperationCanceledException) when (token.IsCancellationRequested) { }
     }
-    private void Cards_SizeChanged(object sender, SizeChangedEventArgs args)
+    private void ViewModel_Changed(object? sender, System.ComponentModel.PropertyChangedEventArgs args)
     {
-        var wide = args.NewSize.Width >= 760;
-        FrameworkElement[] cards = [MemoryCard, SearchCard, StorageCard];
-        for (var index = 0; index < cards.Length; index++)
-        {
-            Grid.SetRow(cards[index], wide ? 0 : index);
-            Grid.SetColumn(cards[index], wide ? index : 0);
-            Grid.SetColumnSpan(cards[index], wide ? 1 : 3);
-        }
+        if (args.PropertyName != nameof(DashboardViewModel.Snapshot))
+            return;
+        var used = MemoryFormatting.PhysicalPercentage(ViewModel.Snapshot);
+        MemoryUsageBar.Visibility = used.HasValue ? Visibility.Visible : Visibility.Collapsed;
+        MemoryUsageBar.Value = used ?? 0;
+        MemoryUsageText.Text = used is { } percent ? $"内存已用 {percent:F1}%" : "内存用量暂不可用";
     }
     private void Navigate_Click(object sender, RoutedEventArgs args) =>
         App.MainWindow.SelectPage((string)((HyperlinkButton)sender).Tag);

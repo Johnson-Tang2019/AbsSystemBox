@@ -28,6 +28,8 @@ public sealed class CompactWindow : IDisposable
     [DllImport("gdi32.dll")] private static extern bool DeleteObject(IntPtr value);
     [DllImport("user32.dll")] private static extern int SetWindowRgn(IntPtr window, IntPtr region, bool redraw);
     private readonly IntPtr window; private readonly Subclass callback;
+    private (int X, int Y, int Width, int Height)? bounds;
+    private (int X, int Y, int Width, int Height, bool Circle)? clip;
     private sealed class Region : SafeHandleZeroOrMinusOneIsInvalid
     {
         public Region(IntPtr value) : base(true) => SetHandle(value); protected override bool ReleaseHandle() => DeleteObject(handle);
@@ -48,6 +50,10 @@ public sealed class CompactWindow : IDisposable
     }
     private IntPtr Handle(IntPtr w, uint message, UIntPtr p, IntPtr l, UIntPtr id, UIntPtr data)
     {
+        if (message == 0x84)
+            return (IntPtr)1; // HTCLIENT: the whole compact surface belongs to pointer handling.
+        if (message == 0x21)
+            return (IntPtr)3; // MA_NOACTIVATE, matching the upstream companion window.
         if (message == 0x83)
             return IntPtr.Zero;
         if (message == 0x24 && l != IntPtr.Zero)
@@ -73,20 +79,31 @@ public sealed class CompactWindow : IDisposable
     {
         if (width is < 1 or > 1024 || height is < 1 or > 1024)
             throw new ArgumentOutOfRangeException(nameof(width));
-        if (!SetWindowPos(window, IntPtr.Zero, x, y, width, height, 0x414))
+        var next = (x, y, width, height);
+        if (bounds == next)
+            return;
+        var flags = bounds is { } previous && previous.Width == width && previous.Height == height ? 0x415u : 0x414u;
+        if (!SetWindowPos(window, IntPtr.Zero, x, y, width, height, flags))
             throw new InvalidOperationException("无法更新悬浮窗尺寸。");
+        bounds = next;
     }
     public void Clip(int width, int height, bool circle)
+        => Clip(0, 0, width, height, circle);
+    public void Clip(int x, int y, int width, int height, bool circle)
     {
-        if (width < 1 || height < 1 || width > 1024 || height > 1024)
+        if (x < 0 || y < 0 || width < 1 || height < 1 || width > 1024 || height > 1024 || x > 1024 - width || y > 1024 - height)
             throw new ArgumentOutOfRangeException(nameof(width));
+        var next = (x, y, width, height, circle);
+        if (clip == next)
+            return;
         var diameter = circle ? Math.Min(width, height) : Math.Min(10, Math.Min(width, height));
-        using var region = new Region(CreateRoundRectRgn(0, 0, width + 1, height + 1, diameter, diameter));
+        using var region = new Region(CreateRoundRectRgn(x, y, x + width + 1, y + height + 1, diameter, diameter));
         if (region.IsInvalid)
             throw new InvalidOperationException("无法创建悬浮窗外形。");
         if (SetWindowRgn(window, region.DangerousGetHandle(), true) == 0)
             throw new InvalidOperationException("无法设置悬浮窗外形。");
         region.SetHandleAsInvalid();
+        clip = next;
     }
     public void Dispose() => RemoveWindowSubclass(window, callback, (UIntPtr)77);
 }
