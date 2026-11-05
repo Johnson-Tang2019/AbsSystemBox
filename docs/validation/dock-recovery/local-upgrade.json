@@ -1,0 +1,18 @@
+{
+  "windowsVersion": "0.3.0.3",
+  "installed": true,
+  "appLeftRunning": true,
+  "stableInstallLocation": true,
+  "previousVersion": "0.3.0-preview.2",
+  "isAdministrator": false,
+  "realVolumeEnumerated": false,
+  "serviceInstalled": false,
+  "oldUiFlows": "not rerun",
+  "sourceRevision": "fa71aa6df86506be55d8b97c8bf36cc76be5f1fd",
+  "version": "0.3.0-preview.3",
+  "userDataFilesPreserved": 9,
+  "isElevated": false,
+  "payloadFilesVerified": 2016,
+  "installerSha256": "5429036b54774c284fb53b400308ec6b1d05ebbdef2f9b4ab44c6be4c7601044",
+  "newInstalledOverview": true
+}

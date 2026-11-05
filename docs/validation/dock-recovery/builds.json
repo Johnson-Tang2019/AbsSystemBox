@@ -1,0 +1,18 @@
+{
+  "debug": {
+    "scope": "App and affected dependencies",
+    "warnings": 0,
+    "errors": 0
+  },
+  "release": {
+    "scope": "full solution",
+    "warnings": 0,
+    "errors": 0
+  },
+  "package": {
+    "files": 2016,
+    "serviceFiles": 407,
+    "selfContainedExecutables": 6,
+    "cleanSource": true
+  }
+}
