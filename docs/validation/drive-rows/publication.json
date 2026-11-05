@@ -1,0 +1,28 @@
+{
+  "tag": "v0.3.0-preview.4",
+  "url": "https://github.com/Johnson-Tang2019/AbsSystemBox/releases/tag/v0.3.0-preview.4",
+  "verifiedRemoteAssets": [
+    {
+      "bytes": 4902324,
+      "name": "AbsSystemBox-0.3.0-preview.4-source.zip",
+      "sha256": "ddc672beccdd03a4dbc131bb6ef23858814c70abf7f82869dd8b230693cd1d25"
+    },
+    {
+      "bytes": 98465546,
+      "name": "AbsSystemBox-0.3.0-preview.4-win-x64-setup.exe",
+      "sha256": "2f97ed3e24b9bc15aef4eb68216f7f0cd4a71d452861f793b373d7cbe2178647"
+    },
+    {
+      "bytes": 370601,
+      "name": "manifest.json",
+      "sha256": "dab698d65fe7fd6d097a9e78d554959fc93795a3154c404563023d0d2d4127b0"
+    },
+    {
+      "bytes": 302,
+      "name": "SHA256SUMS.txt",
+      "sha256": "b1b75b0e4695c5541091a37b0426948a7dbc5dc5bad7ab8b1e6c22d36008980b"
+    }
+  ],
+  "prerelease": true,
+  "published": true
+}

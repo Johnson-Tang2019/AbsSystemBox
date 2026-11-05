@@ -5,5 +5,7 @@
 - `new-tests.json`：DashboardDriveRowsTests 两项通过，验证所有返回盘都保留展示行、各盘独立比例以及未知/无效容量。
 - `runtime-ui.json`：真实非管理员新窗口，仅首页逐盘行和条带厚度；3 盘/3 行、2 个可读比例、1 个未知状态。
 - `memory-bar.png`、`drive-bar.png`：实际条带截图，96 DPI 下前景 10 像素；捕获时验证窗口命中归属，排除其他窗口遮挡。
+- `builds.json`、`source-ci.json`：对应代码的本地构建和 Windows CI，旧测试沿用。
+- `local-upgrade.json`、`publication.json`：最终包覆盖安装、新窗口逐盘行及公开附件哈希。初次 UI 检查引用了不生成 peer 的容器，已恢复查询真实子行；未重复安装，未填造丢失的安装前文件数量。
 
 复用已接受的内存采集、悬浮球及其他功能记录，没有重跑旧 UI 流程。未测试其他实际 DPI，未执行内存清理或文件扫描。

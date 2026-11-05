@@ -6,7 +6,7 @@
 
 **当前源码：普通目录索引/搜索/空间分析、桌面悬浮球与用户后台/Agent 接口。** 已有真实内存/进程监控，以及用户选定文件夹的索引、取消/暂停、筛选搜索、分页和结果操作。
 保留七页导航、粉色毛玻璃外观及浅色/深色/跟随系统主题。规则支持校验、模拟、提案、审批和版本回滚，默认只通知。阈值/定期清理需单独启用。普通目录大小分析见 [大小口径](docs/STORAGE.md)，CLI/MCP 见 [Agent 接口](docs/AGENT_API.md)。已接入 NTFS 高速增量索引和可选只读特权服务；默认关闭，隔离卷及 SCM 实机验收仍暂缓，见 [NTFS 说明](docs/NTFS.md)。
-最新公开安装版为 [0.3.0-preview.3](https://github.com/Johnson-Tang2019/AbsSystemBox/releases/tag/v0.3.0-preview.3)，直接移植 Fluent Reduct 悬浮球逻辑并修复反复贴边后的变黑/交互问题，球内仅显示百分比；单击/右键打开主窗口，双击请求需管理员确认的清理。概览竖向排列，内存/磁盘显示粉色渐变用量条。已在本机覆盖升级并保留配置，NTFS 真实卷及 SCM 生命周期验收边界仍保留。
+最新公开安装版为 [0.3.0-preview.4](https://github.com/Johnson-Tang2019/AbsSystemBox/releases/tag/v0.3.0-preview.4)，首页按盘显示容量与使用率，未就绪盘也保留状态行，内存/磁盘渐变用量条加粗到 10 DIP。保留 Fluent Reduct 原生移植的粉色悬浮球交互。已在本机覆盖升级并保留配置，NTFS 真实卷及 SCM 生命周期验收边界仍保留。
 已提供 Windows 11 x64 预览安装版，支持直接覆盖升级并保留用户配置。下载见 [Releases](https://github.com/Johnson-Tang2019/AbsSystemBox/releases)，步骤见 [安装与更新](docs/INSTALL.md)。进度以 [开发状态](docs/STATUS.md) 为准。
 
 内存页进入时自动采样，每轮完成后等待 5 秒再刷新，离开页面取消该页采样。

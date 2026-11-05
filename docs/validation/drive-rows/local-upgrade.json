@@ -1,0 +1,21 @@
+{
+  "serviceInstalled": false,
+  "realVolumeEnumerated": false,
+  "resumedUiCheck": true,
+  "reportedDrives": 3,
+  "perDriveRows": 3,
+  "stableInstallLocation": true,
+  "installerSha256": "2f97ed3e24b9bc15aef4eb68216f7f0cd4a71d452861f793b373d7cbe2178647",
+  "newInstalledOverview": true,
+  "sourceRevision": "87760a84442ed7a6cca760dfba6cd982bdfd0852",
+  "windowsVersion": "0.3.0.4",
+  "payloadFilesVerified": 2016,
+  "previousVersion": "0.3.0-preview.3",
+  "version": "0.3.0-preview.4",
+  "userDataPreservation": "Hash comparison passed during installation before initial UI-container lookup failed; count was not persisted",
+  "oldUiFlows": "not rerun",
+  "isAdministrator": false,
+  "appLeftRunning": true,
+  "installed": true,
+  "isElevated": false
+}

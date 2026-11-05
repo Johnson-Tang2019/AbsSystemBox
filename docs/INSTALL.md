@@ -1,7 +1,7 @@
 # 安装、覆盖更新与版本
 
 预览版面向 Windows 11 x64。下载 GitHub Release 的 win-x64-setup.exe，运行后按提示安装。
-当前交付为 [0.3.0-preview.3](https://github.com/Johnson-Tang2019/AbsSystemBox/releases/tag/v0.3.0-preview.3)，开始菜单快捷方式名称为 **AbsSystemBox**，使用透明粉色工具箱图标。
+当前交付为 [0.3.0-preview.4](https://github.com/Johnson-Tang2019/AbsSystemBox/releases/tag/v0.3.0-preview.4)，开始菜单快捷方式名称为 **AbsSystemBox**，使用透明粉色工具箱图标。
 安装包包含 .NET/Windows App SDK 运行组件，无需预先安装 SDK、注册服务或申请管理员权限。
 当前尚未购买代码签名证书，安装包未签名，Windows 可能显示未知发布者提示；请核对官方仓库来源和 SHA256SUMS.txt。
 没有自动下载或静默后台更新。登录启动与工作集清理默认关闭，分别在设置页与内存页单独启用。
@@ -32,7 +32,7 @@ Directory.Build.props 是统一版本来源：Version 为语义版本，FileVers
 产品身份 AbsSystemBox.JohnsonTang2019 不随版本改变。诊断页显示语义版本，卸载登记同时保存四段数字版本，升级比较使用数字版本。
 规则文件自己的 revision/schema_version 独立管理，不能用程序版本覆盖用户规则修订。
 
-本机已由 0.3.0-preview.2 覆盖至 0.3.0-preview.3 / 0.3.0.3，2016 个清单文件哈希一致，9 个用户数据文件保持，真实普通用户新概览读取用量正常，应用保留运行供使用。没有重复旧诊断/导航流程，见 validation/dock-recovery。此前开始菜单验证仅覆盖快捷方式文件/目标存在，不等同于 Windows 搜索目录已收录。
+本机已由 0.3.0-preview.3 覆盖至 0.3.0-preview.4 / 0.3.0.4，2016 个清单文件哈希一致，安装阶段用户数据哈希对比通过；实际非管理员新概览显示 3 盘/3 行，应用保留运行供使用。没有重复旧诊断/导航流程，见 validation/drive-rows。此前开始菜单验证仅覆盖快捷方式文件/目标存在，不等同于 Windows 搜索目录已收录。
 
 构建安装包：在 Windows 开发环境执行 scripts/build-installer.ps1，要求干净、已提交的源码。
 脚本固定 NSIS 3.12 并按官方公布 SHA-256 核验下载；项目内工具缓存不提交。
