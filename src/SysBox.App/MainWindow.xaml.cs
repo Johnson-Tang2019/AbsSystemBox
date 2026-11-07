@@ -85,6 +85,7 @@ public sealed partial class MainWindow : Window
             "search" => typeof(SearchPage),
             "storage" => typeof(StoragePage),
             "rules" => typeof(RulesPage),
+            "cooling" => typeof(CoolingDisplayPage),
             "diagnostics" => typeof(DiagnosticsPage),
             "settings" => typeof(SettingsPage),
             _ => typeof(DashboardPage)
@@ -94,7 +95,7 @@ public sealed partial class MainWindow : Window
         if (RootFrame.Content is IPageLifetime page)
             page.Deactivate();
         RootFrame.Navigate(pageType);
-        // There are seven fixed destinations: keep at most one view of each, never an unbounded back stack.
+        // There are eight fixed destinations: keep at most one view of each, never an unbounded back stack.
         if (RootFrame.Content is Page current)
             current.NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Required;
         RootFrame.BackStack.Clear();

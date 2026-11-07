@@ -343,62 +343,62 @@
       "sysbox.core": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Abstractions": "[0.2.0-preview.1, )"
+          "SysBox.Abstractions": "[0.3.1, )"
         }
       },
       "sysbox.fileindex": {
         "type": "Project",
         "dependencies": {
           "Microsoft.Data.Sqlite": "[10.0.14, )",
-          "SysBox.Abstractions": "[0.2.0-preview.1, )"
+          "SysBox.Abstractions": "[0.3.1, )"
         }
       },
       "sysbox.memory": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Abstractions": "[0.2.0-preview.1, )",
-          "SysBox.Native": "[0.2.0-preview.1, )"
+          "SysBox.Abstractions": "[0.3.1, )",
+          "SysBox.Native": "[0.3.1, )"
         }
       },
       "sysbox.native": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Abstractions": "[0.2.0-preview.1, )"
+          "SysBox.Abstractions": "[0.3.1, )"
         }
       },
       "sysbox.ntfsbroker": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Native": "[0.2.0-preview.1, )",
-          "SysBox.Transport": "[0.2.0-preview.1, )"
+          "SysBox.Native": "[0.3.1, )",
+          "SysBox.Transport": "[0.3.1, )"
         }
       },
       "sysbox.rules": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Abstractions": "[0.2.0-preview.1, )",
+          "SysBox.Abstractions": "[0.3.1, )",
           "YamlDotNet": "[18.1.0, )"
         }
       },
       "sysbox.search": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Abstractions": "[0.2.0-preview.1, )",
-          "SysBox.FileIndex": "[0.2.0-preview.1, )"
+          "SysBox.Abstractions": "[0.3.1, )",
+          "SysBox.FileIndex": "[0.3.1, )"
         }
       },
       "sysbox.storage": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Abstractions": "[0.2.0-preview.1, )",
-          "SysBox.FileIndex": "[0.2.0-preview.1, )"
+          "SysBox.Abstractions": "[0.3.1, )",
+          "SysBox.FileIndex": "[0.3.1, )"
         }
       },
       "sysbox.transport": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Abstractions": "[0.2.0-preview.1, )",
-          "SysBox.Rules": "[0.2.0-preview.1, )"
+          "SysBox.Abstractions": "[0.3.1, )",
+          "SysBox.Rules": "[0.3.1, )"
         }
       }
     },

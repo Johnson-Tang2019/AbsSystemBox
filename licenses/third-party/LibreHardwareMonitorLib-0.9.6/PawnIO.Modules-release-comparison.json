@@ -1,0 +1,1145 @@
+{
+  "checkedAt": "2026-11-07",
+  "method": "Compare exact-name official release ZIP entries to static SHA-256 and byte counts of shipped DLL embedded resources; no module executed. Every examined archive and digest retained below.",
+  "embeddedResources": [
+    {
+      "Name": "LibreHardwareMonitor.Resources.PawnIo.AMDFamily0F.bin",
+      "Length": 8404,
+      "Sha256": "1788550c02100ad6bbc91604399ed6e055058ea0f6c0c828c02d9b01a09ad27f"
+    },
+    {
+      "Name": "LibreHardwareMonitor.Resources.PawnIo.AMDFamily10.bin",
+      "Length": 16836,
+      "Sha256": "79be1396621aa44eb149c5dc6d1bab4519b9cfa49a32af5e022cb9f9ca887658"
+    },
+    {
+      "Name": "LibreHardwareMonitor.Resources.PawnIo.AMDFamily17.bin",
+      "Length": 9300,
+      "Sha256": "099dc01d6db97ea997fec4a461e191cc64b9d7ce47c9d2153c451c56c2adcf50"
+    },
+    {
+      "Name": "LibreHardwareMonitor.Resources.PawnIo.IntelMSR.bin",
+      "Length": 4068,
+      "Sha256": "ed41a0d0de082f4668a9caccb9681ebbad97a8ed3452c41918dda1eb454b77a9"
+    },
+    {
+      "Name": "LibreHardwareMonitor.Resources.PawnIo.IsaBridgeEC.bin",
+      "Length": 51628,
+      "Sha256": "7218c633384bd019cce09e8df91f74996f980765ac44dde0f22b0b5318c20f03"
+    },
+    {
+      "Name": "LibreHardwareMonitor.Resources.PawnIo.LpcACPIEC.bin",
+      "Length": 2612,
+      "Sha256": "c38fd116e7aff4d1fdb0a494e296be0a6708e5a22fc72f14587442fb7f8f7906"
+    },
+    {
+      "Name": "LibreHardwareMonitor.Resources.PawnIo.LpcCrOSEC.bin",
+      "Length": 19692,
+      "Sha256": "277ed6ce6b5f647d5dae9b06c83ed39e904974b06f95598d49f4737237974776"
+    },
+    {
+      "Name": "LibreHardwareMonitor.Resources.PawnIo.LpcIO.bin",
+      "Length": 17172,
+      "Sha256": "3dcf8b2bc80ff642d97c4608511a818642b5bf315ff53df3df393d043e71d101"
+    },
+    {
+      "Name": "LibreHardwareMonitor.Resources.PawnIo.RyzenSMU.bin",
+      "Length": 38036,
+      "Sha256": "0cf0fe1296c5c38f4bee0f96352b35f14d32ab97cb58fd17600646d98507d8aa"
+    },
+    {
+      "Name": "LibreHardwareMonitor.Resources.PawnIo.SmbusI801.bin",
+      "Length": 40788,
+      "Sha256": "76b082a144027244fe7bbf3ca0e987e7dfa279aa87e0ccc2a6a918e10e2038e1"
+    },
+    {
+      "Name": "LibreHardwareMonitor.Resources.PawnIo.SmbusNCT6793.bin",
+      "Length": 17548,
+      "Sha256": "385bd1b229faa44aefe2eb1f938ac629f6d897f1a4931dab5341b18b3bd432c1"
+    },
+    {
+      "Name": "LibreHardwareMonitor.Resources.PawnIo.SmbusPIIX4.bin",
+      "Length": 37260,
+      "Sha256": "3f8b44c93eb030d59fb68c6fdc6857c61313eab2b6aa0ed64595396d71bf3ea3"
+    }
+  ],
+  "releases": [
+    {
+      "version": "0.1.6",
+      "assetUrl": "https://github.com/namazso/PawnIO.Modules/releases/download/0.1.6/release_0_1_6.zip",
+      "assetBytes": 40815,
+      "assetSha256": "c98af6620d3e7d840bc3c59094bf924ba92cdb9972d50584c814ed69942b248d",
+      "githubDigest": "sha256:c98af6620d3e7d840bc3c59094bf924ba92cdb9972d50584c814ed69942b248d",
+      "githubDigestMatches": true,
+      "files": [
+        {
+          "name": "AMDFamily0F.bin",
+          "bytes": 7172,
+          "sha256": "509229d85adfb262849b38494c8a1a0dcde9a0c0a29e844dacb8b3377a13b8d3",
+          "matches": false
+        },
+        {
+          "name": "AMDFamily10.bin",
+          "bytes": 15604,
+          "sha256": "522c2ca447882169de7951286a4b5eab5be258b77729ec577af95ae6cc8d539a",
+          "matches": false
+        },
+        {
+          "name": "AMDFamily17.bin",
+          "bytes": 6452,
+          "sha256": "cd59598344b54a23178ccf9223239f60a3111bd86ff2c7bea2c9d1cef89e095b",
+          "matches": false
+        },
+        {
+          "name": "IntelMSR.bin",
+          "bytes": 3028,
+          "sha256": "f3ab69f0a2686813de2f47efcda6271e176c4ee50fab5f107254f7d6a4e77361",
+          "matches": false
+        },
+        {
+          "name": "IsaBridgeEC.bin",
+          "bytes": null,
+          "sha256": null,
+          "matches": false
+        },
+        {
+          "name": "LpcACPIEC.bin",
+          "bytes": 2612,
+          "sha256": "c38fd116e7aff4d1fdb0a494e296be0a6708e5a22fc72f14587442fb7f8f7906",
+          "matches": true
+        },
+        {
+          "name": "LpcCrOSEC.bin",
+          "bytes": 19692,
+          "sha256": "33e6fc8593d1a793d26b335add30cee5d552901cb7abd8869e6d0a58271ce52f",
+          "matches": false
+        },
+        {
+          "name": "LpcIO.bin",
+          "bytes": 17172,
+          "sha256": "3dcf8b2bc80ff642d97c4608511a818642b5bf315ff53df3df393d043e71d101",
+          "matches": true
+        },
+        {
+          "name": "RyzenSMU.bin",
+          "bytes": 28156,
+          "sha256": "5f4c157935b70f542c653e4e54bed4f419b1268eee5a65b1966a977c57fac773",
+          "matches": false
+        },
+        {
+          "name": "SmbusI801.bin",
+          "bytes": 40788,
+          "sha256": "5a51425230fe4448a7dcf6d009b175c9b56f65c782853cc3c21cb8c456f6fa54",
+          "matches": false
+        },
+        {
+          "name": "SmbusNCT6793.bin",
+          "bytes": 17548,
+          "sha256": "8dbca7332576d6261a8e88055e1f053d9f2cd5ccdd5bf0840e01b48d4ef4933f",
+          "matches": false
+        },
+        {
+          "name": "SmbusPIIX4.bin",
+          "bytes": 37260,
+          "sha256": "3caab1f324c402d8c22e6e82ce98a363092262edf38e2ce32a8b60f01c1e3703",
+          "matches": false
+        }
+      ]
+    },
+    {
+      "version": "0.2.0",
+      "assetUrl": "https://github.com/namazso/PawnIO.Modules/releases/download/0.2.0/release_0_2_0.zip",
+      "assetBytes": 47006,
+      "assetSha256": "8cd508543daa56daff11385df3a8298a0a0c0ccf46202ab973e9d2e12a5f0a1d",
+      "githubDigest": "sha256:8cd508543daa56daff11385df3a8298a0a0c0ccf46202ab973e9d2e12a5f0a1d",
+      "githubDigestMatches": true,
+      "files": [
+        {
+          "name": "AMDFamily0F.bin",
+          "bytes": 8404,
+          "sha256": "1788550c02100ad6bbc91604399ed6e055058ea0f6c0c828c02d9b01a09ad27f",
+          "matches": true
+        },
+        {
+          "name": "AMDFamily10.bin",
+          "bytes": 16836,
+          "sha256": "79be1396621aa44eb149c5dc6d1bab4519b9cfa49a32af5e022cb9f9ca887658",
+          "matches": true
+        },
+        {
+          "name": "AMDFamily17.bin",
+          "bytes": 7892,
+          "sha256": "18084c329a9b674571ad20a1844b0d3032b044261a43750e5c1dec18075bb514",
+          "matches": false
+        },
+        {
+          "name": "IntelMSR.bin",
+          "bytes": 4004,
+          "sha256": "0dba915f95b5c6a084bf6c75c535233c90e79c154d49a0da1afb4d64215dcf7d",
+          "matches": false
+        },
+        {
+          "name": "IsaBridgeEC.bin",
+          "bytes": 51628,
+          "sha256": "7218c633384bd019cce09e8df91f74996f980765ac44dde0f22b0b5318c20f03",
+          "matches": true
+        },
+        {
+          "name": "LpcACPIEC.bin",
+          "bytes": 2612,
+          "sha256": "c38fd116e7aff4d1fdb0a494e296be0a6708e5a22fc72f14587442fb7f8f7906",
+          "matches": true
+        },
+        {
+          "name": "LpcCrOSEC.bin",
+          "bytes": 19692,
+          "sha256": "277ed6ce6b5f647d5dae9b06c83ed39e904974b06f95598d49f4737237974776",
+          "matches": true
+        },
+        {
+          "name": "LpcIO.bin",
+          "bytes": 17172,
+          "sha256": "3dcf8b2bc80ff642d97c4608511a818642b5bf315ff53df3df393d043e71d101",
+          "matches": true
+        },
+        {
+          "name": "RyzenSMU.bin",
+          "bytes": 32636,
+          "sha256": "1d29404b02b4247ddb27544638e38586ce19f52c0774dd6e4a17ed7a2fd1eca8",
+          "matches": false
+        },
+        {
+          "name": "SmbusI801.bin",
+          "bytes": 40788,
+          "sha256": "76b082a144027244fe7bbf3ca0e987e7dfa279aa87e0ccc2a6a918e10e2038e1",
+          "matches": true
+        },
+        {
+          "name": "SmbusNCT6793.bin",
+          "bytes": 17548,
+          "sha256": "385bd1b229faa44aefe2eb1f938ac629f6d897f1a4931dab5341b18b3bd432c1",
+          "matches": true
+        },
+        {
+          "name": "SmbusPIIX4.bin",
+          "bytes": 37260,
+          "sha256": "3f8b44c93eb030d59fb68c6fdc6857c61313eab2b6aa0ed64595396d71bf3ea3",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "version": "0.2.1",
+      "assetUrl": "https://github.com/namazso/PawnIO.Modules/releases/download/0.2.1/release_0_2_1.zip",
+      "assetBytes": 47492,
+      "assetSha256": "59728007dd93be07a317ee0768e57050cc6684c3d759ea7000430e743344d728",
+      "githubDigest": "sha256:59728007dd93be07a317ee0768e57050cc6684c3d759ea7000430e743344d728",
+      "githubDigestMatches": true,
+      "files": [
+        {
+          "name": "AMDFamily0F.bin",
+          "bytes": 8404,
+          "sha256": "1788550c02100ad6bbc91604399ed6e055058ea0f6c0c828c02d9b01a09ad27f",
+          "matches": true
+        },
+        {
+          "name": "AMDFamily10.bin",
+          "bytes": 16836,
+          "sha256": "79be1396621aa44eb149c5dc6d1bab4519b9cfa49a32af5e022cb9f9ca887658",
+          "matches": true
+        },
+        {
+          "name": "AMDFamily17.bin",
+          "bytes": 9156,
+          "sha256": "374d4bc3e88284d08f2c65e292df5340c6a034affc30b614db6e780d7094d117",
+          "matches": false
+        },
+        {
+          "name": "IntelMSR.bin",
+          "bytes": 4036,
+          "sha256": "d09fa2d4232f92d9902fc90b058adc55ae5469b9b6f2f3f1441184796945bad1",
+          "matches": false
+        },
+        {
+          "name": "IsaBridgeEC.bin",
+          "bytes": 51628,
+          "sha256": "7218c633384bd019cce09e8df91f74996f980765ac44dde0f22b0b5318c20f03",
+          "matches": true
+        },
+        {
+          "name": "LpcACPIEC.bin",
+          "bytes": 2612,
+          "sha256": "c38fd116e7aff4d1fdb0a494e296be0a6708e5a22fc72f14587442fb7f8f7906",
+          "matches": true
+        },
+        {
+          "name": "LpcCrOSEC.bin",
+          "bytes": 19692,
+          "sha256": "277ed6ce6b5f647d5dae9b06c83ed39e904974b06f95598d49f4737237974776",
+          "matches": true
+        },
+        {
+          "name": "LpcIO.bin",
+          "bytes": 17172,
+          "sha256": "3dcf8b2bc80ff642d97c4608511a818642b5bf315ff53df3df393d043e71d101",
+          "matches": true
+        },
+        {
+          "name": "RyzenSMU.bin",
+          "bytes": 38020,
+          "sha256": "8cec3a2d03b19d585fd75e36be2875fde8825834968509582d4351201dc2871a",
+          "matches": false
+        },
+        {
+          "name": "SmbusI801.bin",
+          "bytes": 40788,
+          "sha256": "76b082a144027244fe7bbf3ca0e987e7dfa279aa87e0ccc2a6a918e10e2038e1",
+          "matches": true
+        },
+        {
+          "name": "SmbusNCT6793.bin",
+          "bytes": 17548,
+          "sha256": "385bd1b229faa44aefe2eb1f938ac629f6d897f1a4931dab5341b18b3bd432c1",
+          "matches": true
+        },
+        {
+          "name": "SmbusPIIX4.bin",
+          "bytes": 37260,
+          "sha256": "3f8b44c93eb030d59fb68c6fdc6857c61313eab2b6aa0ed64595396d71bf3ea3",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "version": "0.2.2",
+      "assetUrl": "https://github.com/namazso/PawnIO.Modules/releases/download/0.2.2/release_0_2_2.zip",
+      "assetBytes": 47526,
+      "assetSha256": "b9e05e52c07fd76b7f9db3da0f542b710d55511dc995d4f4ca08e9179b4c4032",
+      "githubDigest": "sha256:b9e05e52c07fd76b7f9db3da0f542b710d55511dc995d4f4ca08e9179b4c4032",
+      "githubDigestMatches": true,
+      "files": [
+        {
+          "name": "AMDFamily0F.bin",
+          "bytes": 8404,
+          "sha256": "1788550c02100ad6bbc91604399ed6e055058ea0f6c0c828c02d9b01a09ad27f",
+          "matches": true
+        },
+        {
+          "name": "AMDFamily10.bin",
+          "bytes": 16836,
+          "sha256": "79be1396621aa44eb149c5dc6d1bab4519b9cfa49a32af5e022cb9f9ca887658",
+          "matches": true
+        },
+        {
+          "name": "AMDFamily17.bin",
+          "bytes": 9300,
+          "sha256": "099dc01d6db97ea997fec4a461e191cc64b9d7ce47c9d2153c451c56c2adcf50",
+          "matches": true
+        },
+        {
+          "name": "IntelMSR.bin",
+          "bytes": 4068,
+          "sha256": "ed41a0d0de082f4668a9caccb9681ebbad97a8ed3452c41918dda1eb454b77a9",
+          "matches": true
+        },
+        {
+          "name": "IsaBridgeEC.bin",
+          "bytes": 51628,
+          "sha256": "7218c633384bd019cce09e8df91f74996f980765ac44dde0f22b0b5318c20f03",
+          "matches": true
+        },
+        {
+          "name": "LpcACPIEC.bin",
+          "bytes": 2612,
+          "sha256": "c38fd116e7aff4d1fdb0a494e296be0a6708e5a22fc72f14587442fb7f8f7906",
+          "matches": true
+        },
+        {
+          "name": "LpcCrOSEC.bin",
+          "bytes": 19692,
+          "sha256": "277ed6ce6b5f647d5dae9b06c83ed39e904974b06f95598d49f4737237974776",
+          "matches": true
+        },
+        {
+          "name": "LpcIO.bin",
+          "bytes": 17172,
+          "sha256": "3dcf8b2bc80ff642d97c4608511a818642b5bf315ff53df3df393d043e71d101",
+          "matches": true
+        },
+        {
+          "name": "RyzenSMU.bin",
+          "bytes": 38036,
+          "sha256": "0cf0fe1296c5c38f4bee0f96352b35f14d32ab97cb58fd17600646d98507d8aa",
+          "matches": true
+        },
+        {
+          "name": "SmbusI801.bin",
+          "bytes": 40788,
+          "sha256": "76b082a144027244fe7bbf3ca0e987e7dfa279aa87e0ccc2a6a918e10e2038e1",
+          "matches": true
+        },
+        {
+          "name": "SmbusNCT6793.bin",
+          "bytes": 17548,
+          "sha256": "385bd1b229faa44aefe2eb1f938ac629f6d897f1a4931dab5341b18b3bd432c1",
+          "matches": true
+        },
+        {
+          "name": "SmbusPIIX4.bin",
+          "bytes": 37260,
+          "sha256": "3f8b44c93eb030d59fb68c6fdc6857c61313eab2b6aa0ed64595396d71bf3ea3",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "version": "0.2.3",
+      "assetUrl": "https://github.com/namazso/PawnIO.Modules/releases/download/0.2.3/release_0_2_3.zip",
+      "assetBytes": 50182,
+      "assetSha256": "d260e038a592790fca010ca7e0aacfac8ab65adca3cc5880e8e817438b4c749c",
+      "githubDigest": "sha256:d260e038a592790fca010ca7e0aacfac8ab65adca3cc5880e8e817438b4c749c",
+      "githubDigestMatches": true,
+      "files": [
+        {
+          "name": "AMDFamily0F.bin",
+          "bytes": 8404,
+          "sha256": "1788550c02100ad6bbc91604399ed6e055058ea0f6c0c828c02d9b01a09ad27f",
+          "matches": true
+        },
+        {
+          "name": "AMDFamily10.bin",
+          "bytes": 16836,
+          "sha256": "79be1396621aa44eb149c5dc6d1bab4519b9cfa49a32af5e022cb9f9ca887658",
+          "matches": true
+        },
+        {
+          "name": "AMDFamily17.bin",
+          "bytes": 9300,
+          "sha256": "099dc01d6db97ea997fec4a461e191cc64b9d7ce47c9d2153c451c56c2adcf50",
+          "matches": true
+        },
+        {
+          "name": "IntelMSR.bin",
+          "bytes": 4068,
+          "sha256": "ed41a0d0de082f4668a9caccb9681ebbad97a8ed3452c41918dda1eb454b77a9",
+          "matches": true
+        },
+        {
+          "name": "IsaBridgeEC.bin",
+          "bytes": 51628,
+          "sha256": "7218c633384bd019cce09e8df91f74996f980765ac44dde0f22b0b5318c20f03",
+          "matches": true
+        },
+        {
+          "name": "LpcACPIEC.bin",
+          "bytes": 2612,
+          "sha256": "c38fd116e7aff4d1fdb0a494e296be0a6708e5a22fc72f14587442fb7f8f7906",
+          "matches": true
+        },
+        {
+          "name": "LpcCrOSEC.bin",
+          "bytes": 24980,
+          "sha256": "0e447bee1a426d6223ddae8844e82a368ea371aa4b5cd670a60ef2980bb0b42b",
+          "matches": false
+        },
+        {
+          "name": "LpcIO.bin",
+          "bytes": 17172,
+          "sha256": "3dcf8b2bc80ff642d97c4608511a818642b5bf315ff53df3df393d043e71d101",
+          "matches": true
+        },
+        {
+          "name": "RyzenSMU.bin",
+          "bytes": 38180,
+          "sha256": "c505fdaf67d3dccca1c39c91cc69ccab4b4a99bebe8b13d3e7632bf7876df965",
+          "matches": false
+        },
+        {
+          "name": "SmbusI801.bin",
+          "bytes": 40788,
+          "sha256": "76b082a144027244fe7bbf3ca0e987e7dfa279aa87e0ccc2a6a918e10e2038e1",
+          "matches": true
+        },
+        {
+          "name": "SmbusNCT6793.bin",
+          "bytes": 17548,
+          "sha256": "385bd1b229faa44aefe2eb1f938ac629f6d897f1a4931dab5341b18b3bd432c1",
+          "matches": true
+        },
+        {
+          "name": "SmbusPIIX4.bin",
+          "bytes": 37260,
+          "sha256": "3f8b44c93eb030d59fb68c6fdc6857c61313eab2b6aa0ed64595396d71bf3ea3",
+          "matches": true
+        }
+      ]
+    },
+    {
+      "version": "0.2.4",
+      "assetUrl": "https://github.com/namazso/PawnIO.Modules/releases/download/0.2.4/release_0_2_4.zip",
+      "assetBytes": 51493,
+      "assetSha256": "d617526457c20a16fde4717d5352bec7bad508009838516c4db997a7c841cbbf",
+      "githubDigest": "sha256:d617526457c20a16fde4717d5352bec7bad508009838516c4db997a7c841cbbf",
+      "githubDigestMatches": true,
+      "files": [
+        {
+          "name": "AMDFamily0F.bin",
+          "bytes": 8404,
+          "sha256": "1788550c02100ad6bbc91604399ed6e055058ea0f6c0c828c02d9b01a09ad27f",
+          "matches": true
+        },
+        {
+          "name": "AMDFamily10.bin",
+          "bytes": 16836,
+          "sha256": "79be1396621aa44eb149c5dc6d1bab4519b9cfa49a32af5e022cb9f9ca887658",
+          "matches": true
+        },
+        {
+          "name": "AMDFamily17.bin",
+          "bytes": 9300,
+          "sha256": "099dc01d6db97ea997fec4a461e191cc64b9d7ce47c9d2153c451c56c2adcf50",
+          "matches": true
+        },
+        {
+          "name": "IntelMSR.bin",
+          "bytes": 5164,
+          "sha256": "74508721ede84765e53dc3533ac23283b89fa328275e0079d9508b22b6677ea4",
+          "matches": false
+        },
+        {
+          "name": "IsaBridgeEC.bin",
+          "bytes": 50700,
+          "sha256": "6e3be076aba7cc43f5086504eacee6be42acc56530f98a26d22ef2bcce6e1fd3",
+          "matches": false
+        },
+        {
+          "name": "LpcACPIEC.bin",
+          "bytes": 2612,
+          "sha256": "c38fd116e7aff4d1fdb0a494e296be0a6708e5a22fc72f14587442fb7f8f7906",
+          "matches": true
+        },
+        {
+          "name": "LpcCrOSEC.bin",
+          "bytes": 24908,
+          "sha256": "4c604c9def5d903a2cc8a07b51f5b44407050da2417587a50ee4b3d40a236468",
+          "matches": false
+        },
+        {
+          "name": "LpcIO.bin",
+          "bytes": 17172,
+          "sha256": "3dcf8b2bc80ff642d97c4608511a818642b5bf315ff53df3df393d043e71d101",
+          "matches": true
+        },
+        {
+          "name": "RyzenSMU.bin",
+          "bytes": 38196,
+          "sha256": "b84eca7f32c63b3d8c14b2c6d45482706df8683aa6f43eb8bead9dc62181d38f",
+          "matches": false
+        },
+        {
+          "name": "SmbusI801.bin",
+          "bytes": 42396,
+          "sha256": "08b267b95b05db04b396ff85849fb671dc653bc405e2c14d39add4ea16270186",
+          "matches": false
+        },
+        {
+          "name": "SmbusNCT6793.bin",
+          "bytes": 18844,
+          "sha256": "4767b71f8ab870d6414ceb15adfdcddac4e539928481ed590463e481253ecd1b",
+          "matches": false
+        },
+        {
+          "name": "SmbusPIIX4.bin",
+          "bytes": 38892,
+          "sha256": "52cac1b53b450e1e8705777dce69333b8d92db4c2976cb9561da9e9f77302b05",
+          "matches": false
+        }
+      ]
+    },
+    {
+      "version": "0.2.5",
+      "assetUrl": "https://github.com/namazso/PawnIO.Modules/releases/download/0.2.5/release_0_2_5.zip",
+      "assetBytes": 51499,
+      "assetSha256": "1149b87f4dc757e72654d5a402863251815ebfc8ad4e3bb030dbcffb3de74153",
+      "githubDigest": "sha256:1149b87f4dc757e72654d5a402863251815ebfc8ad4e3bb030dbcffb3de74153",
+      "githubDigestMatches": true,
+      "files": [
+        {
+          "name": "AMDFamily0F.bin",
+          "bytes": 8404,
+          "sha256": "1788550c02100ad6bbc91604399ed6e055058ea0f6c0c828c02d9b01a09ad27f",
+          "matches": true
+        },
+        {
+          "name": "AMDFamily10.bin",
+          "bytes": 16836,
+          "sha256": "79be1396621aa44eb149c5dc6d1bab4519b9cfa49a32af5e022cb9f9ca887658",
+          "matches": true
+        },
+        {
+          "name": "AMDFamily17.bin",
+          "bytes": 9300,
+          "sha256": "099dc01d6db97ea997fec4a461e191cc64b9d7ce47c9d2153c451c56c2adcf50",
+          "matches": true
+        },
+        {
+          "name": "IntelMSR.bin",
+          "bytes": 5196,
+          "sha256": "344cb99053883e42876ac3194fb0336b0c00795e78c46dd651f8b75625f17e78",
+          "matches": false
+        },
+        {
+          "name": "IsaBridgeEC.bin",
+          "bytes": 50700,
+          "sha256": "6e3be076aba7cc43f5086504eacee6be42acc56530f98a26d22ef2bcce6e1fd3",
+          "matches": false
+        },
+        {
+          "name": "LpcACPIEC.bin",
+          "bytes": 2612,
+          "sha256": "c38fd116e7aff4d1fdb0a494e296be0a6708e5a22fc72f14587442fb7f8f7906",
+          "matches": true
+        },
+        {
+          "name": "LpcCrOSEC.bin",
+          "bytes": 24908,
+          "sha256": "4c604c9def5d903a2cc8a07b51f5b44407050da2417587a50ee4b3d40a236468",
+          "matches": false
+        },
+        {
+          "name": "LpcIO.bin",
+          "bytes": 17172,
+          "sha256": "3dcf8b2bc80ff642d97c4608511a818642b5bf315ff53df3df393d043e71d101",
+          "matches": true
+        },
+        {
+          "name": "RyzenSMU.bin",
+          "bytes": 38196,
+          "sha256": "b84eca7f32c63b3d8c14b2c6d45482706df8683aa6f43eb8bead9dc62181d38f",
+          "matches": false
+        },
+        {
+          "name": "SmbusI801.bin",
+          "bytes": 42396,
+          "sha256": "08b267b95b05db04b396ff85849fb671dc653bc405e2c14d39add4ea16270186",
+          "matches": false
+        },
+        {
+          "name": "SmbusNCT6793.bin",
+          "bytes": 18844,
+          "sha256": "4767b71f8ab870d6414ceb15adfdcddac4e539928481ed590463e481253ecd1b",
+          "matches": false
+        },
+        {
+          "name": "SmbusPIIX4.bin",
+          "bytes": 38892,
+          "sha256": "52cac1b53b450e1e8705777dce69333b8d92db4c2976cb9561da9e9f77302b05",
+          "matches": false
+        }
+      ]
+    },
+    {
+      "version": "0.2.6",
+      "assetUrl": "https://github.com/namazso/PawnIO.Modules/releases/download/0.2.6/release_0_2_6.zip",
+      "assetBytes": 53833,
+      "assetSha256": "25f9bdff24cc0326591eebc0b2b73551119a1a7de8e778a29b30b93f95b948e1",
+      "githubDigest": "sha256:25f9bdff24cc0326591eebc0b2b73551119a1a7de8e778a29b30b93f95b948e1",
+      "githubDigestMatches": true,
+      "files": [
+        {
+          "name": "AMDFamily0F.bin",
+          "bytes": 8404,
+          "sha256": "1788550c02100ad6bbc91604399ed6e055058ea0f6c0c828c02d9b01a09ad27f",
+          "matches": true
+        },
+        {
+          "name": "AMDFamily10.bin",
+          "bytes": 16836,
+          "sha256": "79be1396621aa44eb149c5dc6d1bab4519b9cfa49a32af5e022cb9f9ca887658",
+          "matches": true
+        },
+        {
+          "name": "AMDFamily17.bin",
+          "bytes": 9300,
+          "sha256": "099dc01d6db97ea997fec4a461e191cc64b9d7ce47c9d2153c451c56c2adcf50",
+          "matches": true
+        },
+        {
+          "name": "IntelMSR.bin",
+          "bytes": 5196,
+          "sha256": "344cb99053883e42876ac3194fb0336b0c00795e78c46dd651f8b75625f17e78",
+          "matches": false
+        },
+        {
+          "name": "IsaBridgeEC.bin",
+          "bytes": 50700,
+          "sha256": "6e3be076aba7cc43f5086504eacee6be42acc56530f98a26d22ef2bcce6e1fd3",
+          "matches": false
+        },
+        {
+          "name": "LpcACPIEC.bin",
+          "bytes": 2612,
+          "sha256": "c38fd116e7aff4d1fdb0a494e296be0a6708e5a22fc72f14587442fb7f8f7906",
+          "matches": true
+        },
+        {
+          "name": "LpcCrOSEC.bin",
+          "bytes": 24908,
+          "sha256": "4c604c9def5d903a2cc8a07b51f5b44407050da2417587a50ee4b3d40a236468",
+          "matches": false
+        },
+        {
+          "name": "LpcIO.bin",
+          "bytes": 17172,
+          "sha256": "3dcf8b2bc80ff642d97c4608511a818642b5bf315ff53df3df393d043e71d101",
+          "matches": true
+        },
+        {
+          "name": "RyzenSMU.bin",
+          "bytes": 38196,
+          "sha256": "b84eca7f32c63b3d8c14b2c6d45482706df8683aa6f43eb8bead9dc62181d38f",
+          "matches": false
+        },
+        {
+          "name": "SmbusI801.bin",
+          "bytes": 42396,
+          "sha256": "08b267b95b05db04b396ff85849fb671dc653bc405e2c14d39add4ea16270186",
+          "matches": false
+        },
+        {
+          "name": "SmbusNCT6793.bin",
+          "bytes": 18844,
+          "sha256": "4767b71f8ab870d6414ceb15adfdcddac4e539928481ed590463e481253ecd1b",
+          "matches": false
+        },
+        {
+          "name": "SmbusPIIX4.bin",
+          "bytes": 38892,
+          "sha256": "52cac1b53b450e1e8705777dce69333b8d92db4c2976cb9561da9e9f77302b05",
+          "matches": false
+        }
+      ]
+    },
+    {
+      "version": "0.2.7",
+      "assetUrl": "https://github.com/namazso/PawnIO.Modules/releases/download/0.2.7/release_0_2_7.zip",
+      "assetBytes": 54368,
+      "assetSha256": "8060fc424230d3381c11426eff0b210ffe599ede66dffd7e57a33979f8a13f1a",
+      "githubDigest": "sha256:8060fc424230d3381c11426eff0b210ffe599ede66dffd7e57a33979f8a13f1a",
+      "githubDigestMatches": true,
+      "files": [
+        {
+          "name": "AMDFamily0F.bin",
+          "bytes": 8404,
+          "sha256": "1788550c02100ad6bbc91604399ed6e055058ea0f6c0c828c02d9b01a09ad27f",
+          "matches": true
+        },
+        {
+          "name": "AMDFamily10.bin",
+          "bytes": 16836,
+          "sha256": "79be1396621aa44eb149c5dc6d1bab4519b9cfa49a32af5e022cb9f9ca887658",
+          "matches": true
+        },
+        {
+          "name": "AMDFamily17.bin",
+          "bytes": 9300,
+          "sha256": "099dc01d6db97ea997fec4a461e191cc64b9d7ce47c9d2153c451c56c2adcf50",
+          "matches": true
+        },
+        {
+          "name": "IntelMSR.bin",
+          "bytes": 5292,
+          "sha256": "5bfda87500160076158befc77300f81a388d72b11df2c794a3939ebe66777098",
+          "matches": false
+        },
+        {
+          "name": "IsaBridgeEC.bin",
+          "bytes": 50700,
+          "sha256": "6e3be076aba7cc43f5086504eacee6be42acc56530f98a26d22ef2bcce6e1fd3",
+          "matches": false
+        },
+        {
+          "name": "LpcACPIEC.bin",
+          "bytes": 2612,
+          "sha256": "c38fd116e7aff4d1fdb0a494e296be0a6708e5a22fc72f14587442fb7f8f7906",
+          "matches": true
+        },
+        {
+          "name": "LpcCrOSEC.bin",
+          "bytes": 24908,
+          "sha256": "4c604c9def5d903a2cc8a07b51f5b44407050da2417587a50ee4b3d40a236468",
+          "matches": false
+        },
+        {
+          "name": "LpcIO.bin",
+          "bytes": 17172,
+          "sha256": "3dcf8b2bc80ff642d97c4608511a818642b5bf315ff53df3df393d043e71d101",
+          "matches": true
+        },
+        {
+          "name": "RyzenSMU.bin",
+          "bytes": 39652,
+          "sha256": "dad38b36a08e2da982d4397619aee7264e32be088ea6bcb781b066adfb00efc0",
+          "matches": false
+        },
+        {
+          "name": "SmbusI801.bin",
+          "bytes": 48892,
+          "sha256": "c561fd4a2669ec4e52676fdc6905f54edf70c7308efc93b4126ad644ac00a319",
+          "matches": false
+        },
+        {
+          "name": "SmbusNCT6793.bin",
+          "bytes": 18844,
+          "sha256": "4767b71f8ab870d6414ceb15adfdcddac4e539928481ed590463e481253ecd1b",
+          "matches": false
+        },
+        {
+          "name": "SmbusPIIX4.bin",
+          "bytes": 38836,
+          "sha256": "0a5a8166ffde0ca12db6f897f5dce295e885a9629954f544bf315b2cce6f00ba",
+          "matches": false
+        }
+      ]
+    },
+    {
+      "version": "0.2.8",
+      "assetUrl": "https://github.com/namazso/PawnIO.Modules/releases/download/0.2.8/release_0_2_8.zip",
+      "assetBytes": 57240,
+      "assetSha256": "def304df8691cd2d2b700068bcbe8454ad97064e6621c71420c128d368d83fb7",
+      "githubDigest": "sha256:def304df8691cd2d2b700068bcbe8454ad97064e6621c71420c128d368d83fb7",
+      "githubDigestMatches": true,
+      "files": [
+        {
+          "name": "AMDFamily0F.bin",
+          "bytes": 8404,
+          "sha256": "1788550c02100ad6bbc91604399ed6e055058ea0f6c0c828c02d9b01a09ad27f",
+          "matches": true
+        },
+        {
+          "name": "AMDFamily10.bin",
+          "bytes": 16836,
+          "sha256": "79be1396621aa44eb149c5dc6d1bab4519b9cfa49a32af5e022cb9f9ca887658",
+          "matches": true
+        },
+        {
+          "name": "AMDFamily17.bin",
+          "bytes": 9300,
+          "sha256": "099dc01d6db97ea997fec4a461e191cc64b9d7ce47c9d2153c451c56c2adcf50",
+          "matches": true
+        },
+        {
+          "name": "IntelMSR.bin",
+          "bytes": 5292,
+          "sha256": "5bfda87500160076158befc77300f81a388d72b11df2c794a3939ebe66777098",
+          "matches": false
+        },
+        {
+          "name": "IsaBridgeEC.bin",
+          "bytes": 50700,
+          "sha256": "6e3be076aba7cc43f5086504eacee6be42acc56530f98a26d22ef2bcce6e1fd3",
+          "matches": false
+        },
+        {
+          "name": "LpcACPIEC.bin",
+          "bytes": 2612,
+          "sha256": "c38fd116e7aff4d1fdb0a494e296be0a6708e5a22fc72f14587442fb7f8f7906",
+          "matches": true
+        },
+        {
+          "name": "LpcCrOSEC.bin",
+          "bytes": 24908,
+          "sha256": "4c604c9def5d903a2cc8a07b51f5b44407050da2417587a50ee4b3d40a236468",
+          "matches": false
+        },
+        {
+          "name": "LpcIO.bin",
+          "bytes": 17388,
+          "sha256": "4247d588b9da9c598a65c6f5b8255a90bedee510ee1c354f9a909a2f959cd4df",
+          "matches": false
+        },
+        {
+          "name": "RyzenSMU.bin",
+          "bytes": 39652,
+          "sha256": "dad38b36a08e2da982d4397619aee7264e32be088ea6bcb781b066adfb00efc0",
+          "matches": false
+        },
+        {
+          "name": "SmbusI801.bin",
+          "bytes": 48892,
+          "sha256": "c561fd4a2669ec4e52676fdc6905f54edf70c7308efc93b4126ad644ac00a319",
+          "matches": false
+        },
+        {
+          "name": "SmbusNCT6793.bin",
+          "bytes": 18844,
+          "sha256": "4767b71f8ab870d6414ceb15adfdcddac4e539928481ed590463e481253ecd1b",
+          "matches": false
+        },
+        {
+          "name": "SmbusPIIX4.bin",
+          "bytes": 38836,
+          "sha256": "0a5a8166ffde0ca12db6f897f5dce295e885a9629954f544bf315b2cce6f00ba",
+          "matches": false
+        }
+      ]
+    },
+    {
+      "version": "0.2.9",
+      "assetUrl": "https://github.com/namazso/PawnIO.Modules/releases/download/0.2.9/release_0_2_9.zip",
+      "assetBytes": 57909,
+      "assetSha256": "5eb25b128b0940c53c36418dc4f74fba66d5a80e6bf3d95eb0ae62f4d946222d",
+      "githubDigest": "sha256:5eb25b128b0940c53c36418dc4f74fba66d5a80e6bf3d95eb0ae62f4d946222d",
+      "githubDigestMatches": true,
+      "files": [
+        {
+          "name": "AMDFamily0F.bin",
+          "bytes": 8404,
+          "sha256": "1788550c02100ad6bbc91604399ed6e055058ea0f6c0c828c02d9b01a09ad27f",
+          "matches": true
+        },
+        {
+          "name": "AMDFamily10.bin",
+          "bytes": 16836,
+          "sha256": "79be1396621aa44eb149c5dc6d1bab4519b9cfa49a32af5e022cb9f9ca887658",
+          "matches": true
+        },
+        {
+          "name": "AMDFamily17.bin",
+          "bytes": 9300,
+          "sha256": "099dc01d6db97ea997fec4a461e191cc64b9d7ce47c9d2153c451c56c2adcf50",
+          "matches": true
+        },
+        {
+          "name": "IntelMSR.bin",
+          "bytes": 5292,
+          "sha256": "5bfda87500160076158befc77300f81a388d72b11df2c794a3939ebe66777098",
+          "matches": false
+        },
+        {
+          "name": "IsaBridgeEC.bin",
+          "bytes": 50700,
+          "sha256": "6e3be076aba7cc43f5086504eacee6be42acc56530f98a26d22ef2bcce6e1fd3",
+          "matches": false
+        },
+        {
+          "name": "LpcACPIEC.bin",
+          "bytes": 2612,
+          "sha256": "c38fd116e7aff4d1fdb0a494e296be0a6708e5a22fc72f14587442fb7f8f7906",
+          "matches": true
+        },
+        {
+          "name": "LpcCrOSEC.bin",
+          "bytes": 24908,
+          "sha256": "4c604c9def5d903a2cc8a07b51f5b44407050da2417587a50ee4b3d40a236468",
+          "matches": false
+        },
+        {
+          "name": "LpcIO.bin",
+          "bytes": 17388,
+          "sha256": "4247d588b9da9c598a65c6f5b8255a90bedee510ee1c354f9a909a2f959cd4df",
+          "matches": false
+        },
+        {
+          "name": "RyzenSMU.bin",
+          "bytes": 39652,
+          "sha256": "dad38b36a08e2da982d4397619aee7264e32be088ea6bcb781b066adfb00efc0",
+          "matches": false
+        },
+        {
+          "name": "SmbusI801.bin",
+          "bytes": 48892,
+          "sha256": "c561fd4a2669ec4e52676fdc6905f54edf70c7308efc93b4126ad644ac00a319",
+          "matches": false
+        },
+        {
+          "name": "SmbusNCT6793.bin",
+          "bytes": 18844,
+          "sha256": "4767b71f8ab870d6414ceb15adfdcddac4e539928481ed590463e481253ecd1b",
+          "matches": false
+        },
+        {
+          "name": "SmbusPIIX4.bin",
+          "bytes": 38836,
+          "sha256": "0a5a8166ffde0ca12db6f897f5dce295e885a9629954f544bf315b2cce6f00ba",
+          "matches": false
+        }
+      ]
+    },
+    {
+      "version": "0.2.10",
+      "assetUrl": "https://github.com/namazso/PawnIO.Modules/releases/download/0.2.10/release_0_2_10.zip",
+      "assetBytes": 63540,
+      "assetSha256": "971c7c974c538b62ac020e0442fa99d0423417bfb496dfe9a4a43ccc0abc0e63",
+      "githubDigest": "sha256:971c7c974c538b62ac020e0442fa99d0423417bfb496dfe9a4a43ccc0abc0e63",
+      "githubDigestMatches": true,
+      "files": [
+        {
+          "name": "AMDFamily0F.bin",
+          "bytes": 8644,
+          "sha256": "a6e11619e87a97820705a6523714f22d676ce44f902631833d4429b89d509d55",
+          "matches": false
+        },
+        {
+          "name": "AMDFamily10.bin",
+          "bytes": 16868,
+          "sha256": "6443080b2968474ffbc38aa4356cc56f9664349fa4b917afdb33027d6bb50525",
+          "matches": false
+        },
+        {
+          "name": "AMDFamily17.bin",
+          "bytes": 10652,
+          "sha256": "dae74615761b78bdf064dfb3e136252ddcc6fc727d88f14738d0e5800d427a91",
+          "matches": false
+        },
+        {
+          "name": "IntelMSR.bin",
+          "bytes": 5324,
+          "sha256": "d6ed85d65ab17a22f813ef98207d6d537155ee2ded5976a21cb48413c9b92e5f",
+          "matches": false
+        },
+        {
+          "name": "IsaBridgeEC.bin",
+          "bytes": 51164,
+          "sha256": "2c5ec9d09ba42c980c917f83f528e9643ceee386c84ffa8765c521cd1bbba304",
+          "matches": false
+        },
+        {
+          "name": "LpcACPIEC.bin",
+          "bytes": 2612,
+          "sha256": "c38fd116e7aff4d1fdb0a494e296be0a6708e5a22fc72f14587442fb7f8f7906",
+          "matches": true
+        },
+        {
+          "name": "LpcCrOSEC.bin",
+          "bytes": 24908,
+          "sha256": "1ca4b495ea09dc05278e8627bda993e20e8d66a9f90e866283f0007ef0d57e28",
+          "matches": false
+        },
+        {
+          "name": "LpcIO.bin",
+          "bytes": 18076,
+          "sha256": "b3896a1cab0d808fca31fe2ebcae045d59dac690da87b17c858bb8da357eb45e",
+          "matches": false
+        },
+        {
+          "name": "RyzenSMU.bin",
+          "bytes": 38996,
+          "sha256": "54da61c2653ed0afabc20d1349636023cb90e7582c4ee4ab93fa77d673e33f26",
+          "matches": false
+        },
+        {
+          "name": "SmbusI801.bin",
+          "bytes": 55340,
+          "sha256": "2e971a15e1ac6e68f4ada8d087ffd3c10f87984b18c777bafe7fa3bd5787ab15",
+          "matches": false
+        },
+        {
+          "name": "SmbusNCT6793.bin",
+          "bytes": 20292,
+          "sha256": "24454ad503e41fd7a8a26f39511c8f639f486c8e68e6180786a05b76eb0d6f88",
+          "matches": false
+        },
+        {
+          "name": "SmbusPIIX4.bin",
+          "bytes": 42404,
+          "sha256": "91f9b4b1c39e3d399ce48477a89d8f6bd3e58a2241064a4daec3a1513dff56e5",
+          "matches": false
+        }
+      ]
+    },
+    {
+      "version": "0.2.11",
+      "assetUrl": "https://github.com/namazso/PawnIO.Modules/releases/download/0.2.11/release_0_2_11.zip",
+      "assetBytes": 69582,
+      "assetSha256": "43608cb89bc84247fef1368a139013f7d043e17db6d6c8dfc9b46bf0905a81f4",
+      "githubDigest": "sha256:43608cb89bc84247fef1368a139013f7d043e17db6d6c8dfc9b46bf0905a81f4",
+      "githubDigestMatches": true,
+      "files": [
+        {
+          "name": "AMDFamily0F.bin",
+          "bytes": 8644,
+          "sha256": "a6e11619e87a97820705a6523714f22d676ce44f902631833d4429b89d509d55",
+          "matches": false
+        },
+        {
+          "name": "AMDFamily10.bin",
+          "bytes": 16868,
+          "sha256": "6443080b2968474ffbc38aa4356cc56f9664349fa4b917afdb33027d6bb50525",
+          "matches": false
+        },
+        {
+          "name": "AMDFamily17.bin",
+          "bytes": 10652,
+          "sha256": "dae74615761b78bdf064dfb3e136252ddcc6fc727d88f14738d0e5800d427a91",
+          "matches": false
+        },
+        {
+          "name": "IntelMSR.bin",
+          "bytes": 5324,
+          "sha256": "d6ed85d65ab17a22f813ef98207d6d537155ee2ded5976a21cb48413c9b92e5f",
+          "matches": false
+        },
+        {
+          "name": "IsaBridgeEC.bin",
+          "bytes": 51164,
+          "sha256": "2c5ec9d09ba42c980c917f83f528e9643ceee386c84ffa8765c521cd1bbba304",
+          "matches": false
+        },
+        {
+          "name": "LpcACPIEC.bin",
+          "bytes": 2612,
+          "sha256": "c38fd116e7aff4d1fdb0a494e296be0a6708e5a22fc72f14587442fb7f8f7906",
+          "matches": true
+        },
+        {
+          "name": "LpcCrOSEC.bin",
+          "bytes": 24908,
+          "sha256": "1ca4b495ea09dc05278e8627bda993e20e8d66a9f90e866283f0007ef0d57e28",
+          "matches": false
+        },
+        {
+          "name": "LpcIO.bin",
+          "bytes": 18076,
+          "sha256": "b3896a1cab0d808fca31fe2ebcae045d59dac690da87b17c858bb8da357eb45e",
+          "matches": false
+        },
+        {
+          "name": "RyzenSMU.bin",
+          "bytes": 50764,
+          "sha256": "301d9ca397108e09f31bfbd5ac4c9bb4f352a5de68532c32db3ba7ddcde93450",
+          "matches": false
+        },
+        {
+          "name": "SmbusI801.bin",
+          "bytes": 55540,
+          "sha256": "a0f7d066e7efda28c0e754c1f52dbd8dc280d388ba8575b514a80cb67490530c",
+          "matches": false
+        },
+        {
+          "name": "SmbusNCT6793.bin",
+          "bytes": 21244,
+          "sha256": "db068c6a87c0066ebfb7f691d88422fee8af350898e7a7f0db100fd6632bab17",
+          "matches": false
+        },
+        {
+          "name": "SmbusPIIX4.bin",
+          "bytes": 42404,
+          "sha256": "91f9b4b1c39e3d399ce48477a89d8f6bd3e58a2241064a4daec3a1513dff56e5",
+          "matches": false
+        }
+      ]
+    }
+  ],
+  "conclusion": {
+    "matchedRelease": "0.2.2",
+    "sourceCommit": "e12a858d952461ee2e919897cacbff7f905fe370",
+    "allEmbeddedResourcesMatched": true,
+    "matchedCount": 12,
+    "releaseAssetUrl": "https://github.com/namazso/PawnIO.Modules/releases/download/0.2.2/release_0_2_2.zip",
+    "releaseAssetSha256": "b9e05e52c07fd76b7f9db3da0f542b710d55511dc995d4f4ca08e9179b4c4032",
+    "releaseAssetBytes": 47526,
+    "githubAssetDigestMatches": true,
+    "readmeLimitation": "Pinned LHM Resources/PawnIo/README still states 0.1.6. Direct byte comparison disproves that as a description of the entire shipped resource set: all 12 resources match signed release 0.2.2. Retained 0.1.6 tag evidence is historical, not selected source."
+  }
+}

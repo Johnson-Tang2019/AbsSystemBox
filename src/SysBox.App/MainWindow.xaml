@@ -42,6 +42,7 @@
                 <NavigationViewItem Content="内存" Tag="memory" AutomationProperties.AutomationId="NavMemory"><NavigationViewItem.Icon><FontIcon Glyph="&#xE950;" /></NavigationViewItem.Icon></NavigationViewItem>
                 <NavigationViewItem Content="文件搜索" Tag="search" Icon="Find" AutomationProperties.AutomationId="NavSearch" />
                 <NavigationViewItem Content="磁盘空间" Tag="storage" AutomationProperties.AutomationId="NavStorage"><NavigationViewItem.Icon><FontIcon Glyph="&#xEDA2;" /></NavigationViewItem.Icon></NavigationViewItem>
+                <NavigationViewItem Content="水冷显示" Tag="cooling" Icon="View" AutomationProperties.AutomationId="NavCooling" />
                 <NavigationViewItem Content="规则" Tag="rules" AutomationProperties.AutomationId="NavRules"><NavigationViewItem.Icon><FontIcon Glyph="&#xE9D5;" /></NavigationViewItem.Icon></NavigationViewItem>
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>

@@ -20,23 +20,28 @@ $compiler=& (Join-Path $PSScriptRoot 'get-nsis.ps1')
 & (Join-Path $PSScriptRoot 'dotnet.ps1') restore SysBox.slnx --locked-mode
 & (Join-Path $PSScriptRoot 'dotnet.ps1') clean src/SysBox.App/SysBox.App.csproj -c Release '-p:Platform=x64' '-v:q'
 & (Join-Path $PSScriptRoot 'dotnet.ps1') publish src/SysBox.App/SysBox.App.csproj -c Release --no-restore '-m:1' '-p:Platform=x64' "-p:Version=$Version" "-p:FileVersion=$WindowsVersion" "-p:SourceRevisionId=$revision" '-p:DebugType=None' '-p:DebugSymbols=false' "--output=$stage"
-foreach($component in @(@{project='SysBox.CoreHost';folder='host'},@{project='SysBox.Cli';folder='cli'},@{project='SysBox.Mcp';folder='mcp'},@{project='SysBox.NtfsService';folder='ntfs-service'},@{project='SysBox.CleanupHelper';folder='cleanup'})){
+foreach($component in @(@{project='SysBox.CoreHost';folder='host'},@{project='SysBox.Cli';folder='cli'},@{project='SysBox.Mcp';folder='mcp'},@{project='SysBox.NtfsService';folder='ntfs-service'},@{project='SysBox.CleanupHelper';folder='cleanup'},@{project='SysBox.SensorHost';folder='sensors'})){
     & (Join-Path $PSScriptRoot 'dotnet.ps1') publish "src/$($component.project)/$($component.project).csproj" -c Release --no-restore '-m:1' '-r' 'win-x64' '--self-contained' 'true' "-p:Version=$Version" "-p:FileVersion=$WindowsVersion" "-p:SourceRevisionId=$revision" '-p:DebugType=None' '-p:DebugSymbols=false' "--output=$(Join-Path $stage $component.folder)"
 }
-foreach($resource in @('App.xbf','MainWindow.xbf','FloatingBallWindow.xbf','QuickSearchWindow.xbf','SysBox.App.pri','Themes/PinkTheme.xbf','Controls/BatteryCard.xbf','Controls/MemoryCleanupPanel.xbf','Views/RulesPage.xbf','Views/SearchPage.xbf','Views/StoragePage.xbf','Controls/StorageTreemap.xbf')){
+foreach($resource in @('App.xbf','MainWindow.xbf','FloatingBallWindow.xbf','QuickSearchWindow.xbf','SysBox.App.pri','Themes/PinkTheme.xbf','Controls/BatteryCard.xbf','Controls/MemoryCleanupPanel.xbf','Views/RulesPage.xbf','Views/SearchPage.xbf','Views/StoragePage.xbf','Views/CoolingDisplayPage.xbf','Controls/StorageTreemap.xbf')){
     if(-not (Test-Path -LiteralPath (Join-Path $stage $resource))){throw "Published WinUI resource missing: $resource"}
 }
 foreach($name in @('LICENSE','COPYING.md','THIRD_PARTY_NOTICES.md')){Copy-Item -LiteralPath (Join-Path $root $name) -Destination $stage}
 Copy-Item -LiteralPath (Join-Path $root 'licenses') -Destination $stage -Recurse
 [IO.Directory]::CreateDirectory((Join-Path $stage 'scripts'))|Out-Null
-foreach($name in @('install-ntfs-service.ps1','remove-ntfs-service.ps1')){Copy-Item -LiteralPath (Join-Path $PSScriptRoot $name) -Destination (Join-Path $stage 'scripts')}
+foreach($name in @('install-ntfs-service.ps1','remove-ntfs-service.ps1','install-sensor-service.ps1','remove-sensor-service.ps1')){Copy-Item -LiteralPath (Join-Path $PSScriptRoot $name) -Destination (Join-Path $stage 'scripts')}
 $servicePayload=Join-Path $stage 'ntfs-service'
 foreach($name in @('LICENSE','COPYING.md','THIRD_PARTY_NOTICES.md')){Copy-Item -LiteralPath (Join-Path $root $name) -Destination $servicePayload}
 Copy-Item -LiteralPath (Join-Path $root 'licenses') -Destination $servicePayload -Recurse
 $serviceFiles=@(Get-ChildItem -LiteralPath $servicePayload -Recurse -File|Where-Object{$_.FullName-ne(Join-Path $servicePayload 'service-files.json')}|ForEach-Object{@{path=$_.FullName.Substring($servicePayload.Length+1);sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash}})
 @{product='AbsSystemBox.JohnsonTang2019.Ntfs';version=$Version;files=$serviceFiles}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $servicePayload 'service-files.json') -Encoding UTF8
+$sensorPayload=Join-Path $stage 'sensors'
+foreach($name in @('LICENSE','COPYING.md','THIRD_PARTY_NOTICES.md')){Copy-Item -LiteralPath (Join-Path $root $name) -Destination $sensorPayload}
+Copy-Item -LiteralPath (Join-Path $root 'licenses') -Destination $sensorPayload -Recurse
+$sensorFiles=@(Get-ChildItem -LiteralPath $sensorPayload -Recurse -File|Where-Object{$_.FullName-ne(Join-Path $sensorPayload 'sensors-files.json')}|ForEach-Object{@{path=$_.FullName.Substring($sensorPayload.Length+1);sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash}})
+@{product='AbsSystemBox.JohnsonTang2019.Sensors';version=$Version;files=$sensorFiles}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $sensorPayload 'sensors-files.json') -Encoding UTF8
 [IO.Directory]::CreateDirectory((Join-Path $stage 'docs')) | Out-Null
-foreach($name in @('RULES.md','BATTERY.md','CLEANUP.md','AGENT_API.md','INSTALL.md','NTFS.md','ASSETS.md')){Copy-Item -LiteralPath (Join-Path $root "docs/$name") -Destination (Join-Path $stage 'docs')}
+foreach($name in @('RULES.md','BATTERY.md','CLEANUP.md','AGENT_API.md','INSTALL.md','NTFS.md','ASSETS.md','COOLING_DISPLAY.md')){Copy-Item -LiteralPath (Join-Path $root "docs/$name") -Destination (Join-Path $stage 'docs')}
 $files=@(Get-ChildItem -LiteralPath $stage -Recurse -File | Sort-Object FullName | ForEach-Object {
     $relative=$_.FullName.Substring($stage.Length+1)
     if($relative.Length -gt 800 -or $relative.Contains("`n") -or $relative.Contains("`r")){throw 'Unsafe installer manifest path'}

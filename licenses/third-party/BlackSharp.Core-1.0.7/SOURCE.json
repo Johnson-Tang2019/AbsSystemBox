@@ -1,0 +1,25 @@
+{
+  "name": "BlackSharp.Core",
+  "version": "1.0.7",
+  "scope": "SysBox.SensorHost sensors subcomponent only",
+  "nugetContentHash": "LbEc4w0oZ7w4p6+8OjPZgwsJW470aQRuYZgZ9aMN2PW9R79pW3OnZQ32AVVx/21rstX9mKbXaOLWpSAxoANYxQ==",
+  "authors": "BlackSharp.Core",
+  "license": "MPL-2.0",
+  "licenseUrl": "https://licenses.nuget.org/MPL-2.0",
+  "projectUrl": "https://github.com/Blacktempel/BlackSharp",
+  "copyright": "Florian K.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Blacktempel/BlackSharp",
+    "commit": "c70b735c6cec123ee8a046ac4a0bc6c606f52cf0"
+  },
+  "packageNoticeFiles": [],
+  "nugetArchiveSha256": "4f713fe18ee7c85a7c49f28309adaa815714333326aa81fd4d4a81619ecaa0ab",
+  "licenseArchiveDate": "2026-11-07",
+  "licenseSources": [
+    "https://raw.githubusercontent.com/Blacktempel/BlackSharp/c70b735c6cec123ee8a046ac4a0bc6c606f52cf0/LICENSE"
+  ],
+  "licenseFileSha256": {
+    "LICENSE": "c6c0fb1ab8557f8a068689cdb4522bfd09e01b6cc853f5aa9aa3f7c141c2f67c"
+  }
+}

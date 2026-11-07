@@ -1,0 +1,23 @@
+{
+  "name": "HidSharp",
+  "version": "2.6.4",
+  "scope": "SysBox.SensorHost sensors subcomponent only",
+  "nugetContentHash": "UcGvtnXFcatwHBXr+ei8GEXvg//wjGmDGQ6Xvb+7M4vHjURAhSLIJ+dSZv0BnAhQEpNlH8G4P7JxYnMH8Aph4g==",
+  "authors": "James F. Bellinger",
+  "license": "LICENSE.txt",
+  "licenseUrl": "https://aka.ms/deprecateLicenseUrl",
+  "projectUrl": "https://software.seekye.com/hidsharp",
+  "copyright": "Copyright 2010-2025 James Bellinger",
+  "packageNoticeFiles": [
+    "LICENSE.txt"
+  ],
+  "nugetArchiveSha256": "cf55d4b4d7b42dc1d8496b7b592ba00d1ecd48a70bc07bd8dabd3e9976d108e7",
+  "licenseArchiveDate": "2026-11-07",
+  "licenseSources": [
+    "NuGet package: LICENSE.txt",
+    "https://raw.githubusercontent.com/dotnet/runtime/main/LICENSE.TXT"
+  ],
+  "licenseFileSha256": {
+    "LICENSE.txt": "b065e07179f06490c96bf946e73f821086b2f29efde395f092aea69a907eae16"
+  }
+}

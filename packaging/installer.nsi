@@ -396,6 +396,33 @@ un_service_failed:
   SetErrorLevel 9
   Abort
 un_service_removed:
+  System::Call 'advapi32::OpenSCManagerW(p 0,p 0,i 1)p.r0'
+  IntCmp $0 0 un_sensor_failed
+  System::Call 'advapi32::OpenServiceW(p r0,w "AbsSystemBox.Sensors",i 4)p.r1 ?e'
+  Pop $2
+  System::Call 'advapi32::CloseServiceHandle(p r0)'
+  IntCmp $1 0 un_sensor_not_open
+  System::Call 'advapi32::CloseServiceHandle(p r1)'
+  IfSilent un_sensor_failed
+  IfFileExists "$INSTDIR\app\scripts\remove-sensor-service.ps1" 0 un_sensor_failed
+  ClearErrors
+  ExecShellWait "runas" "$WINDIR\Sysnative\WindowsPowerShell\v1.0\powershell.exe" '-NoProfile -ExecutionPolicy Bypass -File "$INSTDIR\app\scripts\remove-sensor-service.ps1"' SW_HIDE
+  IfErrors un_sensor_failed
+  System::Call 'advapi32::OpenSCManagerW(p 0,p 0,i 1)p.r0'
+  IntCmp $0 0 un_sensor_failed
+  System::Call 'advapi32::OpenServiceW(p r0,w "AbsSystemBox.Sensors",i 4)p.r1 ?e'
+  Pop $2
+  System::Call 'advapi32::CloseServiceHandle(p r0)'
+  IntCmp $1 0 un_sensor_not_open
+  System::Call 'advapi32::CloseServiceHandle(p r1)'
+  Goto un_sensor_failed
+un_sensor_not_open:
+  IntCmp $2 1060 un_sensor_removed un_sensor_failed un_sensor_failed
+un_sensor_failed:
+  MessageBox MB_OK|MB_ICONSTOP "水冷传感器后台服务尚未移除。请完成独立管理员工具后重试；程序与数据保留。" /SD IDOK
+  SetErrorLevel 9
+  Abort
+un_sensor_removed:
   StrCpy $PayloadRoot "$INSTDIR\app"
   Call un.CleanPayload
   StrCpy $PayloadRoot "$INSTDIR\app.previous"

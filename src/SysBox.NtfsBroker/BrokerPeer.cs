@@ -16,7 +16,7 @@ public sealed record BrokerPeer(string Sid, int Session, string Image)
     [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)] private static extern bool QueryFullProcessImageNameW(SafeProcessHandle process, uint flags, StringBuilder image, ref uint length);
     [DllImport("advapi32.dll", SetLastError = true)] private static extern bool OpenProcessToken(SafeProcessHandle process, uint access, out SafeAccessTokenHandle token);
     [DllImport("advapi32.dll", SetLastError = true)] private static extern bool GetTokenInformation(SafeAccessTokenHandle token, int kind, out uint value, int length, out uint required);
-    public static BrokerPeer Read(PipeStream pipe, bool server)
+    public static BrokerPeer Read(PipeStream pipe, bool server, string? serviceName = null, string? expectedImage = null, string expectedArguments = "")
     {
         uint pid;
         if (!server)
@@ -37,7 +37,10 @@ public sealed record BrokerPeer(string Sid, int Session, string Image)
             throw new UnauthorizedAccessException();
         if (server)
         {
-            ServiceIdentity.Verify(pid, actualImage.ToString());
+            if (serviceName is null)
+                ServiceIdentity.Verify(pid, actualImage.ToString());
+            else
+                ServiceIdentity.Verify(pid, actualImage.ToString(), serviceName, expectedImage ?? throw new ArgumentNullException(nameof(expectedImage)), expectedArguments);
             return new("S-1-5-18", checked((int)processSession), Path.GetFullPath(actualImage.ToString()));
         }
         if (!OpenProcessToken(process, 8, out var token))

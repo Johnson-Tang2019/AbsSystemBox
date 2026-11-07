@@ -4,6 +4,7 @@
     <Platform Name="x64" />
   </Configurations>
   <Folder Name="/src/">
+    <Project Path="src/SysBox.SensorHost/SysBox.SensorHost.csproj" />
     <Project Path="src/SysBox.CleanupHelper/SysBox.CleanupHelper.csproj" />
     <Project Path="src/SysBox.Abstractions/SysBox.Abstractions.csproj" />
     <Project Path="src/SysBox.App/SysBox.App.csproj">

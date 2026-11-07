@@ -1,0 +1,30 @@
+{
+  "name": "System.CodeDom",
+  "version": "10.0.2",
+  "scope": "SysBox.SensorHost sensors subcomponent only",
+  "nugetContentHash": "eih1MnL4tnSjHUhzae0dmpu50Sm0s54faHZc8yhzYfmubAubkBIIulYYN28fasD1m41mhl6Cenhs9/F0aLv3FA==",
+  "authors": "Microsoft",
+  "license": "MIT",
+  "licenseUrl": "https://licenses.nuget.org/MIT",
+  "projectUrl": "https://dot.net/",
+  "copyright": "© Microsoft Corporation. All rights reserved.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dotnet/dotnet",
+    "commit": "44525024595742ebe09023abe709df51de65009b"
+  },
+  "licenseSource": "dotnet/runtime official shared MIT license; package copyright and repository commit retained here",
+  "packageNoticeFiles": [
+    "THIRD-PARTY-NOTICES.TXT"
+  ],
+  "nugetArchiveSha256": "30028b346c7b99ccdc484ea7edbdc7bd038b3c2f007e4e4cbfa3d45768651c2d",
+  "licenseArchiveDate": "2026-11-07",
+  "licenseSources": [
+    "NuGet package: THIRD-PARTY-NOTICES.TXT",
+    "https://raw.githubusercontent.com/dotnet/runtime/main/LICENSE.TXT"
+  ],
+  "licenseFileSha256": {
+    "LICENSE.txt": "cfc21f5e8bd655ae997eec916138b707b1d290b83272c02a95c9f821b8c87310",
+    "THIRD-PARTY-NOTICES.TXT": "6d15e10a101c6bfff2ab4429ed061bf76c456fc4b23ad6b03e0d0f8377148a21"
+  }
+}

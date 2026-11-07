@@ -13,28 +13,28 @@
       "sysbox.memory": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Abstractions": "[0.2.0-preview.2, )",
-          "SysBox.Native": "[0.2.0-preview.2, )"
+          "SysBox.Abstractions": "[0.3.1, )",
+          "SysBox.Native": "[0.3.1, )"
         }
       },
       "sysbox.native": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Abstractions": "[0.2.0-preview.2, )"
+          "SysBox.Abstractions": "[0.3.1, )"
         }
       },
       "sysbox.rules": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Abstractions": "[0.2.0-preview.2, )",
+          "SysBox.Abstractions": "[0.3.1, )",
           "YamlDotNet": "[18.1.0, )"
         }
       },
       "sysbox.transport": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Abstractions": "[0.2.0-preview.2, )",
-          "SysBox.Rules": "[0.2.0-preview.2, )"
+          "SysBox.Abstractions": "[0.3.1, )",
+          "SysBox.Rules": "[0.3.1, )"
         }
       }
     },

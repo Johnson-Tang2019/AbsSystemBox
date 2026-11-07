@@ -1,3 +1,14 @@
 * text=auto eol=lf
 *.png binary
 *.ico binary
+# Preserve the byte-exact upstream license archives used by the sensor payload records.
+licenses/third-party/BlackSharp.Core-1.0.7/** -text
+licenses/third-party/DiskInfoToolkit-1.1.2/** -text
+licenses/third-party/HidSharp-2.6.4/** -text
+licenses/third-party/LibreHardwareMonitorLib-0.9.6/** -text
+licenses/third-party/Mono.Posix.NETStandard-1.0.0/** -text
+licenses/third-party/RAMSPDToolkit-NDD-1.4.2/** -text
+licenses/third-party/System.CodeDom-10.0.2/** -text
+licenses/third-party/System.IO.FileSystem.AccessControl-5.0.0/** -text
+licenses/third-party/System.IO.Ports-10.0.3/** -text
+licenses/third-party/System.Management-10.0.2/** -text

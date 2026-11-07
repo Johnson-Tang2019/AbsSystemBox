@@ -1,0 +1,23 @@
+{
+  "name": "Mono.Posix.NETStandard",
+  "version": "1.0.0",
+  "scope": "SysBox.SensorHost sensors subcomponent only",
+  "nugetContentHash": "vSN/L1uaVwKsiLa95bYu2SGkF0iY3xMblTfxc8alSziPuVfJpj3geVqHGAA75J7cZkMuKpFVikz82Lo6y6LLdA==",
+  "authors": "Microsoft",
+  "licenseUrl": "https://go.microsoft.com/fwlink/?linkid=869050",
+  "projectUrl": "https://go.microsoft.com/fwlink/?linkid=869051",
+  "copyright": "漏 Microsoft Corporation. All rights reserved.",
+  "licenseSource": "Package legacy licenseUrl redirects to mono/mono main LICENSE; raw text archived 2026-11-07",
+  "packageNoticeFiles": [],
+  "nugetArchiveSha256": "fc5eb593b318fdfbb615c7d6ec29328ee52ba0ac256005cf40555e0ecd509276",
+  "licenseArchiveDate": "2026-11-07",
+  "licenseSources": [
+    "https://go.microsoft.com/fwlink/?linkid=869050",
+    "https://raw.githubusercontent.com/mono/mono/main/LICENSE",
+    "https://raw.githubusercontent.com/mono/mono/main/PATENTS.TXT"
+  ],
+  "licenseFileSha256": {
+    "LICENSE": "844242559dbdb96cb9cbe103b06c2bc8a349f19ad0b89d5c3cf830a8914333f6",
+    "PATENTS.TXT": "4d764e3d098f8aad23f70f29e34165c7836b7e1cc49ced2a73b175edb89e4891"
+  }
+}

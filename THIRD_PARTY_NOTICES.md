@@ -87,3 +87,28 @@ M3 新增 YamlDotNet 18.1.0（MIT），仅使用低层 YAML 事件解析器，�
 0.3.0-preview.3 进一步直接移植该提交 `src/ui/main/ball.ts` 的状态转换以及 `src/ui/ball/ball.ts` 的拖动/点击交互。原始两份源码和 blob SHA 已存档在上述目录，C# 版本标注改动与出处；WinUI 绘制、固定合成面/命中区域及旧位置数据兼容由本项目适配。主/渲染器不作为 TypeScript 或 Electron 代码执行。
 
 PCL 清理组合仅参考 PCL-Community/PCL-CE 2.10.4（bc10f7679307e647195ad90c6f50155a29f43445）公开展示的七种 Windows 操作，映射到现有的本项目实现。未复制其 VB 源码、结构体、权限代码或二进制；历史标签未检出明确许可文件，不将当前 dev 的 Apache-2.0 反推为旧标签授权。来源记录见 docs/references/PCL_MEMORY.md，无新增 PCL 运行或构建依赖。
+
+## 水冷显示与独立传感器采集（2026-11-07）
+
+下列新增依赖仅由独立 `sensors/SysBox.SensorHost` 采集子组件及其受保护服务副本使用；WinUI 界面通过受限本地管道读取 DTO，不加载硬件采集库。应用无需安装或运行 GoldenFiled、HWiNFO 或 LibreHardwareMonitor 的桌面程序。CPU / 主板采集依赖用户另行安装并授权使用的 PawnIO 驱动；本轮不包含驱动安装器。不得将“无需外部采集程序”表述为“所有硬件均可免驱动读取”。
+
+| 组件 | 精确版本 | 许可与存档 | 官方源码 / 用途 |
+|---|---|---|---|
+| LibreHardwareMonitorLib | 0.9.6 | [MPL-2.0](licenses/third-party/LibreHardwareMonitorLib-0.9.6/LICENSE)，[完整捆绑通知](licenses/third-party/LibreHardwareMonitorLib-0.9.6/THIRD-PARTY-NOTICES.txt) | [提交 3d331e3](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor/tree/3d331e3370efb858411f19511373eff65a218701)；独立 CPU / 主板 / 显卡传感器采集，未修改上游程序集 |
+| 内嵌 PawnIO.Modules 监测模块 | 0.2.2（实际字节核对） | LGPL-2.1；[该版 COPYING](licenses/third-party/LibreHardwareMonitorLib-0.9.6/PawnIO.Modules-0.2.2-COPYING)、[逐模块比较](licenses/third-party/LibreHardwareMonitorLib-0.9.6/PawnIO.Modules-release-comparison.json) | [精确源码 e12a858](https://github.com/namazso/PawnIO.Modules/tree/e12a858d952461ee2e919897cacbff7f905fe370)；全部12个内嵌模块与官方0.2.2发布包同名条目的长度、SHA-256一致。LHM README 的0.1.6标记已过时，不作为实际版本结论；与独立安装的 PawnIO 内核驱动分开记录 |
+| BlackSharp.Core | 1.0.7 | [MPL-2.0](licenses/third-party/BlackSharp.Core-1.0.7/LICENSE) | [固定源码](https://github.com/Blacktempel/BlackSharp/tree/c70b735c6cec123ee8a046ac4a0bc6c606f52cf0)；LHM 传递依赖 |
+| DiskInfoToolkit | 1.1.2 | [MPL-2.0](licenses/third-party/DiskInfoToolkit-1.1.2/LICENSE)，[CrystalDiskInfo MIT 通知](licenses/third-party/DiskInfoToolkit-1.1.2/THIRD-PARTY-NOTICES) | [固定源码](https://github.com/Blacktempel/DiskInfoToolkit/tree/25319eae5781e75bcf141e844ceab2afe94d40ea)；保留传递程序集，本模块不启用存储采集 |
+| RAMSPDToolkit-NDD | 1.4.2 | [MPL-2.0](licenses/third-party/RAMSPDToolkit-NDD-1.4.2/LICENSE) | [固定源码](https://github.com/Blacktempel/RAMSPDToolkit/tree/3b47b960e0830fef344624ad5e389675d5f0a1ce)；保留传递程序集，本模块不启用内存/SPD采集 |
+| HidSharp | 2.6.4 | [Apache-2.0 及版权](licenses/third-party/HidSharp-2.6.4/LICENSE.txt) | [官方项目](https://software.seekye.com/hidsharp)；LHM 传递依赖，本模块不启用外置控制器采集 |
+| Mono.Posix.NETStandard | 1.0.0 | [包原许可链接指向的 Mono 完整 LICENSE](licenses/third-party/Mono.Posix.NETStandard-1.0.0/LICENSE)；运行类库 MIT，保留其中 BSD 等完整通知 | [官方源码](https://github.com/mono/mono)；Windows x64 输出包含托管程序集及 MonoPosixHelper / libMonoPosixHelper 原生库，未删改其许可说明 |
+| System.CodeDom / System.Management | 10.0.2 | MIT；逐包完整通知见 [CodeDom](licenses/third-party/System.CodeDom-10.0.2/THIRD-PARTY-NOTICES.TXT)、[Management](licenses/third-party/System.Management-10.0.2/THIRD-PARTY-NOTICES.TXT)，目录内另存 MIT 全文 | [.NET 固定源码](https://github.com/dotnet/dotnet/tree/44525024595742ebe09023abe709df51de65009b)；硬件库的 Windows 平台依赖 |
+| System.IO.Ports | 10.0.3 | [MIT](licenses/third-party/System.IO.Ports-10.0.3/LICENSE.txt) 及同目录完整第三方通知 | [.NET 固定源码](https://github.com/dotnet/dotnet/tree/c2435c3e0f46de784341ac3ed62863ce77e117b4)；LHM 传递依赖，水冷屏通信本身使用本项目 Win32 实现 |
+| System.IO.FileSystem.AccessControl | 5.0.0 | [MIT 及包内版权](licenses/third-party/System.IO.FileSystem.AccessControl-5.0.0/LICENSE.TXT)，同目录完整第三方通知 | [.NET 固定源码](https://github.com/dotnet/runtime/tree/cf258a14b70ad9069470a108f13765e0e5988f51)；锁文件中的传递依赖，.NET 10 自包含输出使用对应运行时程序集 |
+
+精确包摘要、authors/copyright、仓库提交、许可原始来源保存在上述各目录的 `SOURCE.json`。`System.IO.Ports` 锁文件中的 Linux、Android、macOS 原生包是 NuGet 运行时选择图，不属于 Windows x64 传感器负载；不得把锁文件中的所有平台包都称为实际随包分发文件。既有 YamlDotNet 及 .NET 10.0.14 运行时继续沿用本清单已有通知。
+
+MPL 组件保留为可替换的独立程序集，未把第三方文件改标为本项目 GPL；上表固定源码入口随许可清单提供。LHM 包内 PawnIO 模块的 LGPL 通知及上述精确源码入口必须随分发保留；全部12个实际内嵌模块已匹配官方0.2.2发布资产，签名标签解析与比较记录保存在 LHM 许可证目录。保留为独立程序集，不更改模块或驱动签名；对应源码、上游构建说明和替换组件入口随通知提供。完整安装包的负载核对、源码附件与最终发布结果仍以本次发布记录为准。
+
+GoldenFiled 仅作为本机协议观察对象；未复制或分发其可执行文件、`config.dat` 中的 HWiNFO 引擎、Qt 库、图标、字体或界面素材。REA 仅借鉴证据记录和逆向调查方法，没有复制 REA 代码或引入其 Node.js/MCP 运行时。原软件指纹、指令地址及观察边界见 [COOLING_DISPLAY.md](docs/COOLING_DISPLAY.md)。
+
+0.3.1 的可选 LocalSystem 采集服务复用原已记录的 Microsoft.Extensions.Hosting.WindowsServices / Hosting / Logging.EventLog / System.ServiceProcess.ServiceController 10.0.14 等 MIT 依赖，原始通知和精确提交继续采用既有存档；服务与普通采集子进程使用同一独立硬件库副本。不新增 HWiNFO、GoldenFiled、REA、Node.js 或驱动安装器分发。

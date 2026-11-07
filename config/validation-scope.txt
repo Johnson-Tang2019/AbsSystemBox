@@ -8,3 +8,7 @@
 # FloatingDockRecoveryTests and DashboardUsageTests accepted 2026-11-05 (7 new cases).
 # Reuse docs/validation/dock-recovery; no remaining new groups to dispatch.
 # DashboardDriveRowsTests accepted 2026-11-05 (2 new cases); reuse validation/drive-rows.
+# CoolingDisplayFeaturesTests accepted 2026-11-07 (14 new cases); reuse validation/cooling-display.
+# No new automated test groups remain. CPU/motherboard authorization and physical display acceptance remain manual.
+# CoolingStartupFeaturesTests (4) and SensorServiceFeaturesTests (3) accepted 2026-11-07.
+# Reuse validation/cooling-startup; no remaining automatic groups to dispatch.

@@ -1,0 +1,54 @@
+{
+  "name": "LibreHardwareMonitorLib",
+  "version": "0.9.6",
+  "scope": "SysBox.SensorHost sensors subcomponent and protected service copy only",
+  "nugetContentHash": "W4hQ5Ja51/1cEDZnh9kG5UHFBwjjY2+oIpSUhSsgeYXKRKezrkw3sEFrhQkrOuo53xkXyfWV8ZErMqQuGqWIMQ==",
+  "authors": "LibreHardwareMonitorLib",
+  "license": "MPL-2.0",
+  "licenseUrl": "https://licenses.nuget.org/MPL-2.0",
+  "projectUrl": "https://github.com/LibreHardwareMonitor/LibreHardwareMonitor",
+  "copyright": "LibreHardwareMonitor",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LibreHardwareMonitor/LibreHardwareMonitor",
+    "commit": "3d331e3370efb858411f19511373eff65a218701"
+  },
+  "packageNoticeFiles": [],
+  "nugetArchiveSha256": "60db5e0d9135f4658b385cae139d3b9eaeac0a8e867d322d20b5dbe4c4039197",
+  "licenseArchiveDate": "2026-11-07",
+  "licenseSources": [
+    "https://raw.githubusercontent.com/LibreHardwareMonitor/LibreHardwareMonitor/3d331e3370efb858411f19511373eff65a218701/LICENSE",
+    "https://raw.githubusercontent.com/LibreHardwareMonitor/LibreHardwareMonitor/3d331e3370efb858411f19511373eff65a218701/THIRD-PARTY-NOTICES.txt",
+    "https://raw.githubusercontent.com/LibreHardwareMonitor/LibreHardwareMonitor/3d331e3370efb858411f19511373eff65a218701/LibreHardwareMonitorLib/Resources/PawnIo/README",
+    "https://raw.githubusercontent.com/LibreHardwareMonitor/LibreHardwareMonitor/3d331e3370efb858411f19511373eff65a218701/LibreHardwareMonitorLib/Resources/PawnIo/COPYING",
+    "https://raw.githubusercontent.com/namazso/PawnIO.Modules/e12a858d952461ee2e919897cacbff7f905fe370/COPYING",
+    "https://raw.githubusercontent.com/namazso/PawnIO.Modules/e12a858d952461ee2e919897cacbff7f905fe370/README.md"
+  ],
+  "embeddedModuleNotice": "PawnIO.Modules 0.2.2, LGPL-2.1; all 12 shipped embedded module byte counts and SHA-256 match official release ZIP. Pinned LHM README says 0.1.6 but is stale; direct asset comparison controls the selected version.",
+  "licenseFileSha256": {
+    "LICENSE": "1f256ecad192880510e84ad60474eab7589218784b9a50bc7ceee34c2b91f1d5",
+    "THIRD-PARTY-NOTICES.txt": "a60d5ee62f4d700caff38566f42874d554b8b530437c72804fb28b958cfbda9b",
+    "PawnIO.Modules-COPYING": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551",
+    "PawnIO.Modules-embedded-resources.json": "30ca2a81db6e603296dcce300b4a5c2f0004a47ed2339b6786e032d9b5e755bd",
+    "PawnIO.Modules-README": "c0933e9986afe65cb8629b2f1f1bf64c765d172f51ca325b0a17037f1fb2e348",
+    "PawnIO.Modules-TAG-0.1.6.json": "0ab2ee4fa2ea272c2a2e26d8bc83c5afb7f0ec8339defbc2929e8955980337d8",
+    "PawnIO.Modules-0.2.2-COPYING": "dc626520dcd53a22f727af3ee42c770e56c97a64fe3adb063799d8ab032fe551",
+    "PawnIO.Modules-release-comparison.json": "534f036e347b578c2af0bd2350510eed2469a2a5dc9b01bf3051366bdd46dd81",
+    "PawnIO.Modules-TAG-0.2.2.json": "3c341c0cb6e808a0024db5fa4f3b1921a2a2f26b772655e502ad4150c747ac18",
+    "PawnIO.Modules-0.2.2-README.md": "4fe9bf550c50819ec563d3c18f0fb4770c2ad78d03f882bb9c6e8153314a87a0"
+  },
+  "embeddedModules": {
+    "name": "PawnIO.Modules",
+    "version": "0.2.2",
+    "sourceRepository": "https://github.com/namazso/PawnIO.Modules",
+    "sourceCommit": "e12a858d952461ee2e919897cacbff7f905fe370",
+    "tagObject": "95a194e64ef7f044c8d441d857daabe21e44952f",
+    "sourceUrl": "https://github.com/namazso/PawnIO.Modules/tree/e12a858d952461ee2e919897cacbff7f905fe370",
+    "binaryComparison": "All 12 shipped embedded resources match official release_0_2_2.zip by exact entry name, byte count and SHA-256; see PawnIO.Modules-release-comparison.json",
+    "releaseAssetUrl": "https://github.com/namazso/PawnIO.Modules/releases/download/0.2.2/release_0_2_2.zip",
+    "releaseAssetSha256": "b9e05e52c07fd76b7f9db3da0f542b710d55511dc995d4f4ca08e9179b4c4032",
+    "releaseAssetBytes": 47526,
+    "license": "LGPL-2.1",
+    "readmeLimitation": "LHM README names 0.1.6; retained only as historical upstream provenance, not a correct description of actual resources"
+  }
+}

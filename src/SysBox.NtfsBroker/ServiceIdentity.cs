@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 namespace SysBox.NtfsBroker;
 
-internal static class ServiceIdentity
+public static class ServiceIdentity
 {
     private sealed class ServiceHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
@@ -21,11 +21,14 @@ internal static class ServiceIdentity
     [DllImport("advapi32.dll", SetLastError = true)] private static extern bool QueryServiceStatusEx(ServiceHandle service, int level, byte[] buffer, uint size, out uint required);
     [DllImport("advapi32.dll", CharSet = CharSet.Unicode, SetLastError = true)] private static extern bool QueryServiceConfigW(ServiceHandle service, IntPtr buffer, uint size, out uint required);
     public static void Verify(uint pid, string image)
+        => Verify(pid, image, "AbsSystemBox.Ntfs", BrokerPolicy.ServiceImage, "");
+
+    public static void Verify(uint pid, string image, string serviceName, string expectedImage, string expectedArguments)
     {
         using var manager = OpenSCManagerW(null, null, 1);
         if (manager.IsInvalid)
             throw new UnauthorizedAccessException();
-        using var service = OpenServiceW(manager, "AbsSystemBox.Ntfs", 5);
+        using var service = OpenServiceW(manager, serviceName, 5);
         if (service.IsInvalid)
             throw new UnauthorizedAccessException();
         var status = new byte[36];
@@ -55,7 +58,8 @@ internal static class ServiceIdentity
                 }
                 throw new UnauthorizedAccessException();
             }
-            if (configuration.Type != 16 || Read(configuration.Account) is not ("LocalSystem" or "NT AUTHORITY\\SYSTEM") || !string.Equals(Read(configuration.Image), '"' + BrokerPolicy.ServiceImage + '"', StringComparison.OrdinalIgnoreCase) || !string.Equals(image, BrokerPolicy.ServiceImage, StringComparison.OrdinalIgnoreCase))
+            var expectedCommand = '"' + expectedImage + '"' + (expectedArguments.Length == 0 ? "" : " " + expectedArguments);
+            if (configuration.Type != 16 || Read(configuration.Account) is not ("LocalSystem" or "NT AUTHORITY\\SYSTEM") || !string.Equals(Read(configuration.Image), expectedCommand, StringComparison.OrdinalIgnoreCase) || !string.Equals(image, expectedImage, StringComparison.OrdinalIgnoreCase))
                 throw new UnauthorizedAccessException();
         }
         finally { Marshal.FreeHGlobal(buffer); }

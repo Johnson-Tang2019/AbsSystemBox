@@ -1,0 +1,25 @@
+{
+  "name": "RAMSPDToolkit-NDD",
+  "version": "1.4.2",
+  "scope": "SysBox.SensorHost sensors subcomponent only",
+  "nugetContentHash": "pqIwn/HqXFnW4FVKybq6gZh3YK14OOLGWkgZzDdewjAInCOu86EO2L+FCQo8j1/v1sKwv+vgX5pnehxyrlJYJw==",
+  "authors": "RAMSPDToolkit-NDD",
+  "license": "MPL-2.0",
+  "licenseUrl": "https://licenses.nuget.org/MPL-2.0",
+  "projectUrl": "https://github.com/Blacktempel/RAMSPDToolkit",
+  "copyright": "Florian K.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Blacktempel/RAMSPDToolkit",
+    "commit": "3b47b960e0830fef344624ad5e389675d5f0a1ce"
+  },
+  "packageNoticeFiles": [],
+  "nugetArchiveSha256": "57c893824a68c71538055f242586616d4205a671c300897c21b2a6f88270ce64",
+  "licenseArchiveDate": "2026-11-07",
+  "licenseSources": [
+    "https://raw.githubusercontent.com/Blacktempel/RAMSPDToolkit/3b47b960e0830fef344624ad5e389675d5f0a1ce/LICENSE"
+  ],
+  "licenseFileSha256": {
+    "LICENSE": "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04"
+  }
+}

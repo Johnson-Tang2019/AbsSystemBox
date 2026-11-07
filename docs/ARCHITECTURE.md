@@ -1,5 +1,23 @@
 # 当前架构（桌面入口、CoreHost 与 Agent 接口）
 
+## 2026-11-07 水冷显示增量
+
+0.3.1 将同步 VM 改为应用生命周期单例，启动读取 AutoStart 普通偏好，切换页面只取消页面检测/授权，不停止后台显示。完全退出取消采样与连接；Core Max / CPU Fan 默认解析为同类型唯一精确标签，保存的稳定 ID 消失不替换。偏好不能授予特权。
+
+持久采集新增 `SysBox.SensorHost --service`，仅允许 LocalSystem 从管理员保护目录启动并校验受保护负载清单与 SID/UI 映像授权。固定 `AbsSystemBox.Sensors.Service.v1` 管道 ACL、调用方进程身份与只读空参数白名单限制请求；客户端通过 SCM 校验服务 PID、账户、完整命令和受保护映像，不把同名管道视为可信。安装脚本必须真实管理员权限及默认否的原生确认，无 Agent 确认字段。普通界面登录启动仍复用原有 HKCU Run，不把用户可写程序注册为最高权限任务。
+
+下面保留开发阶段的单次辅助进程说明；正式版默认优先连接持久服务，无服务时普通显卡读取不会自动提权。依赖新增 `App -> NtfsBroker` 仅复用现有的系统服务身份/ACL验证，不开放 NTFS 操作或开始扫描。
+
+新增第八个固定页面 `CoolingDisplayPage`。`CoolingDisplayViewModel` 仅通过 Abstractions 的 `ICoolingDisplayTransport` / `ICoolingSensorSource` 工作；默认不连接、不发送、不自动启动。`GoldenFiledDisplayProtocol` 是共享契约中的纯编码器，Native 仍只依赖 Abstractions。`GoldenFiledDisplayTransport` 在普通用户进程中识别固定 USB 身份、用 SafeFileHandle 管理独占串口，写入超时 500ms，只有五字节显示帧，没有通用设备控制接口。
+
+`SysBox.SensorHost` 是独立 Windows x64 子组件，内置 LibreHardwareMonitorLib 0.9.6，不运行 GoldenFiled、HWiNFO 或 LibreHardwareMonitor 应用。App 的 `WindowsCoolingSensorClient` 拥有随机 nonce 管道，显式用户/System ACL、Network 拒绝、双方真实用户/会话/固定映像验证，客户端还核对启动 PID。仅接受空参数 `cooling.sensors.read`，不进入 CLI/MCP/CoreHost 对外协议。普通采集只启用 GPU；CPU/主板采集由页面独立 `runas` 启动、helper 真实管理员令牌和默认“否”的原生确认共同授权；不是 Agent 可控制的布尔参数。实际可打开 PawnIO 后才启用这些类别，不安装驱动、不导入上游持久化设置、不调用风扇控制 setter。
+
+硬件采集/初始化受独立 15 秒监督，管道空闲 5 分钟、总会话 12 小时；原生确认最多两分钟，资源关闭最多两秒。监督器检查父进程退出与管道断开，原生同步调用阻塞时结束自身进程。UI 超时/停止/离页关闭会话并丢弃迟到结果。数据最多 256 项；自动模式要求用户选定的两种读数均新鲜且有效，缺失时停止发送，不能填假 0。LHM 主板监测可能设置监测使能寄存器，不能宣称“零寄存器写入”；本功能不设置泵速、风扇转速或超频。完整边界、协议证据与授权见 `COOLING_DISPLAY.md`。
+
+开发 `scripts/build.ps1` 将自包含采集组件部署到 App 的 `sensors` 子目录；安装器按同样目录发布。依赖程序集不加载到 WinUI 进程，异常或超时不会阻塞主界面。
+
+## 总体结构
+
 WinUI、CLI 与 MCP 通过 SysBox.Transport 连接用户态 CoreHost，所有扫描、数据库、搜索、大小、规则与清理业务由后台持有。
 没有 TCP/HTTP 监听，也没有已部署的特权 NTFS 服务。电池为 WinRT 平台薄适配器，桌面托盘/快捷键/工作集操作在 Native。
 
@@ -28,7 +46,7 @@ Core 的 DashboardClient 委托远程 IMemoryMonitor；规则配置持久化由�
 核心契约和 ViewModel 可以在非 Windows 环境测试；App 仅构建 Windows x64。
 
 App 来自官方 `winui` 模板，再按微软指南改为 unpackaged/self-contained。
-MainWindow 使用 NavigationView 和 Frame，页面包括概览、内存、文件搜索、磁盘空间、规则、诊断、设置。
+MainWindow 使用 NavigationView 和 Frame，页面包括概览、内存、文件搜索、磁盘空间、水冷显示、规则、诊断、设置。
 ThemeService 为窗口根元素应用 System/Light/Dark；毛玻璃由 DesktopAcrylicBackdrop 提供，
 粉色主题资源保存在 Themes/PinkTheme.xaml，状态控件在 Controls/。
 
@@ -39,7 +57,7 @@ Core/IDashboardClient 通过 IMemoryMonitor 调用远程后台；以下页面生
 Release 通过条件编译排除所有模拟实现。
 
 页面离开、Unloaded 或窗口关闭时取消读取并递增请求代数，丢弃不合作客户端的迟到结果。
-Frame 清空同级导航的 BackStack。七个固定页面各缓存一个视图，避免反复重建行模板和界面资源；上限为七个页面。
+Frame 清空同级导航的 BackStack。八个固定页面各缓存一个视图，避免反复重建行模板和界面资源；上限为八个页面。
 概览进入时读取一次，内存页拥有自己的 5 秒采样循环。
 循环、取消源和 60 点历史属于该页 ViewModel；离开时取消并使迟到结果失效，M2 循环仅属于该页；M3 新增的独立规则观察器见下文。
 内存页离开时清空数据并停止任务；有界视图保持固定的 ViewModel 绑定，重新进入只启动采样，不反复建立整页绑定。

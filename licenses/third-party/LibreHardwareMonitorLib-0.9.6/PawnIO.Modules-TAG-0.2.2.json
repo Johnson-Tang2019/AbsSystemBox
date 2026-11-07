@@ -1,0 +1,41 @@
+{
+  "ref": {
+    "ref": "refs/tags/0.2.2",
+    "node_id": "REF_kwDOJt7hC69yZWZzL3RhZ3MvMC4yLjI",
+    "url": "https://api.github.com/repos/namazso/PawnIO.Modules/git/refs/tags/0.2.2",
+    "object": {
+      "sha": "95a194e64ef7f044c8d441d857daabe21e44952f",
+      "type": "tag",
+      "url": "https://api.github.com/repos/namazso/PawnIO.Modules/git/tags/95a194e64ef7f044c8d441d857daabe21e44952f"
+    }
+  },
+  "tag": {
+    "node_id": "TA_kwDOJt7hC9oAKDk1YTE5NGU2NGVmN2YwNDRjOGQ0NDFkODU3ZGFhYmUyMWU0NDk1MmY",
+    "sha": "95a194e64ef7f044c8d441d857daabe21e44952f",
+    "url": "https://api.github.com/repos/namazso/PawnIO.Modules/git/tags/95a194e64ef7f044c8d441d857daabe21e44952f",
+    "tagger": {
+      "name": "namazso",
+      "email": "admin@namazso.eu",
+      "date": "2026-01-18T12:07:16Z"
+    },
+    "object": {
+      "sha": "e12a858d952461ee2e919897cacbff7f905fe370",
+      "type": "commit",
+      "url": "https://api.github.com/repos/namazso/PawnIO.Modules/git/commits/e12a858d952461ee2e919897cacbff7f905fe370"
+    },
+    "tag": "0.2.2",
+    "message": "Release 0.2.2\n-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgaHJ1jJnSdFjaf9EeQjuZz4AkkR\nmF/CpSv/N7I93hFvEAAAADZ2l0AAAAAAAAAAZzaGE1MTIAAABTAAAAC3NzaC1lZDI1NTE5\nAAAAQG1EXk6WyMJ8FZ7n5dewpdAPXN5ysVesODIf6RBj0cjLqrtEwcre7hUs9QzgmhVrNk\nKO/nLsz51ai+bwMPiHvwY=\n-----END SSH SIGNATURE-----\n",
+    "verification": {
+      "verified": true,
+      "reason": "valid",
+      "signature": "-----BEGIN SSH SIGNATURE-----\nU1NIU0lHAAAAAQAAADMAAAALc3NoLWVkMjU1MTkAAAAgaHJ1jJnSdFjaf9EeQjuZz4AkkR\nmF/CpSv/N7I93hFvEAAAADZ2l0AAAAAAAAAAZzaGE1MTIAAABTAAAAC3NzaC1lZDI1NTE5\nAAAAQG1EXk6WyMJ8FZ7n5dewpdAPXN5ysVesODIf6RBj0cjLqrtEwcre7hUs9QzgmhVrNk\nKO/nLsz51ai+bwMPiHvwY=\n-----END SSH SIGNATURE-----\n",
+      "payload": "object e12a858d952461ee2e919897cacbff7f905fe370\ntype commit\ntag 0.2.2\ntagger namazso <admin@namazso.eu> 1768738036 +0100\n\nRelease 0.2.2\n",
+      "verified_at": "2026-01-18T12:09:14Z"
+    }
+  },
+  "peeledObject": {
+    "sha": "e12a858d952461ee2e919897cacbff7f905fe370",
+    "type": "commit",
+    "url": "https://api.github.com/repos/namazso/PawnIO.Modules/git/commits/e12a858d952461ee2e919897cacbff7f905fe370"
+  }
+}

@@ -51,6 +51,8 @@ public partial class App : Application
             return;
         }
         var services = new ServiceCollection();
+        services.AddSingleton<WindowsCoolingSensorClient>();
+        services.AddSingleton<ICoolingSensorSource>(sp => sp.GetRequiredService<WindowsCoolingSensorClient>());
         services.AddSingleton<RpcClient>();
         services.AddSingleton<IMemoryMonitor, RemoteMemory>();
         services.AddSingleton<IProcessMemoryMonitor, RemoteProcesses>();
@@ -70,6 +72,8 @@ public partial class App : Application
             services.AddSingleton<IBatteryMonitor, DemoBatteryMonitor>();
         }
 #endif
+        services.AddSingleton<ICoolingDisplayTransport, GoldenFiledDisplayTransport>();
+        services.AddSingleton<CoolingDisplayViewModel>();
         services.AddSingleton<ThemeService>();
         services.AddTransient<DashboardViewModel>();
         services.AddSingleton<ISamplingDelay, SamplingDelay>();
@@ -79,6 +83,7 @@ public partial class App : Application
 #if DEBUG
         ruleDirectory = Environment.GetEnvironmentVariable("SYSBOX_TEST_RULE_DIRECTORY") ?? ruleDirectory;
 #endif
+        services.AddSingleton(new CoolingDisplayPreferenceStore(ruleDirectory));
         services.AddSingleton<RemoteRules>();
         services.AddSingleton<IRuleService>(sp => sp.GetRequiredService<RemoteRules>());
         services.AddSingleton<IRuleReview>(sp => sp.GetRequiredService<RemoteRules>());
@@ -104,6 +109,7 @@ public partial class App : Application
         };
         _window.Closed += (_, _) =>
         {
+            Services.GetRequiredService<CoolingDisplayViewModel>().Deactivate();
             Desktop.Dispose();
             try
             {
@@ -119,5 +125,7 @@ public partial class App : Application
         };
         _window.Activate();
         DesktopReady = Desktop.StartAsync();
+        if (!Services.GetRequiredService<IDashboardClient>().IsDemo)
+            _ = Services.GetRequiredService<CoolingDisplayViewModel>().StartAtApplicationLaunchAsync();
     }
 }

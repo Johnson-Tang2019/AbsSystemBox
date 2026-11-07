@@ -150,3 +150,13 @@ memory.processes 可选 sort=WorkingSet/PrivateCommit（枚举），默认保持
 九类系统清理没有公开的 CoreHost/CLI/MCP 端点；只供真实 UI 发起随机单次管道和原生管理员确认。现有 cleanup.configure 的可信桌面授权边界不变。
 
 0.3.0-preview.2 的 CleanupPolicy 增加 ProcessScope（0=LegacyAllowList，1=ProtectedBackground）和可选 ExcludedProcesses。缺失 scope 的历史存储继续使用旧白名单，不隐式扩大启用范围；新界面保存保护模式时需要重新进行桌面启用确认。排除名按大小写不敏感匹配、至多 32 个无路径 `.exe`，空列表有效，未知 scope 拒绝。系统默认保护仍在原生执行前复核，不受此枚举授权改变。
+
+## 水冷显示契约（2026-11-07）
+
+0.3.1 新增 `CoolingDisplaySettings.AutoStart`，仅用于普通显示同步的启动偏好，不是采集授权。`CoolingDisplayDefaults.Select` 仅在没有保存 ID 时按唯一的 Core Max / CPU Fan 标签选择；ID 失效或标签歧义均明确拒绝。`StartAtApplicationLaunchAsync`、`CancelPageDetection` 将页面检测与应用同步生命周期分离。
+
+持久服务与单次辅助进程复用同一个空参数读协议。服务固定管道 `AbsSystemBox.Sensors.Service.v1`，受保护授权策略决定 SID/已安装 UI 映像权限；客户端校验 SCM 的 LocalSystem、PID、固定路径及 `--service` 参数。没有 CLI/MCP 授权方法。服务的采集布尔变量只来源于真实系统身份与受保护策略，不接受请求参数提升权限。
+
+`CoolingDisplaySettings` 仅保存设备/传感器身份和明确标记的手动值，不包含自动开始或特权授权字段。`ICoolingDisplayTransport` 只提供兼容设备检测、连接；连接只接收温度整数 0..255 和转速整数 0..65535 RPM。`GoldenFiledDisplayProtocol.Encode` 生成固定五字节显示帧，越界直接拒绝。`ICoolingSensorSource.ReadAsync` 返回带采样时间的有界温度/RPM 集合，未知传感器不返回虚构值。
+
+独立采集管道是桌面组件内部协议，不新增 CLI/MCP/用户 CoreHost 的授权入口。请求必须为 `RpcRequest("1.0", "cooling.sensors.read", {})`，拒绝其他方法、额外参数和不匹配身份；响应为现有 `RpcResponse` 包装 `CoolingSensorSnapshot`。IPC 传输复用已有长度/JSON 上限，业务最多 256 传感器。授权由实际提权后的原生对话框处理，外部请求无确认标志。详见 [COOLING_DISPLAY.md](COOLING_DISPLAY.md)。

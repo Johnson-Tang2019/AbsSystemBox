@@ -1,0 +1,27 @@
+{
+  "name": "DiskInfoToolkit",
+  "version": "1.1.2",
+  "scope": "SysBox.SensorHost sensors subcomponent only",
+  "nugetContentHash": "vN46svt1hQDkm269p6CzfwDpb/fbyp8oNQuePcvjNSryPLfsxIJZU8amEhir+x5bsKd0ymOXTySzPwFO8o0dpw==",
+  "authors": "DiskInfoToolkit",
+  "license": "MPL-2.0",
+  "licenseUrl": "https://licenses.nuget.org/MPL-2.0",
+  "projectUrl": "https://github.com/Blacktempel/DiskInfoToolkit",
+  "copyright": "Florian K.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Blacktempel/DiskInfoToolkit",
+    "commit": "25319eae5781e75bcf141e844ceab2afe94d40ea"
+  },
+  "packageNoticeFiles": [],
+  "nugetArchiveSha256": "a997f0b3701e20b2ab9296e07ee4f74f877e75015277fb6bd314ade1e2c4db13",
+  "licenseArchiveDate": "2026-11-07",
+  "licenseSources": [
+    "https://raw.githubusercontent.com/Blacktempel/DiskInfoToolkit/25319eae5781e75bcf141e844ceab2afe94d40ea/LICENSE",
+    "https://raw.githubusercontent.com/Blacktempel/DiskInfoToolkit/25319eae5781e75bcf141e844ceab2afe94d40ea/THIRD-PARTY-NOTICES"
+  ],
+  "licenseFileSha256": {
+    "LICENSE": "3f3d9e0024b1921b067d6f7f88deb4a60cbe7a78e76c64e3f1d7fc3b779b9d04",
+    "THIRD-PARTY-NOTICES": "88bfe8bcf6132ccd09e4a99e96df3d981346e9161def35577c28aa9aa4bbb1f9"
+  }
+}

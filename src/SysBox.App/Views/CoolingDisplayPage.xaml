@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page x:Class="SysBox.App.Views.CoolingDisplayPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+ <ScrollViewer><StackPanel Spacing="16" MaxWidth="900" HorizontalAlignment="Stretch">
+  <TextBlock Text="水冷显示" Style="{ThemeResource TitleTextBlockStyle}" />
+  <TextBlock Text="选择温度与风扇读数，同步到金河田水冷屏。这里只改变屏幕显示。" TextWrapping="Wrap" />
+  <TextBlock Text="{Binding Status}" TextWrapping="Wrap" AutomationProperties.AutomationId="CoolingStatus" />
+  <Button x:Name="DetectButton" Content="检测设备与传感器" Click="Detect_Click" AutomationProperties.AutomationId="CoolingDetect" />
+  <Button x:Name="AuthorizeButton" Content="授权后台采集（安装 / 更新）" Click="Authorize_Click" AutomationProperties.AutomationId="CoolingAuthorize" />
+  <TextBlock x:Name="AuthorizationStatus" Text="CPU 与主板转速由受保护的后台服务采集，授权一次后可随 Windows 启动。主界面保持普通权限。" TextWrapping="Wrap" />
+  <StackPanel x:Name="OptionsPanel" Spacing="12">
+   <ComboBox x:Name="DevicePicker" Header="水冷屏" DisplayMemberPath="DisplayName" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="CoolingDevice" />
+   <TextBlock Text="{Binding SensorStatus}" TextWrapping="Wrap" AutomationProperties.AutomationId="CoolingSensorStatus" />
+   <ComboBox x:Name="TemperaturePicker" Header="温度传感器" DisplayMemberPath="Name" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="CoolingTemperature" />
+   <ComboBox x:Name="FanPicker" Header="风扇传感器（RPM）" DisplayMemberPath="Name" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="CoolingFan" />
+   <CheckBox x:Name="AutoStartMode" Content="随应用启动同步" AutomationProperties.AutomationId="CoolingAutoStart" />
+   <CheckBox x:Name="ManualMode" Content="使用手动显示值（并非真实传感器读数）" AutomationProperties.AutomationId="CoolingManual" />
+   <NumberBox x:Name="TemperatureValue" Header="手动温度（℃）" Minimum="0" Maximum="255" SpinButtonPlacementMode="Inline" AutomationProperties.AutomationId="CoolingManualTemperature" />
+   <NumberBox x:Name="FanValue" Header="手动转速（RPM）" Minimum="0" Maximum="65535" SpinButtonPlacementMode="Inline" AutomationProperties.AutomationId="CoolingManualFan" />
+  </StackPanel>
+  <StackPanel Orientation="Horizontal" Spacing="12">
+   <Button x:Name="StartButton" Content="开始同步" Click="Start_Click" AutomationProperties.AutomationId="CoolingStart" />
+   <Button x:Name="StopButton" Content="停止同步" Click="Stop_Click" AutomationProperties.AutomationId="CoolingStop" />
+   <Button x:Name="SaveButton" Content="保存设置" Click="Save_Click" AutomationProperties.AutomationId="CoolingSave" />
+  </StackPanel>
+  <TextBlock Text="{Binding LastWrite}" TextWrapping="Wrap" AutomationProperties.AutomationId="CoolingLastWrite" />
+  <TextBlock Text="连接前请退出 GoldenFiled，避免占用同一设备。切换页面或隐藏到托盘后继续同步；点击停止同步或完全退出应用后停止。" TextWrapping="Wrap" />
+ </StackPanel></ScrollViewer>
+</Page>

@@ -54,13 +54,13 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.Data.Sqlite": "[10.0.14, )",
-          "SysBox.Abstractions": "[0.1.0-preview.1, )"
+          "SysBox.Abstractions": "[0.3.1, )"
         }
       },
       "sysbox.native": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Abstractions": "[0.1.0-preview.1, )"
+          "SysBox.Abstractions": "[0.3.1, )"
         }
       }
     }

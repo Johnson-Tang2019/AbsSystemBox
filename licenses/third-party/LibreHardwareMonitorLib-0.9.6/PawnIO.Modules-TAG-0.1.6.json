@@ -1,0 +1,17 @@
+{
+  "ref": {
+    "ref": "refs/tags/0.1.6",
+    "node_id": "REF_kwDOJt7hC69yZWZzL3RhZ3MvMC4xLjY",
+    "url": "https://api.github.com/repos/namazso/PawnIO.Modules/git/refs/tags/0.1.6",
+    "object": {
+      "sha": "ceb5e5b9fcbda1d3bb33705d0036fba1c3214532",
+      "type": "tag",
+      "url": "https://api.github.com/repos/namazso/PawnIO.Modules/git/tags/ceb5e5b9fcbda1d3bb33705d0036fba1c3214532"
+    }
+  },
+  "peeledObject": {
+    "sha": "4aa792beb020a14c8261072e9786d2dfb38489d9",
+    "type": "commit",
+    "url": "https://api.github.com/repos/namazso/PawnIO.Modules/git/commits/4aa792beb020a14c8261072e9786d2dfb38489d9"
+  }
+}

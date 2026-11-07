@@ -33,6 +33,7 @@
     <ProjectReference Include="../SysBox.Storage/SysBox.Storage.csproj" />
     <ProjectReference Include="../SysBox.Presentation/SysBox.Presentation.csproj" />
     <ProjectReference Include="../SysBox.Transport/SysBox.Transport.csproj" />
+    <ProjectReference Include="../SysBox.NtfsBroker/SysBox.NtfsBroker.csproj" />
   </ItemGroup>
   <!-- Keep app-generated XAML resources in unpackaged publish output as well as build output. -->
   <Target Name="IncludeCompiledWinUIResources" AfterTargets="ComputeFilesToPublish">

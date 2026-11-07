@@ -8,7 +8,7 @@
       "sysbox.native": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Abstractions": "[0.1.0-preview.1, )"
+          "SysBox.Abstractions": "[0.3.1, )"
         }
       }
     }
