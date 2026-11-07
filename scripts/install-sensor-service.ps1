@@ -89,8 +89,15 @@ if($hadTarget){[IO.Directory]::Move($target,$previous)}
 try{[IO.Directory]::Move($incoming,$target);$switched=$true}catch{if($hadTarget){[IO.Directory]::Move($previous,$target)};throw}
 if($hadPolicy){[IO.File]::Replace($policyIncoming,$policyPath,$policyBackup)}else{[IO.File]::Move($policyIncoming,$policyPath)};$policySwitched=$true
 $binary='"'+(Join-Path $target 'SysBox.SensorHost.exe')+'" --service'
-if($service){& (Join-Path ([Environment]::SystemDirectory) 'sc.exe') config 'AbsSystemBox.Sensors' 'binPath=' $binary 'start=' 'auto' 'obj=' 'LocalSystem'}else{& (Join-Path ([Environment]::SystemDirectory) 'sc.exe') create 'AbsSystemBox.Sensors' 'binPath=' $binary 'start=' 'auto' 'obj=' 'LocalSystem' 'DisplayName=' 'AbsSystemBox 传感器读取服务'}
-if($LASTEXITCODE-ne0){throw '传感器服务注册失败。'}
+if($service){
+    $current=Get-CimInstance Win32_Service -Filter "Name='AbsSystemBox.Sensors'"
+    $changed=Invoke-CimMethod -InputObject $current -MethodName Change -Arguments @{PathName=$binary;StartMode='Automatic';StartName='LocalSystem'}
+    if($changed.ReturnValue-ne0){throw '传感器服务注册更新失败。'}
+}else{
+    New-Service -Name 'AbsSystemBox.Sensors' -BinaryPathName $binary -StartupType Automatic -DisplayName 'AbsSystemBox 传感器读取服务'|Out-Null
+}
+$registered=Get-CimInstance Win32_Service -Filter "Name='AbsSystemBox.Sensors'"
+if(-not$registered-or$registered.PathName.Trim()-ne$binary-or$registered.StartName-notin@('LocalSystem','NT AUTHORITY\SYSTEM')){throw '传感器服务注册身份不匹配。'}
 Start-Service -Name 'AbsSystemBox.Sensors';(Get-Service 'AbsSystemBox.Sensors').WaitForStatus('Running',[TimeSpan]::FromSeconds(15))
 } catch {
     $setupError=$_
