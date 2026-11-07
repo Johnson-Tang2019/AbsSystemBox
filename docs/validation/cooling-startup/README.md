@@ -15,3 +15,13 @@
 首次部署发现两项环境兼容问题并修复：Windows PowerShell 5.1 的原生命令引号影响服务注册，已改为结构化 New-Service / CIM；普通用户不能打开 LocalSystem 进程，客户端已改为 SCM 与真实管道 PID 绑定。对应新证据为 `endpoint.trx`；原测试不重复派发。
 
 受保护服务安装、真实普通用户客户端、开机登记与实体同步属于部署后的新流程。正式交付补录记录实际结果；尚未重启时不能声称完成真实开机验收。保护路径部署保留旧负载/授权备份，卸载维护只取消注册、不递归删除未知文件。
+
+## 正式交付补录
+
+- 源码40be94bd2f14a33990df9bd43eac671e02a44e27；Windows构建42343173076通过，公开稳定发布v0.3.1的四个附件大小/哈希核对通过。
+- 最终安装器100852398字节，SHA256为6979db2907e85a98701b2e34a68a66cf220ce4edb91a70d40ace8efcc0d27304；2548个安装文件按正式manifest验证，10个用户数据文件在安装阶段保留。
+- 原生确认后服务注册兼容问题已回滚并恢复；Windows UAC完成后，从管理员保护的已授权暂存负载和记录继续安装，454个文件摘要匹配。服务为LocalSystem、Automatic、固定命令。该受保护同版采样负载源1bb41e3，后续仅安装脚本和客户端连接修复，采样实现未改变。
+- 普通界面成功自动选择Intel Core i5-14600K / Core Max与Nuvoton NCT6687D / CPU Fan，真实读数52→56℃和980→998RPM写入，切页持续，最后保留应用运行。稳定传感器ID已保存。
+- 登录启动与自动同步偏好已配置，原GoldenFiled自启动有备份并停用；未重启、未验收其他固件及热拔插。
+
+机器本地证据为 `artifacts/local-upgrade-cooling/installation.json`、`service-recovery.log`、`startup.json`、`runtime.json` 和 `artifacts/final-releases/0.3.1/publication.json`。私人授权SID、完整用户设置和原始备份不作为公开附件。
