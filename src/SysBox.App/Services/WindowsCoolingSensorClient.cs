@@ -71,8 +71,7 @@ public sealed class WindowsCoolingSensorClient : ICoolingSensorSource, IDisposab
             try { await connection.ConnectAsync(1500, token); }
             catch (TimeoutException) { connection.Dispose(); return false; }
             var image = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "AbsSystemBox", "SensorService", "SysBox.SensorHost.exe");
-            _ = BrokerPeer.Read(connection, true, "AbsSystemBox.Sensors", image, "--service");
-            BrokerPolicy.VerifyProtected(image);
+            BrokerPeer.VerifyServiceServer(connection, "AbsSystemBox.Sensors", image, "--service");
             session = new();
             pipe = connection;
             return true;

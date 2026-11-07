@@ -12,3 +12,4 @@
 # No new automated test groups remain. CPU/motherboard authorization and physical display acceptance remain manual.
 # CoolingStartupFeaturesTests (4) and SensorServiceFeaturesTests (3) accepted 2026-11-07.
 # Reuse validation/cooling-startup; no remaining automatic groups to dispatch.
+# SensorServiceEndpointTests accepted 2026-11-07 (1 new case; SCM-bound peer cannot be spoofed).

@@ -8,6 +8,16 @@ namespace SysBox.NtfsBroker;
 
 public sealed record BrokerPeer(string Sid, int Session, string Image)
 {
+    public static void VerifyServiceServer(PipeStream pipe, string serviceName, string expectedImage, string expectedArguments)
+    {
+        if (!GetNamedPipeServerProcessId(pipe.SafePipeHandle, out var pid))
+            throw new UnauthorizedAccessException();
+        // Ordinary users cannot open a LocalSystem process. Bind the pipe PID to the SCM's
+        // running own-process service, exact command, account and administrator-protected image.
+        ServiceIdentity.Verify(pid, expectedImage, serviceName, expectedImage, expectedArguments);
+        BrokerPolicy.VerifyProtected(expectedImage);
+    }
+
     [DllImport("kernel32.dll", SetLastError = true)] private static extern bool GetNamedPipeClientProcessId(SafePipeHandle handle, out uint pid);
     [DllImport("kernel32.dll", SetLastError = true)] private static extern bool GetNamedPipeServerProcessId(SafePipeHandle handle, out uint pid);
     [DllImport("kernel32.dll", SetLastError = true)] private static extern bool ProcessIdToSessionId(uint pid, out uint session);

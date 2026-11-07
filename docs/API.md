@@ -157,6 +157,8 @@ memory.processes 可选 sort=WorkingSet/PrivateCommit（枚举），默认保持
 
 持久服务与单次辅助进程复用同一个空参数读协议。服务固定管道 `AbsSystemBox.Sensors.Service.v1`，受保护授权策略决定 SID/已安装 UI 映像权限；客户端校验 SCM 的 LocalSystem、PID、固定路径及 `--service` 参数。没有 CLI/MCP 授权方法。服务的采集布尔变量只来源于真实系统身份与受保护策略，不接受请求参数提升权限。
 
+普通客户端使用 `BrokerPeer.VerifyServiceServer` 把真实管道服务端 PID 绑定到 SCM 的运行中独占服务，并校验固定命令、LocalSystem 账户和管理员保护的映像路径。此路径不要求普通用户打开 LocalSystem 进程句柄；既有 NTFS 身份读取路径保持不变。可访问的同名管道不等于可信服务。
+
 `CoolingDisplaySettings` 仅保存设备/传感器身份和明确标记的手动值，不包含自动开始或特权授权字段。`ICoolingDisplayTransport` 只提供兼容设备检测、连接；连接只接收温度整数 0..255 和转速整数 0..65535 RPM。`GoldenFiledDisplayProtocol.Encode` 生成固定五字节显示帧，越界直接拒绝。`ICoolingSensorSource.ReadAsync` 返回带采样时间的有界温度/RPM 集合，未知传感器不返回虚构值。
 
 独立采集管道是桌面组件内部协议，不新增 CLI/MCP/用户 CoreHost 的授权入口。请求必须为 `RpcRequest("1.0", "cooling.sensors.read", {})`，拒绝其他方法、额外参数和不匹配身份；响应为现有 `RpcResponse` 包装 `CoolingSensorSnapshot`。IPC 传输复用已有长度/JSON 上限，业务最多 256 传感器。授权由实际提权后的原生对话框处理，外部请求无确认标志。详见 [COOLING_DISPLAY.md](COOLING_DISPLAY.md)。
