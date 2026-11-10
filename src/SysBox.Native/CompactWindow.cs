@@ -15,6 +15,11 @@ public sealed class CompactWindow : IDisposable
     {
         public Point Reserved, Maximum, MaximumPosition, MinimumTrack, MaximumTrack;
     }
+    [StructLayout(LayoutKind.Sequential)]
+    private struct Rectangle
+    {
+        public int Left, Top, Right, Bottom;
+    }
     private delegate IntPtr Subclass(IntPtr window, uint message, UIntPtr wparam, IntPtr lparam, UIntPtr id, UIntPtr data);
     [DllImport("comctl32.dll")] private static extern bool SetWindowSubclass(IntPtr window, Subclass callback, UIntPtr id, UIntPtr data);
     [DllImport("comctl32.dll")] private static extern bool RemoveWindowSubclass(IntPtr window, Subclass callback, UIntPtr id);
@@ -24,12 +29,16 @@ public sealed class CompactWindow : IDisposable
     [DllImport("user32.dll")] private static extern bool SetWindowPos(IntPtr window, IntPtr after, int x, int y, int width, int height, uint flags);
     [DllImport("dwmapi.dll")] private static extern int DwmSetWindowAttribute(IntPtr window, uint attribute, ref uint value, uint size);
     [DllImport("user32.dll")] private static extern bool GetCursorPos(out Point point);
+    [DllImport("user32.dll")] private static extern bool GetWindowRect(IntPtr window, out Rectangle rectangle);
     [DllImport("gdi32.dll")] private static extern IntPtr CreateRoundRectRgn(int x, int y, int right, int bottom, int ellipseWidth, int ellipseHeight);
+    [DllImport("gdi32.dll")] private static extern bool PtInRegion(Region region, int x, int y);
     [DllImport("gdi32.dll")] private static extern bool DeleteObject(IntPtr value);
     [DllImport("user32.dll")] private static extern int SetWindowRgn(IntPtr window, IntPtr region, bool redraw);
     private readonly IntPtr window; private readonly Subclass callback;
     private (int X, int Y, int Width, int Height)? bounds;
-    private (int X, int Y, int Width, int Height, bool Circle)? clip;
+    private (int X, int Y, int Width, int Height, int Diameter)? clip;
+    private Region? hitRegion;
+    public event Action? DisplayChanged;
     private sealed class Region : SafeHandleZeroOrMinusOneIsInvalid
     {
         public Region(IntPtr value) : base(true) => SetHandle(value); protected override bool ReleaseHandle() => DeleteObject(handle);
@@ -38,7 +47,7 @@ public sealed class CompactWindow : IDisposable
     {
         this.window = window;
         callback = Handle;
-        if (Marshal.SizeOf<Limits>() != 40 || !SetWindowSubclass(window, callback, (UIntPtr)77, UIntPtr.Zero))
+        if (Marshal.SizeOf<Limits>() != 40 || Marshal.SizeOf<Rectangle>() != 16 || !SetWindowSubclass(window, callback, (UIntPtr)77, UIntPtr.Zero))
             throw new InvalidOperationException("无法配置悬浮窗尺寸。");
         var style = GetStyle(window, -20).ToInt64();
         SetStyle(window, -20, (IntPtr)((style | 0x80) & ~0x40000L));
@@ -51,7 +60,13 @@ public sealed class CompactWindow : IDisposable
     private IntPtr Handle(IntPtr w, uint message, UIntPtr p, IntPtr l, UIntPtr id, UIntPtr data)
     {
         if (message == 0x84)
-            return (IntPtr)1; // HTCLIENT: the whole compact surface belongs to pointer handling.
+        {
+            var point = l.ToInt64();
+            if (hitRegion is { } region && GetWindowRect(w, out var rectangle) &&
+                !PtInRegion(region, unchecked((short)point) - rectangle.Left, unchecked((short)(point >> 16)) - rectangle.Top))
+                return (IntPtr)(-1); // HTTRANSPARENT
+            return (IntPtr)1; // HTCLIENT
+        }
         if (message == 0x21)
             return (IntPtr)3; // MA_NOACTIVATE, matching the upstream companion window.
         if (message == 0x83)
@@ -67,7 +82,11 @@ public sealed class CompactWindow : IDisposable
             Marshal.StructureToPtr(limits, l, false);
             return IntPtr.Zero;
         }
-        return DefSubclassProc(w, message, p, l);
+        var result = DefSubclassProc(w, message, p, l);
+        // WM_DISPLAYCHANGE, WM_DPICHANGED or WM_SETTINGCHANGE (SPI_SETWORKAREA).
+        if (message is 0x7e or 0x2e0 || (message == 0x1a && p.ToUInt64() == 0x2f))
+            DisplayChanged?.Invoke();
+        return result;
     }
     public static (int X, int Y) Cursor()
     {
@@ -87,23 +106,41 @@ public sealed class CompactWindow : IDisposable
             throw new InvalidOperationException("无法更新悬浮窗尺寸。");
         bounds = next;
     }
-    public void Clip(int width, int height, bool circle)
-        => Clip(0, 0, width, height, circle);
-    public void Clip(int x, int y, int width, int height, bool circle)
+    public void InvalidateGeometry()
+    {
+        bounds = null;
+        clip = null;
+    }
+    public void Clip(int x, int y, int width, int height, int diameter)
     {
         if (x < 0 || y < 0 || width < 1 || height < 1 || width > 1024 || height > 1024 || x > 1024 - width || y > 1024 - height)
             throw new ArgumentOutOfRangeException(nameof(width));
-        var next = (x, y, width, height, circle);
+        diameter = Math.Clamp(diameter, 1, Math.Min(width, height));
+        var next = (x, y, width, height, diameter);
         if (clip == next)
             return;
-        var diameter = circle ? Math.Min(width, height) : Math.Min(10, Math.Min(width, height));
+        // The GDI rounded region bounds are one pixel smaller than the supplied extent.
         using var region = new Region(CreateRoundRectRgn(x, y, x + width + 1, y + height + 1, diameter, diameter));
-        if (region.IsInvalid)
+        var nextHitRegion = new Region(CreateRoundRectRgn(x, y, x + width + 1, y + height + 1, diameter, diameter));
+        if (region.IsInvalid || nextHitRegion.IsInvalid)
+        {
+            nextHitRegion.Dispose();
             throw new InvalidOperationException("无法创建悬浮窗外形。");
+        }
         if (SetWindowRgn(window, region.DangerousGetHandle(), true) == 0)
+        {
+            nextHitRegion.Dispose();
             throw new InvalidOperationException("无法设置悬浮窗外形。");
+        }
         region.SetHandleAsInvalid();
+        hitRegion?.Dispose();
+        hitRegion = nextHitRegion;
         clip = next;
     }
-    public void Dispose() => RemoveWindowSubclass(window, callback, (UIntPtr)77);
+    public void Dispose()
+    {
+        RemoveWindowSubclass(window, callback, (UIntPtr)77);
+        hitRegion?.Dispose();
+        hitRegion = null;
+    }
 }

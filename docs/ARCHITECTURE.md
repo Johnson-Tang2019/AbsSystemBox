@@ -143,7 +143,7 @@ NtfsLiveIndex 使用共享 IndexDatabase 单写者、SQLite staging 与 NtfsPubl
 
 概览由可取消的页面生命周期循环读取用户后台内存/索引/卷能力，不扫描文件；内存页保留后台自动采样，工作集/私有提交排序在截断 200 条之前完成。电池 DTO 增加可空设计容量，健康度由满充/设计容量计算；无电池与不可用区分。
 
-MemoryCleanupPanel 从设置页移到内存页。自动进程清理仍由用户 CoreHost 执行；九类系统清理由独立 SysBox.CleanupHelper 一次性提升，NTFS 服务保持只读。UI 创建随机 nonce 管道，显式 SID/System ACL、Network 拒绝，校验 helper PID/映像；helper 校验同用户/会话及真实 UI 映像，等待原生默认“否”的管理员确认，再调用固定枚举的 native API。没有任意命令、设备控制码或 Agent 授权字段；父进程退出/超时取消后续步骤，互斥量阻止运行中更新。
+MemoryCleanupPanel 从设置页移到内存页。自动进程清理仍由用户 CoreHost 执行；九类系统清理由独立 SysBox.CleanupHelper 一次性提升，NTFS 服务保持只读。UI 在后台等待 Windows 提升，创建随机 nonce 管道，显式 SID/System ACL、Network 拒绝，校验本地连接，并把管道 PID 和映像绑定到提升时返回的进程句柄。helper 校验同用户/会话及真实 UI 映像，等待原生默认“否”的管理员确认，再调用固定枚举的 native API。没有任意命令、设备控制码或 Agent 授权字段；执行前检查管道断开、父进程退出和超时，互斥量在同一线程取得和释放。
 
 悬浮窗使用 Win32 subclass 修正最小尺寸与非客户区，直接设置 HWND 边界并转交 SafeHandle 管理的圆形/条形区域，避免 AppWindow.ResizeClient 对旧边框的估算。WinUI 绘制现有粉色主题进度环；64 DIP 球体、14x56 贴边条、鼠标物理坐标拖动及 DPI 变化重排。
 
@@ -153,7 +153,7 @@ MemoryCleanupPanel 从设置页移到内存页。自动进程清理仍由用户 
 
 FluentBallState 直接移植 Fluent Reduct 64fa85f 的 anchor、move、commit、hover、restore、reflow 状态逻辑；鼠标抓取偏移、4 DIP 欧氏距离阈值、250 ms 单/双击分辨及右键行为来自其 renderer。原始两份 TypeScript 源码、blob SHA 和 GPL 原文随授权目录保存，不加载上游运行时。单击/右键打开主窗口，双击请求现有清理，球内仅保留百分比。旧 BallX/BallY 仍表示 64 DIP 可见球体左上角，未引入 Electron 的 4 DIP 影子边距。
 
-WinUI 适配固定 64 DIP HWND/合成面，贴边只把原生可见/命中区域切换为 14x56 DIP；CompactWindow 缓存边界与 region，采样仅更新读数，不移动窗口、不重建 region。明确 HTCLIENT、MA_NOACTIVATE 和 WinUI Passthrough 输入区域，拖动只更新位置；region 成功后将 SafeHandle 所有权交给 OS。移出球体外接矩形后以 350 ms 检查收起，防止圆形角落触发连续展开/收起。专用粉色实色底保证小窗不依赖 Acrylic 合成恢复，主窗口保留毛玻璃。
+WinUI 适配固定 64 DIP HWND/合成面，贴边时切换为 14×56 DIP 的可见区域。裁剪和原生命中使用同一圆角形状，WinUI Passthrough 与条形布局共用同一组像素坐标。分辨率、DPI、工作区或原生窗口尺寸变化时，合并通知并重新应用布局、裁剪和输入区域。CompactWindow 缓存边界与裁剪，采样仅更新读数，拖动仅更新位置。移出球体外接矩形后以 350 ms 检查收起，防止圆形角落触发连续展开或收起。悬浮球使用专用粉色实色底，主窗口使用毛玻璃。
 
 概览卡片始终竖向排列；内存/磁盘渐变进度条显示真实已用百分比，高对比度使用系统高亮色。DashboardCapacity 先按字节汇总有效卷再计算占比，容量不一致、未就绪/未知卷不计入分母，明确显示部分可读卷；无有效数据时隐藏用量条，不以 0% 冒充硬件结果。未增加文件扫描或新的 RPC/特权入口。
 

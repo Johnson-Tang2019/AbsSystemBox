@@ -107,13 +107,7 @@ public static class PeerIdentity
     public static string Image(PipeStream pipe, bool server)
     {
         if (!server)
-        {
-            var computer = new StringBuilder(256);
-            // Local pipes report ERROR_PIPE_LOCAL; success identifies a network connection.
-            var remote = GetNamedPipeClientComputerNameW(pipe.SafePipeHandle, computer, 256);
-            if (remote || Marshal.GetLastWin32Error() != 229)
-                throw new UnauthorizedAccessException("不接受远程或无法确认来源的管道请求。");
-        }
+            RequireLocalClient(pipe);
         uint pid;
         var success = server ? GetNamedPipeServerProcessId(pipe.SafePipeHandle, out pid) : GetNamedPipeClientProcessId(pipe.SafePipeHandle, out pid);
         if (!success)
@@ -127,6 +121,26 @@ public static class PeerIdentity
         using (var identity = new WindowsIdentity(token.DangerousGetHandle()))
             if (identity.User is null || current.User is null || !identity.User.Equals(current.User))
                 throw new UnauthorizedAccessException("对端用户身份不匹配。");
+        return ReadImage(handle);
+    }
+    public static void VerifyLaunchedClient(PipeStream pipe, Process process, string expectedImage)
+    {
+        RequireLocalClient(pipe);
+        // Bind the pipe PID to the process handle returned by the elevation launch.
+        if (ProcessId(pipe, false) != (uint)process.Id ||
+            !string.Equals(ReadImage(process.SafeHandle), Path.GetFullPath(expectedImage), StringComparison.OrdinalIgnoreCase))
+            throw new UnauthorizedAccessException("管理员组件身份不匹配。");
+    }
+    private static void RequireLocalClient(PipeStream pipe)
+    {
+        var computer = new StringBuilder(256);
+        // Local pipes report ERROR_PIPE_LOCAL; success identifies a network connection.
+        var remote = GetNamedPipeClientComputerNameW(pipe.SafePipeHandle, computer, 256);
+        if (remote || Marshal.GetLastWin32Error() != 229)
+            throw new UnauthorizedAccessException("不接受远程或无法确认来源的管道请求。");
+    }
+    private static string ReadImage(SafeProcessHandle handle)
+    {
         var image = new StringBuilder(32768);
         uint length = 32768;
         if (!QueryFullProcessImageNameW(handle, 0, image, ref length))

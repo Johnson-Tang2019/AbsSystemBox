@@ -14,6 +14,7 @@ namespace SysBox.App.Controls;
 public sealed partial class MemoryCleanupPanel
 {
     private bool systemCleaning;
+    private Task<Process?>? pendingLaunch;
     private void SelectFluent_Click(object sender, RoutedEventArgs args) => SelectAreas(MemoryCleanupCatalog.IsDefault);
     private void SelectPcl_Click(object sender, RoutedEventArgs args) => SelectAreas(MemoryCleanupCatalog.IsPclCombination);
     private void SelectAreas(Func<MemoryCleanupArea, bool> selected)
@@ -32,8 +33,14 @@ public sealed partial class MemoryCleanupPanel
     private async void CleanSystem_Click(object sender, RoutedEventArgs args) => await RequestSystemCleanupAsync();
     public async Task RequestSystemCleanupAsync()
     {
+        SystemResult.StartBringIntoView();
         if (systemCleaning)
             return;
+        if (pendingLaunch is { IsCompleted: false })
+        {
+            SystemResult.Text = "请先关闭上一次的管理员授权窗口。";
+            return;
+        }
         systemCleaning = true;
         try
         {
@@ -59,14 +66,20 @@ public sealed partial class MemoryCleanupPanel
             acl.AddAccessRule(new PipeAccessRule(new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null), PipeAccessRights.FullControl, AccessControlType.Allow));
             await using var pipe = NamedPipeServerStreamAcl.Create("AbsSystemBox.Cleanup." + nonce, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous, 16384, 16384, acl);
             using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(3));
-            SystemResult.Text = "等待管理员授权及本次清理确认…";
-            using var process = Process.Start(new ProcessStartInfo(executable, nonce) { UseShellExecute = true, Verb = "runas", WindowStyle = ProcessWindowStyle.Hidden }) ?? throw new IOException("无法启动管理员组件。");
+            SystemResult.Text = "等待 Windows 管理员授权…";
+            var launch = pendingLaunch = Task.Run(() => Process.Start(new ProcessStartInfo(executable, nonce)
+            {
+                UseShellExecute = true,
+                Verb = "runas",
+                WindowStyle = ProcessWindowStyle.Hidden
+            }));
+            using var process = await AwaitLaunchAsync(launch, timeout.Token);
             var connected = pipe.WaitForConnectionAsync(timeout.Token);
             if (await Task.WhenAny(connected, process.WaitForExitAsync(timeout.Token)) != connected)
                 throw new IOException("管理员组件已退出，未执行本次清理。");
             await connected;
-            if (PeerIdentity.ProcessId(pipe, false) != (uint)process.Id || !string.Equals(PeerIdentity.Image(pipe, false), Path.GetFullPath(executable), StringComparison.OrdinalIgnoreCase))
-                throw new UnauthorizedAccessException("管理员组件身份不匹配。");
+            PeerIdentity.VerifyLaunchedClient(pipe, process, executable);
+            SystemResult.Text = "等待本次清理确认或结果…";
             await Protocol.WriteAsync(pipe, new RpcRequest(Protocol.Version, "cleanup.system", JsonSerializer.SerializeToElement(areas, Protocol.Json)), timeout.Token);
             var response = await Protocol.ReadAsync<RpcResponse>(pipe, timeout.Token);
             if (response.Version != Protocol.Version || response.Error is not null)
@@ -78,5 +91,24 @@ public sealed partial class MemoryCleanupPanel
         catch (OperationCanceledException) { SystemResult.Text = "等待清理结果超时；不要重复执行，请先确认管理员窗口状态。"; }
         catch (Exception e) { SystemResult.Text = "清理未完成：" + e.Message; }
         finally { systemCleaning = false; }
+    }
+    private static async Task<Process> AwaitLaunchAsync(Task<Process?> launch, CancellationToken token)
+    {
+        try
+        {
+            return await launch.WaitAsync(token) ?? throw new IOException("无法启动管理员组件。");
+        }
+        catch (OperationCanceledException)
+        {
+            // UAC owns the dialog; release a late process handle after the pipe has closed.
+            _ = launch.ContinueWith(task =>
+            {
+                if (task.IsCompletedSuccessfully)
+                    task.Result?.Dispose();
+                else
+                    _ = task.Exception;
+            }, TaskScheduler.Default);
+            throw;
+        }
     }
 }

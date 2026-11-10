@@ -59,10 +59,11 @@ public sealed partial class MainWindow : Window
     }
     public void RequestMemoryCleanup()
     {
-        App.Desktop.ShowMain();
-        SelectPage("memory");
         DispatcherQueue.TryEnqueue(async () =>
         {
+            App.Desktop.ShowMain();
+            SelectPage("memory");
+            Navigate("memory");
             if (RootFrame.Content is MemoryPage page)
             {
                 if (!page.IsLoaded)

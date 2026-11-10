@@ -16,9 +16,9 @@ public sealed partial class FloatingBallWindow : Window
     private readonly DispatcherTimer click = new() { Interval = TimeSpan.FromMilliseconds(250) };
     private readonly DispatcherTimer collapseDelay = new() { Interval = TimeSpan.FromMilliseconds(350) };
     private BallRectangle? currentBounds;
-    private int inputWidth, inputHeight;
+    private BallRectangle? inputRegion;
     private double scale = 1, usage;
-    private bool dragged, applying;
+    private bool dragged, applying, displayRefreshPending;
     private readonly FluentBallState state = new();
     private double cx => state.AnchorX;
     private double cy => state.AnchorY;
@@ -34,6 +34,7 @@ public sealed partial class FloatingBallWindow : Window
         presenter.IsAlwaysOnTop = true;
         AppWindow.SetPresenter(presenter);
         compact = new(WinRT.Interop.WindowNative.GetWindowHandle(this));
+        compact.DisplayChanged += QueueDisplayRefresh;
         scale = ((FrameworkElement)App.MainWindow.Content).XamlRoot?.RasterizationScale ?? 1;
         var area = DisplayArea.GetFromWindowId(App.MainWindow.AppWindow.Id, DisplayAreaFallback.Primary).WorkArea;
         var prefs = App.Desktop.Preferences;
@@ -42,22 +43,47 @@ public sealed partial class FloatingBallWindow : Window
         click.Tick += (_, _) => { click.Stop(); App.Desktop.ShowMain(); };
         collapseDelay.Tick += (_, _) => CollapseWhenOutside();
         Ball.Loaded += (_, _) => { Ball.XamlRoot.Changed += Root_Changed; Apply(); _ = RefreshAsync(); };
-        Closed += (_, _) => { click.Stop(); collapseDelay.Stop(); cancellation.Cancel(); if (Ball.XamlRoot is { } root) root.Changed -= Root_Changed; compact.Dispose(); };
+        Closed += (_, _) =>
+        {
+            click.Stop();
+            collapseDelay.Stop();
+            cancellation.Cancel();
+            if (Ball.XamlRoot is { } root)
+                root.Changed -= Root_Changed;
+            compact.DisplayChanged -= QueueDisplayRefresh;
+            compact.Dispose();
+        };
+        AppWindow.Changed += (_, args) =>
+        {
+            if (args.DidSizeChange && currentBounds is { } bounds &&
+                (AppWindow.Size.Width != bounds.Width || AppWindow.Size.Height != bounds.Height))
+                QueueDisplayRefresh();
+        };
         AppWindow.Closing += (_, _) => SavePosition();
         Apply();
     }
     private void Root_Changed(XamlRoot sender, XamlRootChangedEventArgs args)
     {
         if (Math.Abs(scale - sender.RasterizationScale) > 0.01)
+            QueueDisplayRefresh();
+    }
+    private void QueueDisplayRefresh()
+    {
+        if (displayRefreshPending || cancellation.IsCancellationRequested)
+            return;
+        displayRefreshPending = DispatcherQueue.TryEnqueue(() =>
         {
-            scale = sender.RasterizationScale;
+            displayRefreshPending = false;
+            if (cancellation.IsCancellationRequested)
+                return;
+            scale = Ball.XamlRoot?.RasterizationScale ?? scale;
             var area = DisplayArea.GetFromPoint(new((int)cx, (int)cy), DisplayAreaFallback.Nearest).WorkArea;
             state.Reflow(scale, new(area.X, area.Y, area.Width, area.Height));
-            if (applying)
-                DispatcherQueue.TryEnqueue(Apply);
-            else
-                Apply();
-        }
+            compact.InvalidateGeometry();
+            inputRegion = null;
+            Ball.InvalidateMeasure();
+            Apply();
+        });
     }
     private void Apply()
     {
@@ -69,23 +95,26 @@ public sealed partial class FloatingBallWindow : Window
             var area = DisplayArea.GetFromPoint(new((int)cx, (int)cy), DisplayAreaFallback.Nearest).WorkArea;
             var frame = FloatingBallLayout.Frame(cx, cy, edge, collapsed, scale, area.X, area.Y, area.Width, area.Height);
             var bounds = frame.Window;
+            var region = frame.Region;
             currentBounds = bounds;
             FullBall.Visibility = collapsed ? Visibility.Collapsed : Visibility.Visible;
             EdgeBar.Visibility = collapsed ? Visibility.Visible : Visibility.Collapsed;
             compact.SetBounds(bounds.X, bounds.Y, bounds.Width, bounds.Height);
-            if (inputWidth != bounds.Width || inputHeight != bounds.Height)
+            if (inputRegion != region)
             {
                 var input = Microsoft.UI.Input.InputNonClientPointerSource.GetForWindowId(AppWindow.Id);
                 input.ClearRegionRects(Microsoft.UI.Input.NonClientRegionKind.Caption);
-                input.SetRegionRects(Microsoft.UI.Input.NonClientRegionKind.Passthrough, [new(0, 0, bounds.Width, bounds.Height)]);
-                inputWidth = bounds.Width;
-                inputHeight = bounds.Height;
+                input.SetRegionRects(Microsoft.UI.Input.NonClientRegionKind.Passthrough, [new(region.X, region.Y, region.Width, region.Height)]);
+                inputRegion = region;
             }
-            compact.Clip(frame.Region.X, frame.Region.Y, frame.Region.Width, frame.Region.Height, !collapsed);
-            EdgeBar.Width = frame.Region.Width / scale;
-            EdgeBar.Height = frame.Region.Height / scale;
-            EdgeBar.HorizontalAlignment = edge == BallEdge.Left ? HorizontalAlignment.Left : edge == BallEdge.Right ? HorizontalAlignment.Right : HorizontalAlignment.Center;
-            EdgeBar.VerticalAlignment = edge == BallEdge.Top ? VerticalAlignment.Top : edge == BallEdge.Bottom ? VerticalAlignment.Bottom : VerticalAlignment.Center;
+            var diameter = collapsed ? (int)Math.Ceiling(10 * scale) : region.Width;
+            compact.Clip(region.X, region.Y, region.Width, region.Height, diameter);
+            if (collapsed)
+            {
+                EdgeBar.Width = region.Width / scale;
+                EdgeBar.Height = region.Height / scale;
+                EdgeBar.Margin = new(region.X / scale, region.Y / scale, 0, 0);
+            }
             UpdateBar();
 #if DEBUG
             var directory = Environment.GetEnvironmentVariable("SYSBOX_TEST_RULE_DIRECTORY");

@@ -1,11 +1,13 @@
 # 安装、覆盖更新与版本
 
 预览版面向 Windows 11 x64。下载 GitHub Release 的 win-x64-setup.exe，运行后按提示安装。
-当前发布版本为 [0.3.1](https://github.com/Johnson-Tang2019/AbsSystemBox/releases/tag/v0.3.1)，开始菜单快捷方式名称为 **AbsSystemBox**，使用透明粉色工具箱图标。
+当前发布版本为 [0.3.2](https://github.com/Johnson-Tang2019/AbsSystemBox/releases/tag/v0.3.2)，开始菜单快捷方式名称为 **AbsSystemBox**，使用透明粉色工具箱图标。
 安装包包含 .NET/Windows App SDK 运行组件，无需预先安装 SDK、注册服务或申请管理员权限。
 当前尚未购买代码签名证书，安装包未签名，Windows 可能显示未知发布者提示；请核对官方仓库来源和 SHA256SUMS.txt。
 没有自动下载或静默后台更新。登录启动与工作集清理默认关闭，分别在设置页与内存页单独启用。
 安装包包含一次性管理员清理组件 `app/cleanup/SysBox.CleanupHelper.exe`，普通安装和主窗口仍不提权；九类系统清理每次独立请求管理员授权及本次操作确认。
+
+0.3.2 修正悬浮球贴边时的鼠标命中范围和显示设置变化后的布局。双击打开内存页并请求清理，等待 Windows 管理员授权时界面可以继续响应。
 
 0.3.1 增加独立水冷显示。水冷页“随应用启动同步”与设置页的登录启动分别控制同步和应用启动；新用户默认关闭，按用户明确要求可启用。默认来源为唯一的 Core Max / CPU Fan，不以 GPU 或其他风扇替代。切页/托盘继续同步，完全退出结束。
 
