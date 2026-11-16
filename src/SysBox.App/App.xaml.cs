@@ -25,6 +25,18 @@ public partial class App : Application
     public App()
     {
         InitializeComponent();
+#if DEBUG
+        if (Guid.TryParseExact(Environment.GetEnvironmentVariable("SYSBOX_TEST_PIPE_SUFFIX"), "N", out _) &&
+            Environment.GetEnvironmentVariable("SYSBOX_TEST_RULE_DIRECTORY") is { } diagnosticDirectory)
+        {
+            UnhandledException += (_, args) =>
+            {
+                try { System.IO.File.WriteAllText(System.IO.Path.Combine(diagnosticDirectory, "unhandled-xaml.txt"), args.Exception.ToString()); }
+                catch (System.IO.IOException) { }
+                catch (UnauthorizedAccessException) { }
+            };
+        }
+#endif
     }
 
     protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)

@@ -167,9 +167,9 @@ public sealed partial class FloatingBallWindow : Window
     private void Ball_Pressed(object sender, PointerRoutedEventArgs args)
     {
         TracePointer("press:" + args.GetCurrentPoint(Ball).Properties.IsLeftButtonPressed);
-        if (!args.GetCurrentPoint(Ball).Properties.IsLeftButtonPressed)
+        if (!args.GetCurrentPoint(Ball).Properties.IsLeftButtonPressed || !CompactWindow.TryGetCursor(out var position))
             return;
-        pressed = CompactWindow.Cursor();
+        pressed = position;
         collapseDelay.Stop();
         startX = currentBounds is { } bounds ? bounds.X + bounds.Width / 2.0 : cx;
         startY = currentBounds is { } rectangle ? rectangle.Y + rectangle.Height / 2.0 : cy;
@@ -180,9 +180,8 @@ public sealed partial class FloatingBallWindow : Window
     {
         if (pressed is not null)
             TracePointer("move");
-        if (pressed is not { } start)
+        if (pressed is not { } start || !CompactWindow.TryGetCursor(out var now))
             return;
-        var now = CompactWindow.Cursor();
         var dx = now.X - start.X;
         var dy = now.Y - start.Y;
         if (dragged || Math.Sqrt((double)dx * dx + (double)dy * dy) >= 4 * scale)
@@ -254,7 +253,8 @@ public sealed partial class FloatingBallWindow : Window
             collapseDelay.Stop();
             return;
         }
-        var cursor = CompactWindow.Cursor();
+        if (!CompactWindow.TryGetCursor(out var cursor))
+            return;
         // A restored circle excludes its corners; keep it open while the cursor is in its bounding box.
         if (currentBounds is { } bounds && cursor.X >= bounds.X - 2 && cursor.X < bounds.X + bounds.Width + 2 &&
             cursor.Y >= bounds.Y - 2 && cursor.Y < bounds.Y + bounds.Height + 2)
@@ -278,7 +278,8 @@ public sealed partial class FloatingBallWindow : Window
         if (directory is not null)
             try
             {
-                System.IO.File.AppendAllText(System.IO.Path.Combine(directory, "ball-input.txt"), $"{action} cursor={CompactWindow.Cursor()} pressed={pressed} edge={edge} collapsed={collapsed}\n");
+                var cursor = CompactWindow.TryGetCursor(out var position) ? position.ToString() : "unavailable";
+                System.IO.File.AppendAllText(System.IO.Path.Combine(directory, "ball-input.txt"), $"{action} cursor={cursor} pressed={pressed} edge={edge} collapsed={collapsed}\n");
             }
             catch (System.IO.IOException) { }
 #endif

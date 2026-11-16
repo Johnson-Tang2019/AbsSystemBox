@@ -31,10 +31,15 @@ public sealed partial class MemoryCleanupPanel
             AreaOptions.Children.Add(new CheckBox { Content = MemoryCleanupCatalog.Name(area), Tag = area, IsChecked = MemoryCleanupCatalog.IsDefault(area) });
     }
     private async void CleanSystem_Click(object sender, RoutedEventArgs args) => await RequestSystemCleanupAsync();
-    public async Task RequestSystemCleanupAsync()
+    private static bool IsCleanupDemo() => App.Services.GetRequiredService<SysBox.Core.IDashboardClient>().IsDemo;
+    private MemoryCleanupArea[] SelectedCleanupAreas() => MemoryCleanupCatalog.Validate(AreaOptions.Children.OfType<CheckBox>()
+        .Where(option => option.IsChecked == true).Select(option => (MemoryCleanupArea)option.Tag));
+    private void ShowCleanupReport(MemoryCleanupReport report) =>
+        SystemResult.Text = report.Cancelled ? "本次清理已取消，未执行系统操作。" : string.Join("\n", report.Results.Select(r => $"{MemoryCleanupCatalog.Name(r.Area)}：{r.Status}")) + "\n" + (report.AvailableChangeBytes is { } change ? $"可用物理内存变化：{change / 1048576.0:+0.0;-0.0;0.0} MiB（包含系统同期变化）" : "可用物理内存变化：未知");
+
+    public async Task RequestSystemCleanupAsync(bool useSavedGrant = false)
     {
-        SystemResult.StartBringIntoView();
-        if (systemCleaning)
+        if (systemCleaning || managingGrant)
             return;
         if (pendingLaunch is { IsCompleted: false })
         {
@@ -44,12 +49,18 @@ public sealed partial class MemoryCleanupPanel
         systemCleaning = true;
         try
         {
-            if (App.Services.GetRequiredService<SysBox.Core.IDashboardClient>().IsDemo)
+            SystemResult.StartBringIntoView();
+            if (IsCleanupDemo())
             {
                 SystemResult.Text = "示例模式不执行内存清理。";
                 return;
             }
-            var areas = MemoryCleanupCatalog.Validate(AreaOptions.Children.OfType<CheckBox>().Where(c => c.IsChecked == true).Select(c => (MemoryCleanupArea)c.Tag));
+            if (useSavedGrant)
+            {
+                await ExecuteGrantedAsync();
+                return;
+            }
+            var areas = SelectedCleanupAreas();
             var executable = Path.Combine(AppContext.BaseDirectory, "cleanup", "SysBox.CleanupHelper.exe");
             if (!File.Exists(executable))
             {
@@ -85,7 +96,7 @@ public sealed partial class MemoryCleanupPanel
             if (response.Version != Protocol.Version || response.Error is not null)
                 throw new IOException("管理员清理未完成。");
             var report = response.Value!.Value.Deserialize<MemoryCleanupReport>(Protocol.Json) ?? throw new IOException();
-            SystemResult.Text = report.Cancelled ? "本次清理已取消，未执行系统操作。" : string.Join("\n", report.Results.Select(r => $"{MemoryCleanupCatalog.Name(r.Area)}：{r.Status}")) + "\n" + (report.AvailableChangeBytes is { } change ? $"可用物理内存变化：{change / 1048576.0:+0.0;-0.0;0.0} MiB（包含系统同期变化）" : "可用物理内存变化：未知");
+            ShowCleanupReport(report);
         }
         catch (System.ComponentModel.Win32Exception e) when (e.NativeErrorCode == 1223) { SystemResult.Text = "已取消管理员授权，未执行清理。"; }
         catch (OperationCanceledException) { SystemResult.Text = "等待清理结果超时；不要重复执行，请先确认管理员窗口状态。"; }

@@ -368,6 +368,21 @@ Section "Uninstall"
   FileClose $0
   ${TrimNewLines} $1 $1
   StrCmp $1 "${PRODUCT}" 0 un_done
+  System::Call 'advapi32::OpenSCManagerW(p 0,p 0,i 1)p.r0'
+  IntCmp $0 0 un_cleanup_service_present
+  System::Call 'advapi32::OpenServiceW(p r0,w "AbsSystemBox.CleanupService",i 4)p.r1 ?e'
+  Pop $2
+  System::Call 'advapi32::CloseServiceHandle(p r0)'
+  IntCmp $1 0 un_cleanup_service_not_open
+  System::Call 'advapi32::CloseServiceHandle(p r1)'
+  Goto un_cleanup_service_present
+un_cleanup_service_not_open:
+  IntCmp $2 1060 un_cleanup_service_removed
+un_cleanup_service_present:
+  MessageBox MB_OK|MB_ICONSTOP "请在内存页撤销悬浮球清理授权，再退出应用并重新卸载。" /SD IDOK
+  SetErrorLevel 9
+  Abort
+un_cleanup_service_removed:
   ; Keep application files if the optional privileged registration cannot be removed.
   System::Call 'advapi32::OpenSCManagerW(p 0,p 0,i 1)p.r0'
   IntCmp $0 0 un_service_failed

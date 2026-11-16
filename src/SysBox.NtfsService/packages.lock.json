@@ -316,28 +316,28 @@
       "sysbox.native": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Abstractions": "[0.3.1, )"
+          "SysBox.Abstractions": "[0.3.4, )"
         }
       },
       "sysbox.ntfsbroker": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Native": "[0.3.1, )",
-          "SysBox.Transport": "[0.3.1, )"
+          "SysBox.Native": "[0.3.4, )",
+          "SysBox.Transport": "[0.3.4, )"
         }
       },
       "sysbox.rules": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Abstractions": "[0.3.1, )",
+          "SysBox.Abstractions": "[0.3.4, )",
           "YamlDotNet": "[18.1.0, )"
         }
       },
       "sysbox.transport": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Abstractions": "[0.3.1, )",
-          "SysBox.Rules": "[0.3.1, )"
+          "SysBox.Abstractions": "[0.3.4, )",
+          "SysBox.Rules": "[0.3.4, )"
         }
       }
     },

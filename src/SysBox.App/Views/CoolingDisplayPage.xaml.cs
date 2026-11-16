@@ -42,10 +42,10 @@ public sealed partial class CoolingDisplayPage : Page, IPageLifetime
         AuthorizeButton.IsEnabled = DetectButton.IsEnabled = StartButton.IsEnabled = false;
         try
         {
-            AuthorizationStatus.Text = "等待管理员授权与本次硬件监测确认…";
+            AuthorizationStatus.Text = "正在检查后台采集授权…";
             await App.Services.GetRequiredService<WindowsCoolingSensorClient>().AuthorizeAsync(authorization.Token);
             if (request != pageGeneration) return;
-            AuthorizationStatus.Text = "授权采集组件已连接，请检测并选择本次可用的传感器。";
+            AuthorizationStatus.Text = "已连接后台采集服务。开启随应用启动同步后，可自动读取温度和转速。";
             await DetectAsync();
         }
         catch (OperationCanceledException) { AuthorizationStatus.Text = "硬件采集授权已取消。"; }

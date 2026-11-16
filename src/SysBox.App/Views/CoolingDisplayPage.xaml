@@ -5,7 +5,7 @@
   <TextBlock Text="选择温度与风扇读数，同步到金河田水冷屏。这里只改变屏幕显示。" TextWrapping="Wrap" />
   <TextBlock Text="{Binding Status}" TextWrapping="Wrap" AutomationProperties.AutomationId="CoolingStatus" />
   <Button x:Name="DetectButton" Content="检测设备与传感器" Click="Detect_Click" AutomationProperties.AutomationId="CoolingDetect" />
-  <Button x:Name="AuthorizeButton" Content="授权后台采集（安装 / 更新）" Click="Authorize_Click" AutomationProperties.AutomationId="CoolingAuthorize" />
+  <Button x:Name="AuthorizeButton" Content="连接或首次授权后台采集" Click="Authorize_Click" AutomationProperties.AutomationId="CoolingAuthorize" />
   <TextBlock x:Name="AuthorizationStatus" Text="CPU 与主板转速由受保护的后台服务采集，授权一次后可随 Windows 启动。主界面保持普通权限。" TextWrapping="Wrap" />
   <StackPanel x:Name="OptionsPanel" Spacing="12">
    <ComboBox x:Name="DevicePicker" Header="水冷屏" DisplayMemberPath="DisplayName" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="CoolingDevice" />

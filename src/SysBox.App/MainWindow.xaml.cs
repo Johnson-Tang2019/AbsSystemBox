@@ -69,7 +69,15 @@ public sealed partial class MainWindow : Window
                 if (!page.IsLoaded)
                 {
                     RoutedEventHandler? loaded = null;
-                    loaded = async (_, _) => { page.Loaded -= loaded; await page.RequestSystemCleanupAsync(); };
+                    loaded = (_, _) =>
+                    {
+                        page.Loaded -= loaded;
+                        DispatcherQueue.TryEnqueue(async () =>
+                        {
+                            if (ReferenceEquals(RootFrame.Content, page) && page.IsLoaded)
+                                await page.RequestSystemCleanupAsync();
+                        });
+                    };
                     page.Loaded += loaded;
                 }
                 else

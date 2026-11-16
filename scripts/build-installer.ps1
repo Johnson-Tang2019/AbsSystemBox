@@ -29,7 +29,7 @@ foreach($resource in @('App.xbf','MainWindow.xbf','FloatingBallWindow.xbf','Quic
 foreach($name in @('LICENSE','COPYING.md','THIRD_PARTY_NOTICES.md')){Copy-Item -LiteralPath (Join-Path $root $name) -Destination $stage}
 Copy-Item -LiteralPath (Join-Path $root 'licenses') -Destination $stage -Recurse
 [IO.Directory]::CreateDirectory((Join-Path $stage 'scripts'))|Out-Null
-foreach($name in @('install-ntfs-service.ps1','remove-ntfs-service.ps1','install-sensor-service.ps1','remove-sensor-service.ps1')){Copy-Item -LiteralPath (Join-Path $PSScriptRoot $name) -Destination (Join-Path $stage 'scripts')}
+foreach($name in @('install-ntfs-service.ps1','remove-ntfs-service.ps1','install-sensor-service.ps1','remove-sensor-service.ps1','install-cleanup-service.ps1')){Copy-Item -LiteralPath (Join-Path $PSScriptRoot $name) -Destination (Join-Path $stage 'scripts')}
 $servicePayload=Join-Path $stage 'ntfs-service'
 foreach($name in @('LICENSE','COPYING.md','THIRD_PARTY_NOTICES.md')){Copy-Item -LiteralPath (Join-Path $root $name) -Destination $servicePayload}
 Copy-Item -LiteralPath (Join-Path $root 'licenses') -Destination $servicePayload -Recurse
@@ -40,6 +40,9 @@ foreach($name in @('LICENSE','COPYING.md','THIRD_PARTY_NOTICES.md')){Copy-Item -
 Copy-Item -LiteralPath (Join-Path $root 'licenses') -Destination $sensorPayload -Recurse
 $sensorFiles=@(Get-ChildItem -LiteralPath $sensorPayload -Recurse -File|Where-Object{$_.FullName-ne(Join-Path $sensorPayload 'sensors-files.json')}|ForEach-Object{@{path=$_.FullName.Substring($sensorPayload.Length+1);sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash}})
 @{product='AbsSystemBox.JohnsonTang2019.Sensors';version=$Version;files=$sensorFiles}|ConvertTo-Json -Depth 5|Set-Content (Join-Path $sensorPayload 'sensors-files.json') -Encoding UTF8
+$cleanupPayload=Join-Path $stage 'cleanup'
+$cleanupFiles=@(Get-ChildItem -LiteralPath $cleanupPayload -File|ForEach-Object{@{name=$_.Name;sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash}})
+@{files=$cleanupFiles}|ConvertTo-Json -Depth 4|Set-Content (Join-Path $cleanupPayload 'cleanup-files.json') -Encoding UTF8
 [IO.Directory]::CreateDirectory((Join-Path $stage 'docs')) | Out-Null
 foreach($name in @('RULES.md','BATTERY.md','CLEANUP.md','AGENT_API.md','INSTALL.md','NTFS.md','ASSETS.md','COOLING_DISPLAY.md')){Copy-Item -LiteralPath (Join-Path $root "docs/$name") -Destination (Join-Path $stage 'docs')}
 $files=@(Get-ChildItem -LiteralPath $stage -Recurse -File | Sort-Object FullName | ForEach-Object {

@@ -29,5 +29,7 @@
 <TextBlock Text="组合按钮只选择项目，不执行清理。PCL 组合包含全局工作集、修改缓存/页面、待机列表、注册表缓存及内存合并。全局工作集不遵循自动清理的进程排除名单。" TextWrapping="Wrap" Style="{StaticResource BodyCopyStyle}"/>
 <StackPanel x:Name="AreaOptions" Spacing="4"/>
 <Button Content="执行所选清理…" Click="CleanSystem_Click" AutomationProperties.AutomationId="CleanSystemMemory"/>
+<Button Content="授权悬浮球直接清理所选项目…" Click="AuthorizeCleanup_Click" AutomationProperties.AutomationId="AuthorizeFloatingCleanup"/>
+<Button Content="撤销悬浮球清理授权…" Click="RevokeCleanup_Click" AutomationProperties.AutomationId="RevokeFloatingCleanup"/>
 <TextBlock x:Name="SystemResult" TextWrapping="Wrap" AutomationProperties.AutomationId="SystemCleanupResult"/>
 </StackPanel></Border></StackPanel></UserControl>

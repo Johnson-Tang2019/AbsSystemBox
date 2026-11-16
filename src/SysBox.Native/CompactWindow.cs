@@ -53,9 +53,13 @@ public sealed class CompactWindow : IDisposable
         SetStyle(window, -20, (IntPtr)((style | 0x80) & ~0x40000L));
         var normal = GetStyle(window, -16).ToInt64();
         SetStyle(window, -16, (IntPtr)((normal & ~0x00cf0000L) | 0x80000000L));
-        uint border = 0xfffffffe;
-        DwmSetWindowAttribute(window, 34, ref border, 4);
         SetWindowPos(window, IntPtr.Zero, 0, 0, 0, 0, 0x37);
+        uint disabled = 1;
+        uint noBorder = 0xfffffffe;
+        DwmSetWindowAttribute(window, 2, ref disabled, sizeof(uint)); // DWMWA_NCRENDERING_POLICY
+        DwmSetWindowAttribute(window, 3, ref disabled, sizeof(uint)); // DWMWA_TRANSITIONS_FORCEDISABLED
+        DwmSetWindowAttribute(window, 33, ref disabled, sizeof(uint)); // DWMWA_WINDOW_CORNER_PREFERENCE
+        DwmSetWindowAttribute(window, 34, ref noBorder, sizeof(uint)); // DWMWA_BORDER_COLOR
     }
     private IntPtr Handle(IntPtr w, uint message, UIntPtr p, IntPtr l, UIntPtr id, UIntPtr data)
     {
@@ -88,11 +92,12 @@ public sealed class CompactWindow : IDisposable
             DisplayChanged?.Invoke();
         return result;
     }
-    public static (int X, int Y) Cursor()
+    public static bool TryGetCursor(out (int X, int Y) position)
     {
-        if (!GetCursorPos(out var p))
-            throw new InvalidOperationException("无法读取指针位置。");
-        return (p.X, p.Y);
+        // The input desktop can temporarily change during UAC, lock or session switching.
+        var available = GetCursorPos(out var point);
+        position = available ? (point.X, point.Y) : default;
+        return available;
     }
     public void SetBounds(int x, int y, int width, int height)
     {

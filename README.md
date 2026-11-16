@@ -6,12 +6,12 @@
 
 **当前源码：普通目录索引/搜索/空间分析、桌面悬浮球与用户后台/Agent 接口。** 已有真实内存/进程监控，以及用户选定文件夹的索引、取消/暂停、筛选搜索、分页和结果操作。
 保留七页导航、粉色毛玻璃外观及浅色/深色/跟随系统主题。规则支持校验、模拟、提案、审批和版本回滚，默认只通知。阈值/定期清理需单独启用。普通目录大小分析见 [大小口径](docs/STORAGE.md)，CLI/MCP 见 [Agent 接口](docs/AGENT_API.md)。已接入 NTFS 高速增量索引和可选只读特权服务；默认关闭，隔离卷及 SCM 实机验收仍暂缓，见 [NTFS 说明](docs/NTFS.md)。
-最新公开安装版为 [0.3.0-preview.4](https://github.com/Johnson-Tang2019/AbsSystemBox/releases/tag/v0.3.0-preview.4)，首页按盘显示容量与使用率，未就绪盘也保留状态行，内存/磁盘渐变用量条加粗到 10 DIP。保留 Fluent Reduct 原生移植的粉色悬浮球交互。已在本机覆盖升级并保留配置，NTFS 真实卷及 SCM 生命周期验收边界仍保留。
-已提供 Windows 11 x64 预览安装版，支持直接覆盖升级并保留用户配置。下载见 [Releases](https://github.com/Johnson-Tang2019/AbsSystemBox/releases)，步骤见 [安装与更新](docs/INSTALL.md)。进度以 [开发状态](docs/STATUS.md) 为准。
+最新公开安装版为 [0.3.4](https://github.com/Johnson-Tang2019/AbsSystemBox/releases/tag/v0.3.4)，修复悬浮球贴边暗块和双击清理入口，支持授权固定清理项目，并复用已授权的水冷采集服务。
+Windows 11 x64 安装包支持覆盖升级并保留用户配置。下载见 [Releases](https://github.com/Johnson-Tang2019/AbsSystemBox/releases)，步骤见 [安装与更新](docs/INSTALL.md)。进度以 [开发状态](docs/STATUS.md) 为准。
 
 内存页进入时自动采样，每轮完成后等待 5 秒再刷新，离开页面取消该页采样。
 M3 另有窗口生命周期的只读规则观察器，关闭窗口停止。历史最多保留 60 点，进程列表可按工作集或私有提交排序，后台先排序再取最高的 200 项。
-权限不足、退出或不可读的进程分别计数；不提供结束进程。阈值/定期工作集清理默认关闭，采用进程保护与可选排除名单，需桌面确认启用。九类系统清理每次单独管理员确认，支持 Fluent Reduct 默认与 PCL 操作组合，见 [清理说明](docs/CLEANUP.md)。
+权限不足、退出或不可读的进程分别计数。阈值和定期工作集清理默认关闭，采用进程保护与可选排除名单，需桌面确认启用。手动系统清理逐次确认，悬浮球双击可执行已授权的固定项目。支持 Fluent Reduct 默认与 PCL 操作组合，见 [清理说明](docs/CLEANUP.md)。
 工作集包含共享页，私有提交不等于私有工作集，不能把进程列直接相加当作总内存。
 具体口径与对照方法见 [内存测量说明](docs/MEMORY.md)。
 

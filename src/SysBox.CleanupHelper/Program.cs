@@ -7,6 +7,11 @@ using SysBox.Native;
 using SysBox.Memory;
 using SysBox.Transport;
 using System.Text.Json;
+if (args is ["--service"])
+{
+    await CleanupService.RunAsync();
+    return;
+}
 try { Run(args); } catch (Exception error) when (error is not OutOfMemoryException) {/* A failed handshake or cancelled parent must not execute a fallback action. */}
 static void Run(string[] args)
 {

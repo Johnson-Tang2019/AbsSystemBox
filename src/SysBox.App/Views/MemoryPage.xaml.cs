@@ -22,7 +22,7 @@ public sealed partial class MemoryPage : Page, IPageLifetime
     {
         ViewModel.Deactivate();
     }
-    public Task RequestSystemCleanupAsync() => CleanupPanel.RequestSystemCleanupAsync();
+    public Task RequestSystemCleanupAsync() => CleanupPanel.RequestSystemCleanupAsync(useSavedGrant: true);
     private void Metrics_SizeChanged(object sender, SizeChangedEventArgs args)
     {
         var wide = args.NewSize.Width >= 760;

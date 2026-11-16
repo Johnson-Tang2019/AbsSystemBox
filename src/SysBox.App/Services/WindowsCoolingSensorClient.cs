@@ -4,6 +4,7 @@ using System.IO.Pipes;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text.Json;
+using Microsoft.Win32;
 using SysBox.Abstractions;
 using SysBox.Transport;
 using SysBox.NtfsBroker;
@@ -25,6 +26,15 @@ public sealed class WindowsCoolingSensorClient : ICoolingSensorSource, IDisposab
         {
             using var deadline = CancellationTokenSource.CreateLinkedTokenSource(token);
             deadline.CancelAfter(TimeSpan.FromMinutes(2));
+            if (await ConnectServiceAsync(deadline.Token))
+            {
+                _ = await ReadConnectedAsync(deadline.Token);
+                return;
+            }
+            using (var registration = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\AbsSystemBox.Sensors"))
+                if (registration is not null)
+                    throw new IOException("后台采集服务已安装，但暂未响应。请检查 Windows 服务状态后重试。");
+
             var script = Path.Combine(AppContext.BaseDirectory, "scripts", "install-sensor-service.ps1");
             if (!File.Exists(script)) throw new IOException("后台采集安装工具缺失，请使用完整安装版。");
             using var identity = WindowsIdentity.GetCurrent();
@@ -49,7 +59,7 @@ public sealed class WindowsCoolingSensorClient : ICoolingSensorSource, IDisposab
             using var deadline = CancellationTokenSource.CreateLinkedTokenSource(token);
             deadline.CancelAfter(TimeSpan.FromSeconds(12));
             if (pipe is null || !pipe.IsConnected)
-                if (!await ConnectServiceAsync(deadline.Token)) await StartAsync(false, deadline.Token);
+                if (!await ConnectServiceAsync(deadline.Token)) await StartAsync(deadline.Token);
             using var combined = CancellationTokenSource.CreateLinkedTokenSource(deadline.Token, session!.Token);
             return await ReadConnectedAsync(combined.Token);
         }
@@ -79,7 +89,7 @@ public sealed class WindowsCoolingSensorClient : ICoolingSensorSource, IDisposab
         catch { connection.Dispose(); throw; }
     }
 
-    private async Task StartAsync(bool elevate, CancellationToken token)
+    private async Task StartAsync(CancellationToken token)
     {
         Stop();
         var executable = Path.Combine(AppContext.BaseDirectory, "sensors", "SysBox.SensorHost.exe");
@@ -95,8 +105,7 @@ public sealed class WindowsCoolingSensorClient : ICoolingSensorSource, IDisposab
         session = new();
         var connection = NamedPipeServerStreamAcl.Create("AbsSystemBox.Sensors." + nonce, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.Asynchronous, 16384, 16384, acl);
         pipe = connection;
-        var start = new ProcessStartInfo(executable, nonce) { UseShellExecute = elevate, WindowStyle = ProcessWindowStyle.Hidden, CreateNoWindow = !elevate };
-        if (elevate) start.Verb = "runas";
+        var start = new ProcessStartInfo(executable, nonce) { UseShellExecute = false, CreateNoWindow = true };
         process = Process.Start(start) ?? throw new IOException("无法启动硬件采集组件。");
         using var combined = CancellationTokenSource.CreateLinkedTokenSource(token, session.Token);
         var connected = connection.WaitForConnectionAsync(combined.Token);
