@@ -2,7 +2,9 @@
 
 ## 2026-11-19 0.3.8 外设只读设置和更新连接恢复
 
+- [0.3.8 正式版](https://github.com/Johnson-Tang2019/AbsSystemBox/releases/tag/v0.3.8) 从干净提交 `3914e8148dd520bb52a394feafc1822dcf1a1ca1` 打包。[Windows 构建](https://github.com/Johnson-Tang2019/AbsSystemBox/actions/runs/44510896463) 和 WinUI 发布资源检查已通过。四个 GitHub 公开附件的大小和 SHA-256 均与本地构建一致。
 - 发行包含实机验收的迈从 K7 Ultra、狼蛛 F87 Pro 只读设置，以及本机代理异常时的更新连接恢复。复用两台设备的 Windows 界面验收和 20 项新增定向测试。后续独立验证飞智手柄型号和首个可写设置。见 [外设设计与验证](PERIPHERALS.md)。
+- 本机现有 0.3.7 识别到新版，WinUI 已显示 0.3.8 的下载进度。
 
 ## 2026-11-19 软件更新代理连接恢复
 
