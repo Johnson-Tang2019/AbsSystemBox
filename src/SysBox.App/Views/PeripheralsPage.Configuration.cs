@@ -35,6 +35,7 @@ public sealed partial class PeripheralsPage
         15 => "风车",
         16 => "瀑布",
         17 => "绽放",
+        21 => "自定义逐键 RGB",
         _ => $"模式 {id}"
     };
 
@@ -141,7 +142,8 @@ public sealed partial class PeripheralsPage
             return;
         await ApplyConfigurationAsync(device, () => configuration.SetKeyboardLightingAsync(
                 device.Id, revision, change, CancellationToken.None),
-            (current, confirmed) => current with { KeyboardLighting = confirmed });
+            (current, confirmed) => current with { KeyboardLighting = confirmed },
+            refreshAfterSuccess: device.KeyboardPerKey is not null);
     }
 
     private static int? ChangedLevel(double value, int? original) =>
@@ -151,7 +153,7 @@ public sealed partial class PeripheralsPage
     private static bool ValidLightLevel(double value) => value is >= 0 and <= 4 && value == Math.Truncate(value);
 
     private async Task ApplyConfigurationAsync<T>(PeripheralDevice device, Func<Task<Result<T>>> apply,
-        Func<PeripheralDevice, T, PeripheralDevice> update) where T : notnull
+        Func<PeripheralDevice, T, PeripheralDevice> update, bool refreshAfterSuccess = false) where T : notnull
     {
         configurationBusy = true;
         SetConfigurationStatus(device.Id, "正在应用并回读设备设置…", InfoBarSeverity.Informational);
@@ -160,7 +162,7 @@ public sealed partial class PeripheralsPage
             var result = await apply();
             if (result.IsSuccess)
                 viewModel.UpdateConfirmedDevice(update(device, result.Value));
-            else if (active)
+            if (active && (!result.IsSuccess || refreshAfterSuccess))
                 await viewModel.RefreshAsync();
             SetConfigurationStatus(device.Id, result.IsSuccess ? "已回读确认设备设置。" : result.Error!.Message,
                 result.IsSuccess ? InfoBarSeverity.Success : InfoBarSeverity.Warning);

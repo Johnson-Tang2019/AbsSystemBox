@@ -19,5 +19,6 @@
 # KeyboardHardwareIdentityFeaturesTests (5) accepted 2026-11-19.
 # PeripheralSettingsFeaturesTests (6) accepted 2026-11-19.
 # PeripheralStartupTests (7) and PeripheralConfigurationTests (6) accepted 2026-11-19.
+# KeyboardPerKeyRgbTests (10) and MagDockLightingTests (24) accepted 2026-11-19.
 # CleanupLaunchPeerTests accepted 2026-11-10 (1 new case; local PID and image checked).
 # CoolingReconnectTests accepted 2026-11-19 (6 new cases; stream/device/startup/stale/write recovery and cancellation).

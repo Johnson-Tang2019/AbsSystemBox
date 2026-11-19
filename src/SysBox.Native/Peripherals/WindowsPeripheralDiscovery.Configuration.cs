@@ -17,6 +17,16 @@ public sealed partial class WindowsPeripheralDiscovery
         ConfigureAsync(deviceId, PeripheralKind.Keyboard,
             (path, token) => WriteKeyboardLighting(path, expectedRevision, change, token), cancellationToken);
 
+    public Task<Result<KeyboardPerKeyReadout>> SetKeyboardKeyColorAsync(string deviceId, string expectedRevision,
+        KeyboardKeyColorChange change, CancellationToken cancellationToken) =>
+        ConfigureAsync(deviceId, PeripheralKind.Keyboard,
+            (path, token) => WriteKeyboardKeyColor(path, expectedRevision, change, token), cancellationToken);
+
+    public Task<Result<MagDockLightingReadout>> SetMagDockLightingAsync(string deviceId, string expectedRevision,
+        MagDockLightingChange change, CancellationToken cancellationToken) =>
+        ConfigureAsync(deviceId, PeripheralKind.ChargingDock,
+            (path, token) => WriteMagDockLighting(path, expectedRevision, change, token), cancellationToken);
+
     private Task<Result<T>> ConfigureAsync<T>(string deviceId, PeripheralKind kind,
         Func<string, CancellationToken, Result<T>> write, CancellationToken cancellationToken) where T : notnull =>
         RunOperationAsync(token =>
@@ -37,7 +47,8 @@ public sealed partial class WindowsPeripheralDiscovery
         foreach (var endpoint in interfaces)
         {
             var kind = endpoint.MouseReadout?.Performance?.EditRevision is not null ? PeripheralKind.Mouse :
-                endpoint.KeyboardLighting?.EditRevision is not null ? PeripheralKind.Keyboard : (PeripheralKind?)null;
+                endpoint.KeyboardLighting?.EditRevision is not null || endpoint.KeyboardPerKey?.EditRevision is not null ? PeripheralKind.Keyboard :
+                !string.IsNullOrEmpty(endpoint.MagDockLighting?.EditRevision) ? PeripheralKind.ChargingDock : (PeripheralKind?)null;
             if (kind is { } candidate)
             {
                 var container = string.IsNullOrWhiteSpace(endpoint.GroupId) ? endpoint.Id : endpoint.GroupId;
@@ -50,7 +61,8 @@ public sealed partial class WindowsPeripheralDiscovery
         var result = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var device in devices)
         {
-            if ((device.MouseReadout?.Performance?.EditRevision is not null || device.KeyboardLighting?.EditRevision is not null) &&
+            if ((device.MouseReadout?.Performance?.EditRevision is not null || device.KeyboardLighting?.EditRevision is not null ||
+                 device.KeyboardPerKey?.EditRevision is not null || !string.IsNullOrEmpty(device.MagDockLighting?.EditRevision)) &&
                 paths.TryGetValue(device.Id, out var path) && path.Length != 0)
                 result.Add(device.Id, path);
         }

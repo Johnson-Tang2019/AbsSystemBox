@@ -52,6 +52,9 @@ internal static class PeripheralIdentity
 
     private static Candidate Classify(PeripheralInterface item)
     {
+        if (item is { VendorId: 0x3837, ProductId: 0x1012, UsagePage: 0xFF00, Usage: 1, Connection: PeripheralConnection.Usb })
+            return new(item, PeripheralKind.ChargingDock, "迈从", new CatalogEntry(PeripheralKind.ChargingDock, "迈从", "MagDock"));
+
         var hidKind = (item.UsagePage, item.Usage) switch
         {
             (0x01, 0x02) => PeripheralKind.Mouse,
@@ -109,6 +112,11 @@ internal static class PeripheralIdentity
         var keyboardLighting = keyboardModel is not null
             ? SingleReadout(candidates.Where(candidate => candidate.Interface.HardwareIdentityCode == keyboardIdentity)
                 .Select(candidate => candidate.Interface.KeyboardLighting)) : null;
+        var keyboardPerKey = keyboardModel is not null
+            ? SingleReadout(candidates.Where(candidate => candidate.Interface.HardwareIdentityCode == keyboardIdentity)
+                .Select(candidate => candidate.Interface.KeyboardPerKey)) : null;
+        var magDock = kind == PeripheralKind.ChargingDock
+            ? SingleReadout(candidates.Select(candidate => candidate.Interface.MagDockLighting)) : null;
         var hardwareModel = mouse is not null ? "K7 Ultra" : keyboardModel;
         var model = hardwareModel ?? (receiver ? null : systemModels.Length switch
         {
@@ -127,6 +135,7 @@ internal static class PeripheralIdentity
         {
             PeripheralKind.Mouse => "鼠标",
             PeripheralKind.Keyboard => "键盘",
+            PeripheralKind.ChargingDock => "充电底座",
             _ => "手柄"
         };
         var label = receiver ? category + "接收器" : category;
@@ -137,7 +146,8 @@ internal static class PeripheralIdentity
         var presence = receiver && mouse is null ? PeripheralPresence.ReceiverOnly : PeripheralPresence.Detected;
         var receiverName = receiver ? SingleValue(candidates.Select(candidate => candidate.Interface.ProductName)) : null;
         return new(id, kind, name, manufacturer, model, modelEvidence, connection, presence, vendor, product,
-            mouse is not null ? MchoseK7Reports.BodyId : keyboardIdentity, receiverName, mouse, keyboardLighting);
+            mouse is not null ? MchoseK7Reports.BodyId : keyboardIdentity, receiverName, mouse, keyboardLighting,
+            keyboardPerKey, magDock);
     }
 
     internal static string DeviceId(string container, PeripheralKind kind)

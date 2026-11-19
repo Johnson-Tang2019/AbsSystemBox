@@ -155,7 +155,7 @@ memory.processes 可选 sort=WorkingSet/PrivateCommit（枚举），默认保持
 
 `GitHubReleaseUpdates` 使用首选 HTTP 客户端读取正式版本和下载已核验的安装附件。桌面可提供代表首选连接的 `IWebProxy` 及独立直连客户端，用于本机环回代理连接中断后的同地址重试。仍按原下载地址、大小和 SHA-256 验证安装附件。
 
-## 外设只读端口
+## 外设读取与设置
 
 `IPeripheralDiscovery.DiscoverAsync(CancellationToken)` 返回 `Result<IReadOnlyList<PeripheralDevice>>`。成功空列表表示本次未发现可分类设备。失败结果用于表达枚举不可用、超时或忙。设备键只用于本机选择和快照归并，切换 USB 端口或连接模式可能改变设备键。
 
@@ -163,9 +163,13 @@ memory.processes 可选 sort=WorkingSet/PrivateCommit（枚举），默认保持
 
 有线键盘的完整六字节身份或 K7 Ultra 本体 VID/PID 可出现在 `HardwareIdentityCode`。匹配完整 F87 Pro 身份或接收到在线 K7 Ultra 本体回报时标记 `HardwareReported`。接收器名称和枚举 VID/PID 分别保留在 `ReceiverName` 和原 USB 标识字段。
 
-`MouseReadout` 含可空电量、固件版本和板载性能快照。性能快照含 DPI 两轴、以零开始的活动档位和配置组、回报率、抬升高度、休眠和防抖。只有确认无线本体在线才返回快照。`KeyboardLighting` 含匹配的有线 F87 Pro 灯效数据。读不到的快照或字段保持空值，Windows 元数据仍可展示。接口只暴露读取操作。
+`MouseReadout` 含可空电量、固件版本和板载性能快照。性能快照含 DPI 两轴、以零开始的活动档位和配置组、回报率、抬升高度、休眠和防抖。只有确认无线本体在线才返回快照。`KeyboardLighting` 含匹配的有线 F87 Pro 灯效数据。`KeyboardPerKey` 含 87 个物理键的板载 RGB 和自定义灯效状态。`MagDockLighting` 属于独立的 `ChargingDock` 设备，含灯环开关、当前灯效、亮度、速度和 24 位 RGB。读不到的快照或字段保持空值，Windows 元数据仍可展示。
 
 设置操作通过独立的桌面端口 `IPeripheralConfiguration` 提供。可编辑快照携带 `EditRevision`。应用指定设备键、待修改字段和此前读到的修订值，Native 再读取设备做核验。若当前值已被外部改变，须刷新后重新提交。
+
+`SetMagDockLightingAsync` 仅接受已验证 USB 集合的已知灯效，按灯效允许设置亮度、速度与 RGB。每次提交在原报告上修改，随后回读确认。音乐律动可显示现状。
+
+`SetKeyboardKeyColorAsync` 接受有线 F87 Pro 的已知物理键、24 位 RGB，以及是否立刻切到自定义灯效。修订值同时覆盖完整颜色区和当前灯光配置。应用普通灯效可以退出自定义模式。
 
 - `SetMouseDpiAsync` 接受以零开始的已启用档位，DPI 范围 50 到 42000，步长 50。仅支持已验证且六档双轴值一致的 K7 Ultra 2.4G 配置。
 - `SetKeyboardLightingAsync` 接受有线 F87 Pro 的灯效及可选亮度、速度和预设色索引。可用参数由当前灯效决定。成功结果是从设备回读的最新快照。

@@ -79,6 +79,10 @@
                         <TextBlock Text="鼠标" Style="{StaticResource PeripheralSectionTitleStyle}" />
                         <ItemsControl x:Name="MouseDevices" ItemTemplate="{StaticResource PeripheralCardTemplate}" />
                     </StackPanel>
+                    <StackPanel x:Name="ChargingDockSection" Spacing="8" Visibility="Collapsed">
+                        <TextBlock Text="充电底座" Style="{StaticResource PeripheralSectionTitleStyle}" />
+                        <ItemsControl x:Name="ChargingDockDevices" ItemTemplate="{StaticResource PeripheralCardTemplate}" />
+                    </StackPanel>
                     <StackPanel x:Name="KeyboardSection" Spacing="8" Visibility="Collapsed">
                         <TextBlock Text="键盘" Style="{StaticResource PeripheralSectionTitleStyle}" />
                         <ItemsControl x:Name="KeyboardDevices" ItemTemplate="{StaticResource PeripheralCardTemplate}" />
@@ -90,6 +94,8 @@
                 </StackPanel>
 
                 <StackPanel x:Name="Details" Spacing="12" Visibility="Collapsed">
+                    <Button x:Name="DockBack" Content="返回设备总览" Click="DockBack_Click" Visibility="Collapsed"
+                            AutomationProperties.AutomationId="PeripheralDockBack" />
                     <InfoBar x:Name="ConfigurationStatus" IsOpen="False" IsClosable="False"
                              AutomationProperties.AutomationId="PeripheralConfigurationStatus" />
                     <ComboBox x:Name="DevicePicker" Header="设备" HorizontalAlignment="Stretch"
@@ -145,6 +151,8 @@
                             </Grid>
                         </StackPanel>
                     </Border>
+                    <local:MagDockSettingsView x:Name="MagDockSettings" ApplyRequested="MagDock_ApplyRequested"
+                                               Visibility="Collapsed" />
                     <StackPanel x:Name="MouseSettings" Spacing="12" Visibility="Collapsed"
                                 AutomationProperties.AutomationId="PeripheralMouseSettings">
                         <Border Style="{StaticResource SurfaceStyle}" Padding="16">
@@ -235,12 +243,21 @@
                         </Border>
                         <Border Style="{StaticResource SurfaceStyle}" Padding="16">
                             <StackPanel Spacing="10">
-                                <TextBlock Text="逐键 RGB 与键位映射" Style="{StaticResource PeripheralSectionTitleStyle}" />
+                                <TextBlock Text="逐键 RGB" Style="{StaticResource PeripheralSectionTitleStyle}" />
+                                <TextBlock x:Name="KeyboardPerKeyStatus" Style="{StaticResource BodyCopyStyle}" />
                                 <ComboBox x:Name="KeyboardKeyPicker" Header="查看物理键位" HorizontalAlignment="Stretch"
                                           SelectionChanged="KeyboardKey_SelectionChanged"
                                           AutomationProperties.AutomationId="PeripheralKeyboardKeyPicker" />
                                 <TextBlock x:Name="KeyboardKeyColor" Style="{StaticResource PeripheralValueStyle}"
                                            AutomationProperties.AutomationId="PeripheralKeyboardPerKeyRgb" />
+                                <StackPanel x:Name="KeyboardKeyColorEditor" Spacing="8" Visibility="Collapsed">
+                                    <TextBox x:Name="KeyboardKeyColorInput" Header="所选按键颜色" PlaceholderText="#RRGGBB"
+                                             MaxLength="7" AutomationProperties.AutomationId="PeripheralKeyboardKeyColorInput" />
+                                    <CheckBox x:Name="ActivateKeyboardCustom" Content="应用后切换到逐键灯效"
+                                              AutomationProperties.AutomationId="PeripheralKeyboardActivateCustom" />
+                                    <Button x:Name="ApplyKeyboardKeyColor" Content="应用此键颜色" Click="ApplyKeyboardKeyColor_Click"
+                                            AutomationProperties.AutomationId="PeripheralApplyKeyboardKeyColor" />
+                                </StackPanel>
                                 <TextBlock x:Name="KeyboardKeyAssignment" Style="{StaticResource PeripheralValueStyle}"
                                            AutomationProperties.AutomationId="PeripheralKeyboardMapping" />
                             </StackPanel>

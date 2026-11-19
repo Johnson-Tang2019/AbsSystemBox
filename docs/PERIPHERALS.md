@@ -86,4 +86,10 @@ Windows 的键鼠输入集合由系统独占。枚举阶段可使用无数据访
 
 - K7 Ultra 固件 `5.28.4.0` 经 `5253:1020` 2.4G 接收器验证。以固定功能报告写第 5 档，设备回读 2800 → 3000 → 2800 DPI。验证双轴、活动档、其余 DPI 档位和配置组保持预期。参考 [迈从 DPI 协议](https://github.com/aipno/mchose-linux/blob/main/src/mouse/protocol.rs#L292-L301)。鼠标附带的 MagDock 灯环另有接口。见 [官方产品资料](https://www.mchose.store/products/mchose-k7-ultra-lightweight-wireless-gaming-mouse?variant=50269487268135)。
 - F87 Pro 有线 `010B` 可切换受支持灯效、亮度、速度和板载配色。用 Windows 实机回读验证了灯效、亮度、速度和红绿配色，并恢复测试前的四项设置。参考 [F87 Pro 开源实现（MIT）](https://github.com/meursault03/aula-f87pro-linux/blob/825a91a46d9b4573c7bfebdeb90a607b7638b709/src/lib.rs#L96-L143) 和 [灯效能力表](https://github.com/meursault03/aula-f87pro-linux/blob/825a91a46d9b4573c7bfebdeb90a607b7638b709/src/gui/editor.rs)。
-- 逐键 RGB、键位映射、鼠标其他可写参数和 MagDock 灯环仍待按各自型号和接口验证。
+- 键位映射和鼠标其他可写参数仍待按各自型号和接口验证。
+
+## 2026-11-19 逐键 RGB 与 MagDock 灯环开发验收
+
+- MagDock `3837:1012` 作为独立 USB 设备出现在总览。实机厂商集合 `FF00:0001` 的 Windows 输入和输出报告均为 65 字节。开发版服务将常亮灯环从 `#FF4CE8` 切到 `#00FF00`，再恢复 `#FF4CE8`。每步回读核对开关、灯效、亮度、速度和颜色，最终修订值与基线一致。参考 [OpenMouse 的 MagDock 实机协议](https://github.com/OpenMouse-Project/mouse-protocol/blob/bac031567b28f2a55c616fc525b03f2d5fa452cc/docs/mchose-protocol.md#the-magdock--a-second-device-a-second-protocol) 和 [Peripheral Desk Drivers 的 MagDock 记录](https://github.com/chenran0408/peripheral-desk-drivers/blob/670a67d50fb09626f4f88ad22ecf51764dab0d14/docs/MCHOSE-MAGDOCK.md)。
+- 有线 F87 Pro `03000000010B` 实机返回 `0x86` 的 384 字节颜色区。开发版按 010B 的 OEM 灯位表显示 87 个物理键，实测 Esc 为 `#FF0000`，当前全局灯效未启用逐键颜色。参考 [AULA Studio 的 F87 读取契约](https://github.com/Dahuum/aula-studio/blob/f27dd540b10c7d327d7dfe016147682c31d4fe8d/docs/F87_READ_CONTRACT.md) 和 [010B 硬件灯位映射](https://github.com/Dahuum/aula-studio/blob/f27dd540b10c7d327d7dfe016147682c31d4fe8d/data/models.json#L2258)。
+- 通过同型号已安装的 OEM 工具核对 `0x06` 颜色区写入与 `0x04` 自定义灯效选择。Windows 实机在可读的第 0 组中把 Esc 由 `#FF0000` 切到 `#00FF00` 并启用自定义灯效，其余 86 键颜色相同。恢复 Esc 和原常亮灯效后，完整 384 字节颜色区与 128 字节灯光配置的校验值均与实测基线相同。写入范围为本次验证的有线身份、配置签名和第 0 组。

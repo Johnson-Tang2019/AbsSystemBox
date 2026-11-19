@@ -7,17 +7,19 @@ namespace SysBox.Native;
 
 public sealed partial class WindowsPeripheralDiscovery
 {
-    private static (string? Code, KeyboardLightingReadout? Lighting) ReadKeyboard(string path, CancellationToken token)
+    private static (string? Code, KeyboardLightingReadout? Lighting, KeyboardPerKeyReadout? PerKey) ReadKeyboard(
+        string path, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         using var device = CreateFile(path, 0xC0000000, 0, IntPtr.Zero, 3, 0, IntPtr.Zero);
         if (!IsKeyboardDescriptor(device))
             return default;
         var identity = ReadKeyboardIdentity(device, token);
-        var lighting = KeyboardIdentityReport.Model(identity) is not null && ReadKeyboardConfiguration(device, token) is { } payload
-            ? KeyboardLightingReport.Describe(payload)
-            : null;
-        return (identity, lighting);
+        if (KeyboardIdentityReport.Model(identity) is null || ReadKeyboardConfiguration(device, token) is not { } payload)
+            return (identity, null, null);
+        var colors = KeyboardPerKeyRgbReport.Decode(
+            ReadFeatureReply(device, KeyboardPerKeyRgbReport.CreateRequest(), token), payload);
+        return (identity, KeyboardLightingReport.Describe(payload), colors);
     }
 
     private static Result<KeyboardLightingReadout> WriteKeyboardLighting(string path, string expectedRevision,

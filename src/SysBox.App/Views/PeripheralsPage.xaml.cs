@@ -17,6 +17,7 @@ public sealed partial class PeripheralsPage : Page, IPageLifetime
     private PeripheralListItem[] mouseItems = [];
     private PeripheralListItem[] keyboardItems = [];
     private PeripheralListItem[] gamepadItems = [];
+    private PeripheralListItem[] dockItems = [];
     private bool active;
     private bool renderPending;
     private bool settingSelection;
@@ -124,7 +125,7 @@ public sealed partial class PeripheralsPage : Page, IPageLifetime
 
         UpdateDeviceLists(devices);
         ShowNotice(PageNotice, kind is null && viewModel.HasLoaded && devices.Count == 0 && error is null
-            ? "未检测到鼠标、键盘或手柄。连接设备后刷新。"
+            ? "未检测到外设。连接设备后刷新。"
             : "");
 
         Overview.Visibility = VisibilityFor(kind is null);
@@ -165,12 +166,15 @@ public sealed partial class PeripheralsPage : Page, IPageLifetime
         mouseItems = CreateItems(devices, PeripheralKind.Mouse);
         keyboardItems = CreateItems(devices, PeripheralKind.Keyboard);
         gamepadItems = CreateItems(devices, PeripheralKind.Gamepad);
+        dockItems = CreateItems(devices, PeripheralKind.ChargingDock);
         MouseDevices.ItemsSource = mouseItems;
         KeyboardDevices.ItemsSource = keyboardItems;
         GamepadDevices.ItemsSource = gamepadItems;
+        ChargingDockDevices.ItemsSource = dockItems;
         MouseSection.Visibility = VisibilityFor(mouseItems.Length > 0);
         KeyboardSection.Visibility = VisibilityFor(keyboardItems.Length > 0);
         GamepadSection.Visibility = VisibilityFor(gamepadItems.Length > 0);
+        ChargingDockSection.Visibility = VisibilityFor(dockItems.Length > 0);
     }
 
     private static (string, PeripheralKind, string, PeripheralConnection, PeripheralPresence) CardFields(PeripheralDevice device) =>
@@ -182,9 +186,11 @@ public sealed partial class PeripheralsPage : Page, IPageLifetime
         {
             PeripheralKind.Mouse => mouseItems,
             PeripheralKind.Keyboard => keyboardItems,
+            PeripheralKind.ChargingDock => dockItems,
             _ => gamepadItems
         };
         var selected = viewModel.SelectedDevice;
+        DockBack.Visibility = VisibilityFor(kind == PeripheralKind.ChargingDock);
         var picked = items.FirstOrDefault(item => item.Device.Id == selected?.Id);
         if (!ReferenceEquals(DevicePicker.ItemsSource, items))
             DevicePicker.ItemsSource = items;
@@ -245,6 +251,11 @@ public sealed partial class PeripheralsPage : Page, IPageLifetime
         ShowConfigurationStatus(device?.Id);
         MouseSettings.Visibility = VisibilityFor(device is { Kind: PeripheralKind.Mouse });
         KeyboardSettings.Visibility = VisibilityFor(device is { Kind: PeripheralKind.Keyboard });
+        MagDockSettings.Visibility = VisibilityFor(device is { Kind: PeripheralKind.ChargingDock });
+        if (deviceChanged)
+            MagDockSettings.Render(null, false);
+        if (device is { Kind: PeripheralKind.ChargingDock } dock)
+            MagDockSettings.Render(dock.MagDockLighting, ReadyToConfigure);
         if (device is { Kind: PeripheralKind.Mouse })
             UpdateMouseSettings(device, deviceChanged);
         else if (device is { Kind: PeripheralKind.Keyboard })
@@ -306,7 +317,7 @@ public sealed partial class PeripheralsPage : Page, IPageLifetime
         KeyboardColor.Text = $"灯效颜色　{(lighting?.PaletteIndex is { } palette && palette >= 0 && palette < PaletteNames.Length
             ? PaletteNames[palette] : Unavailable)}";
         SetInspector(KeyboardKeyPicker, KeyboardKeys, isF87Pro, deviceChanged);
-        UpdateKeyboardKey();
+        RenderKeyboardPerKey(device, deviceChanged);
         RenderKeyboardLightingEditor(lighting, deviceChanged);
     }
 
@@ -331,14 +342,10 @@ public sealed partial class PeripheralsPage : Page, IPageLifetime
         MouseButtonAssignment.Text = selected is null ? $"当前按键映射　{ReadoutPending}" : $"{selected}的当前映射　{ReadoutPending}";
     }
 
-    private void KeyboardKey_SelectionChanged(object sender, SelectionChangedEventArgs args) => UpdateKeyboardKey();
-
-    private void UpdateKeyboardKey()
+    private void KeyboardKey_SelectionChanged(object sender, SelectionChangedEventArgs args)
     {
-        var selected = KeyboardKeyPicker.SelectedItem as string;
-        var key = selected is null ? "" : selected + " ";
-        KeyboardKeyColor.Text = $"{key}逐键 RGB　{ReadoutPending}";
-        KeyboardKeyAssignment.Text = $"{key}当前键位映射　{ReadoutPending}";
+        if (!settingSelection && viewModel.SelectedDevice is { Kind: PeripheralKind.Keyboard } keyboard)
+            RenderKeyboardPerKey(keyboard, deviceChanged: false);
     }
 
     private static string WithUnit(int? value, string unit) => value is { } number ? $"{number} {unit}" : Unavailable;
@@ -369,6 +376,7 @@ public sealed partial class PeripheralsPage : Page, IPageLifetime
         PeripheralKind.Mouse => "鼠标",
         PeripheralKind.Keyboard => "键盘",
         PeripheralKind.Gamepad => "手柄",
+        PeripheralKind.ChargingDock => "充电底座",
         _ => "外设"
     };
 

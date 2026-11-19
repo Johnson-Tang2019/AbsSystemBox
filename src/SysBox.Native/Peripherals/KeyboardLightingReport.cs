@@ -42,6 +42,8 @@ internal static class KeyboardLightingReport
     internal static KeyboardLightingReadout Describe(ReadOnlySpan<byte> payload)
     {
         var effect = payload[Effect];
+        if (IsEditableCustomMode(payload))
+            return new(effect, null, null, Convert.ToHexString(SHA256.HashData(payload)), EditableEffects: Effects);
         if (!IsEditable(payload))
             return new(effect, null, null);
 
@@ -65,7 +67,7 @@ internal static class KeyboardLightingReport
 
     internal static byte[]? ApplyChange(ReadOnlySpan<byte> original, KeyboardLightingChange change)
     {
-        if (!IsEditable(original) || !Effects.Contains(change.EffectId) ||
+        if ((!IsEditable(original) && !IsEditableCustomMode(original)) || !Effects.Contains(change.EffectId) ||
             change.BrightnessLevel is < 0 or > 4 || change.SpeedLevel is < 0 or > 4 ||
             change.PaletteIndex is < 0 or > 7 ||
             (change.EffectId == 0 && change.BrightnessLevel is not null) ||
@@ -74,6 +76,7 @@ internal static class KeyboardLightingReport
             return null;
 
         var desired = original.ToArray();
+        desired[CustomFlag] = 0;
         desired[Effect] = (byte)change.EffectId;
         if (change.EffectId == 0)
             return desired;
@@ -114,6 +117,9 @@ internal static class KeyboardLightingReport
 
     private static bool IsEditable(ReadOnlySpan<byte> payload) => payload.Length == PayloadLength &&
         payload[CustomFlag] == 0 && Effects.Contains(payload[Effect]);
+
+    private static bool IsEditableCustomMode(ReadOnlySpan<byte> payload) =>
+        KeyboardPerKeyRgbReport.IsCustomMode(payload) && KeyboardPerKeyRgbReport.HasProfileSignature(payload);
 
     private static int EffectOffset(int effect) => EffectTable + 2 * (effect - 1);
     private static bool SupportsSpeed(int effect) => effect > 1;

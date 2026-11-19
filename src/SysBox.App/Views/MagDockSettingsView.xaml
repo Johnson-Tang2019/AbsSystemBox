@@ -1,0 +1,32 @@
+<UserControl x:Class="SysBox.App.Views.MagDockSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Border Style="{StaticResource SurfaceStyle}" Padding="16"
+            AutomationProperties.AutomationId="PeripheralMagDockLighting">
+        <StackPanel Spacing="10">
+            <TextBlock Text="充电底座灯环" Style="{StaticResource SubtitleTextBlockStyle}"
+                       TextWrapping="Wrap" AutomationProperties.HeadingLevel="Level2" />
+            <TextBlock x:Name="CurrentLighting" Style="{StaticResource BodyCopyStyle}"
+                       AutomationProperties.AutomationId="PeripheralMagDockCurrentLighting" />
+            <StackPanel x:Name="Editor" Spacing="10" Visibility="Collapsed">
+                <ToggleSwitch x:Name="LightSwitch" Header="灯环开关" OnContent="开启" OffContent="关闭"
+                              Toggled="Light_Toggled" AutomationProperties.AutomationId="PeripheralMagDockEnabled" />
+                <StackPanel x:Name="LightFields" Spacing="10">
+                    <ComboBox x:Name="ModePicker" Header="灯效" HorizontalAlignment="Stretch"
+                              SelectionChanged="Choice_SelectionChanged" AutomationProperties.AutomationId="PeripheralMagDockMode" />
+                    <ComboBox x:Name="BrightnessPicker" Header="亮度档位" SelectionChanged="Choice_SelectionChanged"
+                              AutomationProperties.AutomationId="PeripheralMagDockBrightness" />
+                    <ComboBox x:Name="SpeedPicker" Header="速度档位" SelectionChanged="Choice_SelectionChanged"
+                              AutomationProperties.AutomationId="PeripheralMagDockSpeed" />
+                    <TextBox x:Name="ColorBox" Header="颜色（#RRGGBB）" MaxLength="7"
+                             TextChanged="Color_TextChanged" AutomationProperties.AutomationId="PeripheralMagDockColor" />
+                </StackPanel>
+                <TextBlock x:Name="ValidationMessage" TextWrapping="Wrap" Visibility="Collapsed"
+                           Foreground="{ThemeResource SystemFillColorCriticalBrush}"
+                           AutomationProperties.LiveSetting="Polite" AutomationProperties.AutomationId="PeripheralMagDockValidation" />
+                <Button x:Name="ApplyButton" Content="应用到充电底座" HorizontalAlignment="Left"
+                        Click="Apply_Click" AutomationProperties.AutomationId="PeripheralMagDockApply" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

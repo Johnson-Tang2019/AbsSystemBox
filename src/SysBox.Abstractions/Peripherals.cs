@@ -5,7 +5,8 @@ public enum PeripheralKind
 {
     Mouse,
     Keyboard,
-    Gamepad
+    Gamepad,
+    ChargingDock
 }
 
 public enum PeripheralConnection
@@ -44,7 +45,9 @@ public sealed record PeripheralDevice(
     string? HardwareIdentityCode = null,
     string? ReceiverName = null,
     MousePeripheralReadout? MouseReadout = null,
-    KeyboardLightingReadout? KeyboardLighting = null);
+    KeyboardLightingReadout? KeyboardLighting = null,
+    KeyboardPerKeyReadout? KeyboardPerKey = null,
+    MagDockLightingReadout? MagDockLighting = null);
 
 public sealed record MousePeripheralReadout(
     int? BatteryPercent, string? FirmwareVersion = null, MousePerformanceReadout? Performance = null);
@@ -66,6 +69,16 @@ public sealed record KeyboardLightingReadout(int EffectId, int? BrightnessLevel,
 public sealed record KeyboardLightingChange(int EffectId, int? BrightnessLevel = null,
     int? SpeedLevel = null, int? PaletteIndex = null);
 
+public sealed record KeyboardPerKeyReadout(IReadOnlyDictionary<string, uint> Colors, bool IsActive, string? EditRevision = null);
+
+public sealed record KeyboardKeyColorChange(string Key, uint ColorRgb, bool EnableCustomMode);
+
+public sealed record MagDockLightingReadout(bool IsEnabled, int Mode, uint ColorRgb, int Brightness, int Speed,
+    string EditRevision, IReadOnlyList<int> EditableModes);
+
+public sealed record MagDockLightingChange(bool? IsEnabled = null, int? Mode = null, uint? ColorRgb = null,
+    int? Brightness = null, int? Speed = null);
+
 public interface IPeripheralDiscovery
 {
     Task<Result<IReadOnlyList<PeripheralDevice>>> DiscoverAsync(CancellationToken cancellationToken);
@@ -77,4 +90,8 @@ public interface IPeripheralConfiguration
         int stage, int dpi, CancellationToken cancellationToken);
     Task<Result<KeyboardLightingReadout>> SetKeyboardLightingAsync(string deviceId, string expectedRevision,
         KeyboardLightingChange change, CancellationToken cancellationToken);
+    Task<Result<KeyboardPerKeyReadout>> SetKeyboardKeyColorAsync(string deviceId, string expectedRevision,
+        KeyboardKeyColorChange change, CancellationToken cancellationToken);
+    Task<Result<MagDockLightingReadout>> SetMagDockLightingAsync(string deviceId, string expectedRevision,
+        MagDockLightingChange change, CancellationToken cancellationToken);
 }
