@@ -81,11 +81,11 @@ public sealed class CoolingDisplayFeaturesTests
         Assert.Equal("device", Assert.Single(vm.Devices).DeviceId);
         Assert.Empty(vm.Temperatures);
         Assert.Empty(vm.Fans);
-        Assert.Contains("´«¸ĞÆ÷²»¿ÉÓÃ", vm.SensorStatus);
+        Assert.Contains("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", vm.SensorStatus);
         Assert.Equal(0, transport.Connections);
     }
     [Fact]
-    public async Task AutomaticLoopStopsWhenSelectedSensorDisappearsWithoutSendingZero()
+    public async Task AutomaticLoopKeepsRunningWhenSelectedSensorDisappearsWithoutSendingZero()
     {
         var transport = new DelayedTransport();
         transport.Pending.SetResult([new("COM3", "device")]);
@@ -95,15 +95,21 @@ public sealed class CoolingDisplayFeaturesTests
         var vm = new CoolingDisplayViewModel(transport, source, new CoolingDisplayPreferenceStore(Path.GetTempPath()));
         await vm.RefreshAsync();
         vm.Settings = new() { DeviceId = "device", TemperatureSensorId = "t", FanSensorId = "f" };
+        var retrying = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        vm.PropertyChanged += (_, args) =>
+        {
+            if (args.PropertyName == nameof(vm.Status) && vm.Status.Contains("æ­£åœ¨è‡ªåŠ¨æ¢å¤"))
+                retrying.TrySetResult();
+        };
         vm.Start();
         try
         {
-            await vm.Completion.WaitAsync(TimeSpan.FromSeconds(12));
+            await retrying.Task.WaitAsync(TimeSpan.FromSeconds(12));
+            Assert.True(vm.IsRunning);
+            vm.Deactivate();
+            await vm.Completion.WaitAsync(TimeSpan.FromSeconds(2));
             Assert.Equal((43, 1400), Assert.Single(connection.Values));
-            Assert.Equal(3, source.Reads);
-            Assert.False(vm.IsRunning);
             Assert.True(connection.Disposed);
-            Assert.Contains("ËùÑ¡ÎÂ¶È»ò·çÉÈ´«¸ĞÆ÷²»¿ÉÓÃ", vm.Status);
         }
         finally { vm.Deactivate(); await vm.Completion.WaitAsync(TimeSpan.FromSeconds(2)); }
     }
@@ -134,7 +140,7 @@ public sealed class CoolingDisplayFeaturesTests
     {
         public int Reads;
         public Task<CoolingSensorSnapshot> ReadAsync(CancellationToken token)
-        { Reads++; throw new IOException("²É¼¯×é¼ş²»¿ÉÓÃ"); }
+        { Reads++; throw new IOException("ï¿½É¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"); }
     }
     private sealed class DisappearingSource : ICoolingSensorSource
     {
@@ -142,8 +148,8 @@ public sealed class CoolingDisplayFeaturesTests
         public Task<CoolingSensorSnapshot> ReadAsync(CancellationToken token)
         {
             Reads++;
-            CoolingSensor[] values = Reads < 3 ? [new("t", "CPU", CoolingSensorKind.Temperature, 43.9), new("f", "Fan", CoolingSensorKind.Fan, 1400.8)] : [new("t", "CPU", CoolingSensorKind.Temperature, 44)];
-            return Task.FromResult(new CoolingSensorSnapshot(DateTimeOffset.UtcNow, values, "¶ÀÁ¢²É¼¯"));
+            CoolingSensor[] values = Reads < 4 ? [new("t", "CPU", CoolingSensorKind.Temperature, 43.9), new("f", "Fan", CoolingSensorKind.Fan, 1400.8)] : [new("t", "CPU", CoolingSensorKind.Temperature, 44)];
+            return Task.FromResult(new CoolingSensorSnapshot(DateTimeOffset.UtcNow, values, "ï¿½ï¿½ï¿½ï¿½ï¿½É¼ï¿½"));
         }
     }
     private sealed class RecordingConnection : ICoolingDisplayConnection

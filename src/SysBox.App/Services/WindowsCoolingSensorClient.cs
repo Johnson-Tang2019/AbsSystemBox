@@ -59,7 +59,13 @@ public sealed class WindowsCoolingSensorClient : ICoolingSensorSource, IDisposab
             using var deadline = CancellationTokenSource.CreateLinkedTokenSource(token);
             deadline.CancelAfter(TimeSpan.FromSeconds(12));
             if (pipe is null || !pipe.IsConnected)
-                if (!await ConnectServiceAsync(deadline.Token)) await StartAsync(deadline.Token);
+                if (!await ConnectServiceAsync(deadline.Token))
+                {
+                    using var registration = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\AbsSystemBox.Sensors");
+                    if (registration is not null)
+                        throw new IOException("后台采集服务暂不可用，正在等待自动恢复。");
+                    await StartAsync(deadline.Token);
+                }
             using var combined = CancellationTokenSource.CreateLinkedTokenSource(deadline.Token, session!.Token);
             return await ReadConnectedAsync(combined.Token);
         }
@@ -121,6 +127,8 @@ public sealed class WindowsCoolingSensorClient : ICoolingSensorSource, IDisposab
         var connection = pipe ?? throw new IOException("硬件采集已断开。");
         await Protocol.WriteAsync(connection, new RpcRequest(Protocol.Version, "cooling.sensors.read", JsonSerializer.SerializeToElement(new { }, Protocol.Json)), token);
         var response = await Protocol.ReadAsync<RpcResponse>(connection, token);
+        if (response.Error?.Code == "ACCESS_DENIED")
+            throw new UnauthorizedAccessException(response.Error.Message);
         if (response.Version != Protocol.Version || response.Error is not null || response.Value is null)
             throw new IOException(response.Error?.Message ?? "硬件采集返回无效数据。");
         var snapshot = response.Value.Value.Deserialize<CoolingSensorSnapshot>(Protocol.Json) ?? throw new IOException("硬件采集返回空数据。");

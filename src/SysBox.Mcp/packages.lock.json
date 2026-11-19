@@ -331,15 +331,15 @@
       "sysbox.rules": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Abstractions": "[0.3.4, )",
+          "SysBox.Abstractions": "[0.3.5, )",
           "YamlDotNet": "[18.1.0, )"
         }
       },
       "sysbox.transport": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Abstractions": "[0.3.4, )",
-          "SysBox.Rules": "[0.3.4, )"
+          "SysBox.Abstractions": "[0.3.5, )",
+          "SysBox.Rules": "[0.3.5, )"
         }
       }
     },

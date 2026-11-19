@@ -99,6 +99,10 @@ if($service){
 $registered=Get-CimInstance Win32_Service -Filter "Name='AbsSystemBox.Sensors'"
 if(-not$registered-or$registered.PathName.Trim()-ne$binary-or$registered.StartName-notin@('LocalSystem','NT AUTHORITY\SYSTEM')){throw '传感器服务注册身份不匹配。'}
 Start-Service -Name 'AbsSystemBox.Sensors';(Get-Service 'AbsSystemBox.Sensors').WaitForStatus('Running',[TimeSpan]::FromSeconds(15))
+& (Join-Path ([Environment]::SystemDirectory) 'sc.exe') failure 'AbsSystemBox.Sensors' reset= 86400 actions= restart/3000/restart/10000/restart/30000 | Out-Null
+if($LASTEXITCODE-ne0){throw '无法设置采集服务自动恢复。'}
+& (Join-Path ([Environment]::SystemDirectory) 'sc.exe') failureflag 'AbsSystemBox.Sensors' 1 | Out-Null
+if($LASTEXITCODE-ne0){throw '无法启用采集服务错误恢复。'}
 } catch {
     $setupError=$_
     try {

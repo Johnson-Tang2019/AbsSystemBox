@@ -10,7 +10,6 @@ public sealed class CoolingDisplayViewModel(ICoolingDisplayTransport transport, 
     private int generation;
     private bool refreshing;
     private bool loaded;
-    private bool ready;
     private bool pageDetection;
     private CancellationTokenSource? refreshCancellation;
     public CoolingDevice[] Devices { get; private set; } = [];
@@ -41,7 +40,6 @@ public sealed class CoolingDisplayViewModel(ICoolingDisplayTransport transport, 
         if (refreshing || IsRunning) return;
         refreshing = true;
         pageDetection = pageOwned;
-        ready = false;
         var request = generation;
         using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(15));
         refreshCancellation = deadline;
@@ -58,7 +56,6 @@ public sealed class CoolingDisplayViewModel(ICoolingDisplayTransport transport, 
                 UpdateSensors(snapshot);
                 var selected = CoolingDisplayDefaults.Select(Settings, devices, snapshot.Sensors);
                 if (selected != Settings) { store.Save(selected); Settings = selected; }
-                ready = true;
             }
             catch (Exception e) when (!deadline.IsCancellationRequested)
             {
@@ -66,19 +63,18 @@ public sealed class CoolingDisplayViewModel(ICoolingDisplayTransport transport, 
                 UpdateSensors(new(DateTimeOffset.UtcNow, [], "传感器不可用：" + e.Message));
                 if (!Settings.ManualValues) { SetStatus("检测失败：" + e.Message); return; }
                 Settings = CoolingDisplayDefaults.Select(Settings, devices, []);
-                ready = true;
             }
             SetStatus(devices.Length == 0 ? "未发现兼容水冷屏。" : "设备已检测，选择读数后开始同步。");
         }
         catch (Exception e) { if (request == generation) SetStatus("检测失败：" + e.Message); }
         finally { refreshCancellation = null; refreshing = false; }
     }
-    public async Task StartAtApplicationLaunchAsync()
+    public Task StartAtApplicationLaunchAsync()
     {
         Load();
-        if (!Settings.AutoStart) return;
-        await RefreshAsync(false);
-        if (ready) Start();
+        if (Settings.AutoStart && !IsRunning && Completion.IsCompleted)
+            BeginSynchronization(Settings);
+        return Task.CompletedTask;
     }
     public void CancelPageDetection()
     {
@@ -94,36 +90,76 @@ public sealed class CoolingDisplayViewModel(ICoolingDisplayTransport transport, 
         var settings = Settings;
         try { _ = GoldenFiledDisplayProtocol.Encode(settings.ManualTemperature, settings.ManualFanRpm); }
         catch (ArgumentException) { SetStatus("手动温度须为 0～255，转速须为 0～65535。单位分别为 ℃ 和 RPM。"); return; }
+        BeginSynchronization(settings);
+    }
+    private void BeginSynchronization(CoolingDisplaySettings settings)
+    {
         cancellation = new();
         OnPropertyChanged(nameof(IsRunning));
-        Completion = RunAsync(device, settings, ++generation, cancellation.Token);
+        Completion = RunAsync(settings, ++generation, cancellation.Token);
     }
-    private async Task RunAsync(CoolingDevice device, CoolingDisplaySettings settings, int request, CancellationToken token)
+    private async Task RunAsync(CoolingDisplaySettings settings, int request, CancellationToken token)
     {
+        var retrySeconds = 1;
         try
         {
-            SetStatus("正在连接水冷屏…");
-            using var connection = await transport.ConnectAsync(device, token);
-            await Task.Delay(TimeSpan.FromSeconds(3), token);
             while (true)
             {
                 token.ThrowIfCancellationRequested();
-                int temperature, fan;
-                if (settings.ManualValues) { temperature = settings.ManualTemperature; fan = settings.ManualFanRpm; }
-                else
+                try
                 {
-                    var snapshot = await sensors.ReadAsync(token);
+                    SetStatus("正在连接水冷屏…");
+                    using var connectDeadline = CancellationTokenSource.CreateLinkedTokenSource(token);
+                    connectDeadline.CancelAfter(TimeSpan.FromSeconds(20));
+                    var devices = await transport.DiscoverAsync(connectDeadline.Token).WaitAsync(connectDeadline.Token);
                     if (request != generation || token.IsCancellationRequested) return;
-                    UpdateSensors(snapshot);
-                    (temperature, fan) = Resolve(snapshot, settings, DateTimeOffset.UtcNow);
+                    Devices = devices;
+                    OnPropertyChanged(nameof(Devices));
+                    var initial = settings.ManualValues ? null : await sensors.ReadAsync(connectDeadline.Token).WaitAsync(connectDeadline.Token);
+                    if (request != generation || token.IsCancellationRequested) return;
+                    if (initial is not null) UpdateSensors(initial);
+                    var selected = CoolingDisplayDefaults.Select(settings, devices, initial?.Sensors ?? []);
+                    if (selected != settings)
+                    {
+                        store.Save(selected);
+                        settings = selected;
+                        Settings = selected;
+                    }
+                    var device = devices.Single(d => d.DeviceId == settings.DeviceId);
+                    using var connection = await transport.ConnectAsync(device, connectDeadline.Token);
+                    await Task.Delay(TimeSpan.FromSeconds(3), token);
+                    while (true)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        int temperature, fan;
+                        if (settings.ManualValues) { temperature = settings.ManualTemperature; fan = settings.ManualFanRpm; }
+                        else
+                        {
+                            using var sampleDeadline = CancellationTokenSource.CreateLinkedTokenSource(token);
+                            sampleDeadline.CancelAfter(TimeSpan.FromSeconds(15));
+                            var snapshot = await sensors.ReadAsync(sampleDeadline.Token).WaitAsync(sampleDeadline.Token);
+                            if (request != generation || token.IsCancellationRequested) return;
+                            UpdateSensors(snapshot);
+                            (temperature, fan) = Resolve(snapshot, settings, DateTimeOffset.UtcNow);
+                        }
+                        if (request != generation || token.IsCancellationRequested) return;
+                        await connection.WriteAsync(temperature, fan, token);
+                        if (request != generation || token.IsCancellationRequested) return;
+                        retrySeconds = 1;
+                        LastWrite = $"{(settings.ManualValues ? "手动显示值" : "传感器读数")}：{temperature} ℃ · {fan} RPM · {DateTimeOffset.Now:HH:mm:ss} 已写入串口（屏幕显示尚需核对）";
+                        OnPropertyChanged(nameof(LastWrite));
+                        SetStatus("正在同步 · 每秒一次");
+                        await Task.Delay(1000, token);
+                    }
                 }
-                if (request != generation || token.IsCancellationRequested) return;
-                await connection.WriteAsync(temperature, fan, token);
-                if (request != generation || token.IsCancellationRequested) return;
-                LastWrite = $"{(settings.ManualValues ? "手动显示值" : "传感器读数")}：{temperature} ℃ · {fan} RPM · {DateTimeOffset.Now:HH:mm:ss} 已写入串口（屏幕显示尚需核对）";
-                OnPropertyChanged(nameof(LastWrite));
-                SetStatus("正在同步 · 每秒一次");
-                await Task.Delay(1000, token);
+                catch (OperationCanceledException) when (token.IsCancellationRequested) { throw; }
+                catch (Exception error) when (error is IOException or InvalidDataException or TimeoutException or OperationCanceledException or System.ComponentModel.Win32Exception)
+                {
+                    if (request != generation || token.IsCancellationRequested) return;
+                    SetStatus($"连接暂不可用，正在自动恢复（{retrySeconds} 秒后重试）：{error.Message}");
+                    await Task.Delay(TimeSpan.FromSeconds(retrySeconds), token);
+                    retrySeconds = Math.Min(retrySeconds * 2, 15);
+                }
             }
         }
         catch (OperationCanceledException) when (token.IsCancellationRequested) { }

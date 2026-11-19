@@ -27,7 +27,7 @@ public sealed class CoolingStartupFeaturesTests
         Assert.Throws<InvalidDataException>(() => CoolingDisplayDefaults.Select(new(), [..Devices, new("COM4", "second")], Sensors));
     }
     [Fact]
-    public async Task DefaultDisabledDoesNotTouchHardwareAndMissingServicePreventsAutoConnection()
+    public async Task DefaultDisabledDoesNotTouchHardwareAndMissingServiceKeepsStartupPending()
     {
         var directory = Path.Combine(Path.GetTempPath(), "CoolingStartup-" + Guid.NewGuid().ToString("N"));
         try
@@ -39,10 +39,18 @@ public sealed class CoolingStartupFeaturesTests
             Assert.Equal(0, transport.Discoveries);
             store.Save(new() { AutoStart = true });
             vm = new(transport, new Source(true), store);
-            await vm.StartAtApplicationLaunchAsync();
-            Assert.False(vm.IsRunning);
-            Assert.Equal(0, transport.Connections);
-            Assert.Contains("服务不可用", vm.Status);
+            try
+            {
+                await vm.StartAtApplicationLaunchAsync();
+                Assert.True(vm.IsRunning);
+                Assert.Equal(0, transport.Connections);
+                Assert.Contains("服务不可用", vm.Status);
+            }
+            finally
+            {
+                vm.Deactivate();
+                await vm.Completion.WaitAsync(TimeSpan.FromSeconds(2));
+            }
         }
         finally { if (Directory.Exists(directory)) Directory.Delete(directory, true); }
     }
