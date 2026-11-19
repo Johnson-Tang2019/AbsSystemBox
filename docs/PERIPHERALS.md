@@ -60,7 +60,7 @@ Windows 平台接入可参考 `vader5-pro-mapper` 和八爪鱼 5 的 `apex-trigg
 
 Windows 的键鼠输入集合由系统独占。枚举阶段可使用无数据访问权限的句柄读取元数据。部分 F75、F87 Pro、F99 Pro 接收器共用 `3554:FA09`，型号和归属不明时维持待识别状态。硬件配置仅访问已匹配的厂商集合，使用 `SafeHandle` 并验证报告类型、ID、长度和响应内容。Windows 传输要证明操作可取消或有明确执行上限，再接入页面。手柄的 XInput、DInput 与 Switch 模式分别确认厂商接口，只有通用手柄信息时仅显示已知状态。见 [Aula-Manager 协议笔记](https://github.com/free-soldier28/Aula-Manager/blob/main/docs/PROTOCOL.md)、[Microsoft HID 枚举说明](https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/finding-and-opening-a-hid-collection)、[Windows HID 集合访问规则](https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/hid-architecture)。
 
-只读页在普通权限的桌面进程运行，进入页面时枚举，拔插后可手动刷新。后续写入由实际页面操作触发，每台设备串行。写入前复核已选设备及会话、原配置、参数范围和写入能力。超时或断线后先重新读取状态，避免重复保存。写入前无法获取受影响字段的完整原值，或写后无法验证相关字段时，保持只读。固件、配对、恢复出厂、宏注入、虚拟手柄及对外设备控制接口留待单独评估。
+外设功能在普通权限的桌面进程运行，打开软件后自动开始读取，进入页面复用成功快照，拔插后可手动刷新。写入由页面上明确的应用操作触发，和检测串行。写入前复核已选设备及会话、原配置、参数范围和写入能力。超时或断线后先重新读取状态，避免重复保存。固件、配对、恢复出厂、宏注入、虚拟手柄及对外设备控制接口留待单独评估。
 
 ## 里程碑与验收
 
@@ -81,3 +81,9 @@ Windows 的键鼠输入集合由系统独占。枚举阶段可使用无数据访
 - 同时观察到 `3554:FA09` 接收器。只按 Windows 枚举显示，其身份独立于已通过有线确认的键盘。
 - 迈从 `5253:1020` 的接收器产品名为 `MCHOSE K7 Ultra`，另有单独的 MagDock `3837:1012`。唤醒后从接收器验证厂商集合 `FF01:0001`、65 字节 Feature Report、在线位和本体 ID `3837:4150`。隔离 WinUI 开发版显示固件 `5.28.4.0`、电量 90–91%、第 5 档 2800 DPI、8000 Hz 板载回报率设置、2 mm 抬升高度和 3 分钟休眠。回报率来自设备配置。见 [K7 Ultra 协议记录](https://github.com/aipno/mchose-linux/blob/main/docs/PROTOCOL.md)。
 - 有线 F87 Pro `03000000010B` 返回匹配的 `0x84` 配置报告，开发版显示灯效模式 1。鼠标按键映射和键盘逐键 RGB、键位映射仍待核对。键盘颜色、亮度和速度字段在确认编码后再显示读数。见 [F87 读取契约](https://github.com/Dahuum/aula-studio/blob/main/docs/F87_READ_CONTRACT.md)。
+
+## 2026-11-19 板载设置切换
+
+- K7 Ultra 固件 `5.28.4.0` 经 `5253:1020` 2.4G 接收器验证。以固定功能报告写第 5 档，设备回读 2800 → 3000 → 2800 DPI。验证双轴、活动档、其余 DPI 档位和配置组保持预期。参考 [迈从 DPI 协议](https://github.com/aipno/mchose-linux/blob/main/src/mouse/protocol.rs#L292-L301)。鼠标附带的 MagDock 灯环另有接口。见 [官方产品资料](https://www.mchose.store/products/mchose-k7-ultra-lightweight-wireless-gaming-mouse?variant=50269487268135)。
+- F87 Pro 有线 `010B` 可切换受支持灯效、亮度、速度和板载配色。用 Windows 实机回读验证了灯效、亮度、速度和红绿配色，并恢复测试前的四项设置。参考 [F87 Pro 开源实现（MIT）](https://github.com/meursault03/aula-f87pro-linux/blob/825a91a46d9b4573c7bfebdeb90a607b7638b709/src/lib.rs#L96-L143) 和 [灯效能力表](https://github.com/meursault03/aula-f87pro-linux/blob/825a91a46d9b4573c7bfebdeb90a607b7638b709/src/gui/editor.rs)。
+- 逐键 RGB、键位映射、鼠标其他可写参数和 MagDock 灯环仍待按各自型号和接口验证。

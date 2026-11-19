@@ -51,6 +51,23 @@ public sealed class PeripheralsViewModel(IPeripheralDiscovery discovery) : Obser
         NotifySelection();
     }
 
+    public Task LoadIfNeededAsync() =>
+        HasLoaded && ErrorMessage is null && !Devices.Any(NeedsMouseReadout)
+            ? Task.CompletedTask : RefreshAsync();
+
+    private static bool NeedsMouseReadout(PeripheralDevice device) =>
+        device.Kind == PeripheralKind.Mouse && device.MouseReadout?.Performance is null &&
+        string.Equals(device.ReceiverName, "MCHOSE K7 Ultra", StringComparison.OrdinalIgnoreCase);
+
+    public void UpdateConfirmedDevice(PeripheralDevice device)
+    {
+        if (!Devices.Any(current => current.Id == device.Id && current.Kind == device.Kind))
+            return;
+        Devices = Devices.Select(current => current.Id == device.Id ? device : current).ToArray();
+        UpdateSelection();
+        NotifySnapshot();
+    }
+
     public async Task RefreshAsync()
     {
         if (pending is not null)
@@ -88,16 +105,14 @@ public sealed class PeripheralsViewModel(IPeripheralDiscovery discovery) : Obser
     {
         var request = pending;
         pending = null;
-        request?.Cancel();
+        if (request is not null)
+        {
+            request.Cancel();
+            IsRefreshing = false;
+            OnPropertyChanged(nameof(IsRefreshing));
+        }
         selections.Clear();
-        SelectedKind = null;
-        IsRefreshing = false;
-        HasLoaded = false;
-        ErrorMessage = null;
-        Devices = [];
-        UpdateSelection();
-        NotifySnapshot();
-        OnPropertyChanged(nameof(IsRefreshing));
+        ShowOverview();
     }
 
     private void UpdateSelection()

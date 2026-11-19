@@ -57,11 +57,24 @@ public sealed record MousePerformanceReadout(
     int? PollingRateHz,
     decimal? LiftOffDistanceMm,
     int? SleepMinutes,
-    int? DebounceMilliseconds);
+    int? DebounceMilliseconds,
+    string? EditRevision = null);
 
-public sealed record KeyboardLightingReadout(int EffectId, int? BrightnessLevel, int? SpeedLevel);
+public sealed record KeyboardLightingReadout(int EffectId, int? BrightnessLevel, int? SpeedLevel,
+    string? EditRevision = null, IReadOnlyList<int>? EditableEffects = null, int? PaletteIndex = null);
+
+public sealed record KeyboardLightingChange(int EffectId, int? BrightnessLevel = null,
+    int? SpeedLevel = null, int? PaletteIndex = null);
 
 public interface IPeripheralDiscovery
 {
     Task<Result<IReadOnlyList<PeripheralDevice>>> DiscoverAsync(CancellationToken cancellationToken);
+}
+
+public interface IPeripheralConfiguration
+{
+    Task<Result<MousePerformanceReadout>> SetMouseDpiAsync(string deviceId, string expectedRevision,
+        int stage, int dpi, CancellationToken cancellationToken);
+    Task<Result<KeyboardLightingReadout>> SetKeyboardLightingAsync(string deviceId, string expectedRevision,
+        KeyboardLightingChange change, CancellationToken cancellationToken);
 }

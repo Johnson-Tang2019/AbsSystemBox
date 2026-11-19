@@ -46,7 +46,8 @@ public sealed partial class PeripheralsPage : Page, IPageLifetime
         }
 
         Render();
-        await viewModel.RefreshAsync();
+        if (!configurationBusy)
+            await viewModel.LoadIfNeededAsync();
     }
 
     public void Deactivate()
@@ -61,7 +62,7 @@ public sealed partial class PeripheralsPage : Page, IPageLifetime
 
     private async void Refresh_Click(object sender, RoutedEventArgs args)
     {
-        if (active && !isDemo)
+        if (active && !isDemo && !configurationBusy)
             await viewModel.RefreshAsync();
     }
 
@@ -115,7 +116,7 @@ public sealed partial class PeripheralsPage : Page, IPageLifetime
         var kind = viewModel.SelectedKind;
         var error = viewModel.ErrorMessage;
         var refreshing = viewModel.IsRefreshing;
-        RefreshButton.IsEnabled = !refreshing;
+        RefreshButton.IsEnabled = !refreshing && !configurationBusy;
         RefreshProgress.IsIndeterminate = refreshing;
         RefreshProgress.Visibility = VisibilityFor(refreshing);
         ErrorBar.IsOpen = error is not null;
@@ -241,6 +242,7 @@ public sealed partial class PeripheralsPage : Page, IPageLifetime
     {
         var deviceChanged = displayedSettingsId != device?.Id;
         displayedSettingsId = device?.Id;
+        ShowConfigurationStatus(device?.Id);
         MouseSettings.Visibility = VisibilityFor(device is { Kind: PeripheralKind.Mouse });
         KeyboardSettings.Visibility = VisibilityFor(device is { Kind: PeripheralKind.Keyboard });
         if (device is { Kind: PeripheralKind.Mouse })
@@ -264,14 +266,16 @@ public sealed partial class PeripheralsPage : Page, IPageLifetime
             $"第 {performance.ActiveDpiStage + 1} 档，{DpiValue(performance, performance.ActiveDpiStage)}")}";
         var dpiItems = performance is null ? [] : performance.DpiStages.Select((_, index) =>
             $"第 {index + 1} 档 · {DpiValue(performance, index)}{(index == performance.ActiveDpiStage ? "（当前）" : "")}").ToArray();
+        var selectedStage = MouseDpiPicker.SelectedIndex;
         if (MouseDpiPicker.ItemsSource is not string[] previous || !previous.SequenceEqual(dpiItems))
         {
             MouseDpiPicker.ItemsSource = dpiItems;
-            deviceChanged = true;
+            MouseDpiPicker.SelectedIndex = selectedStage >= 0 && selectedStage < dpiItems.Length && !deviceChanged
+                ? selectedStage : performance?.ActiveDpiStage ?? -1;
         }
         if (deviceChanged)
             MouseDpiPicker.SelectedIndex = performance?.ActiveDpiStage ?? -1;
-        MouseDpiPicker.IsEnabled = dpiItems.Length > 0;
+        MouseDpiPicker.IsEnabled = dpiItems.Length > 0 && !configurationBusy;
         MouseDpiPicker.PlaceholderText = Unavailable;
         MousePolling.Text = $"回报率　{WithUnit(performance?.PollingRateHz, "Hz")}";
         MouseLiftOff.Text = $"抬升高度（LOD）　{(performance?.LiftOffDistanceMm is { } height ? $"{height:G} mm" : Unavailable)}";
@@ -279,6 +283,7 @@ public sealed partial class PeripheralsPage : Page, IPageLifetime
         MouseSleep.Text = $"自动休眠　{(performance?.SleepMinutes == 0 ? "关闭" : WithUnit(performance?.SleepMinutes, "分钟"))}";
         SetInspector(MouseButtonPicker, MouseButtons, isK7, deviceChanged);
         UpdateMouseButton();
+        RenderMouseDpiEditor(performance, deviceChanged);
     }
 
     private static string DpiValue(MousePerformanceReadout performance, int index)
@@ -295,12 +300,14 @@ public sealed partial class PeripheralsPage : Page, IPageLifetime
         KeyboardReadoutStatus.Text = lighting is not null ? "当前灯光数据来自 USB 有线键盘。" :
             isF87Pro ? "已识别狼蛛 F87 Pro，暂未取得灯光数据。可刷新重试。" :
             "选择通过 USB 连接的狼蛛 F87 Pro 读取板载设置。";
-        KeyboardEffect.Text = $"当前灯效　{(lighting is null ? Unavailable : $"模式 {lighting.EffectId}")}";
+        KeyboardEffect.Text = $"当前灯效　{(lighting is null ? Unavailable : EffectName(lighting.EffectId))}";
         KeyboardBrightness.Text = $"亮度　{WithUnit(lighting?.BrightnessLevel, "档")}";
         KeyboardSpeed.Text = $"速度　{WithUnit(lighting?.SpeedLevel, "档")}";
-        KeyboardColor.Text = $"灯效颜色　{ReadoutPending}";
+        KeyboardColor.Text = $"灯效颜色　{(lighting?.PaletteIndex is { } palette && palette >= 0 && palette < PaletteNames.Length
+            ? PaletteNames[palette] : Unavailable)}";
         SetInspector(KeyboardKeyPicker, KeyboardKeys, isF87Pro, deviceChanged);
         UpdateKeyboardKey();
+        RenderKeyboardLightingEditor(lighting, deviceChanged);
     }
 
     private static void SetInspector(ComboBox picker, string[] items, bool available, bool deviceChanged)

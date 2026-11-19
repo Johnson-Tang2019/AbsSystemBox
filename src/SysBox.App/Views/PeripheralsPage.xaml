@@ -90,6 +90,8 @@
                 </StackPanel>
 
                 <StackPanel x:Name="Details" Spacing="12" Visibility="Collapsed">
+                    <InfoBar x:Name="ConfigurationStatus" IsOpen="False" IsClosable="False"
+                             AutomationProperties.AutomationId="PeripheralConfigurationStatus" />
                     <ComboBox x:Name="DevicePicker" Header="设备" HorizontalAlignment="Stretch"
                               ItemTemplate="{StaticResource PeripheralPickerTemplate}" SelectionChanged="Device_SelectionChanged"
                               AutomationProperties.AutomationId="PeripheralDevicePicker" Visibility="Collapsed" />
@@ -147,7 +149,7 @@
                                 AutomationProperties.AutomationId="PeripheralMouseSettings">
                         <Border Style="{StaticResource SurfaceStyle}" Padding="16">
                             <StackPanel Spacing="10">
-                                <TextBlock Text="鼠标设置（只读）" Style="{StaticResource PeripheralSectionTitleStyle}" />
+                                <TextBlock Text="鼠标设置" Style="{StaticResource PeripheralSectionTitleStyle}" />
                                 <TextBlock x:Name="MouseReadoutStatus" Style="{StaticResource BodyCopyStyle}" />
                                 <TextBlock x:Name="MouseFirmware" Style="{StaticResource PeripheralValueStyle}"
                                            AutomationProperties.AutomationId="PeripheralMouseFirmware" />
@@ -162,7 +164,15 @@
                                 <TextBlock x:Name="MouseDpi" Style="{StaticResource PeripheralValueStyle}"
                                            AutomationProperties.AutomationId="PeripheralMouseDpi" />
                                 <ComboBox x:Name="MouseDpiPicker" Header="查看 DPI 档位" HorizontalAlignment="Stretch"
+                                          SelectionChanged="MouseDpi_SelectionChanged"
                                           AutomationProperties.AutomationId="PeripheralMouseDpiPicker" />
+                                <StackPanel x:Name="MouseDpiEditor" Spacing="8" Visibility="Collapsed">
+                                    <NumberBox x:Name="MouseDpiValue" Header="所选档位 DPI" Minimum="50" Maximum="42000"
+                                               SmallChange="50" LargeChange="200" SpinButtonPlacementMode="Compact"
+                                               AutomationProperties.AutomationId="PeripheralMouseDpiValue" />
+                                    <Button x:Name="ApplyMouseDpi" Content="应用 DPI" Click="ApplyMouseDpi_Click"
+                                            AutomationProperties.AutomationId="PeripheralApplyMouseDpi" />
+                                </StackPanel>
                                 <TextBlock x:Name="MousePolling" Style="{StaticResource PeripheralValueStyle}"
                                            AutomationProperties.AutomationId="PeripheralMousePolling" />
                                 <TextBlock x:Name="MouseLiftOff" Style="{StaticResource PeripheralValueStyle}"
@@ -191,7 +201,7 @@
                                 AutomationProperties.AutomationId="PeripheralKeyboardSettings">
                         <Border Style="{StaticResource SurfaceStyle}" Padding="16">
                             <StackPanel Spacing="10">
-                                <TextBlock Text="键盘设置（只读）" Style="{StaticResource PeripheralSectionTitleStyle}" />
+                                <TextBlock Text="键盘设置" Style="{StaticResource PeripheralSectionTitleStyle}" />
                                 <TextBlock x:Name="KeyboardReadoutStatus" Style="{StaticResource BodyCopyStyle}" />
                             </StackPanel>
                         </Border>
@@ -206,6 +216,21 @@
                                            AutomationProperties.AutomationId="PeripheralKeyboardSpeed" />
                                 <TextBlock x:Name="KeyboardColor" Style="{StaticResource PeripheralValueStyle}"
                                            AutomationProperties.AutomationId="PeripheralKeyboardColor" />
+                                <StackPanel x:Name="KeyboardLightingEditor" Spacing="8" Visibility="Collapsed">
+                                    <ComboBox x:Name="KeyboardEffectPicker" Header="切换灯效" HorizontalAlignment="Stretch"
+                                              DisplayMemberPath="Name" SelectionChanged="KeyboardEffect_SelectionChanged"
+                                              AutomationProperties.AutomationId="PeripheralKeyboardEffectPicker" />
+                                    <NumberBox x:Name="KeyboardBrightnessValue" Header="亮度档位" Minimum="0" Maximum="4"
+                                               SpinButtonPlacementMode="Compact"
+                                               AutomationProperties.AutomationId="PeripheralKeyboardBrightnessValue" />
+                                    <NumberBox x:Name="KeyboardSpeedValue" Header="速度档位" Minimum="0" Maximum="4"
+                                               SpinButtonPlacementMode="Compact"
+                                               AutomationProperties.AutomationId="PeripheralKeyboardSpeedValue" />
+                                    <ComboBox x:Name="KeyboardPalettePicker" Header="灯效颜色" HorizontalAlignment="Stretch"
+                                              AutomationProperties.AutomationId="PeripheralKeyboardPalettePicker" />
+                                    <Button x:Name="ApplyKeyboardLighting" Content="应用灯光" Click="ApplyKeyboardLighting_Click"
+                                            AutomationProperties.AutomationId="PeripheralApplyKeyboardLighting" />
+                                </StackPanel>
                             </StackPanel>
                         </Border>
                         <Border Style="{StaticResource SurfaceStyle}" Padding="16">

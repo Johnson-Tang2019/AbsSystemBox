@@ -86,8 +86,10 @@ public partial class App : Application
 #endif
         services.AddSingleton<ICoolingDisplayTransport, GoldenFiledDisplayTransport>();
         services.AddSingleton<CoolingDisplayViewModel>();
-        services.AddSingleton<IPeripheralDiscovery, WindowsPeripheralDiscovery>();
-        services.AddTransient<PeripheralsViewModel>();
+        services.AddSingleton<WindowsPeripheralDiscovery>();
+        services.AddSingleton<IPeripheralDiscovery>(sp => sp.GetRequiredService<WindowsPeripheralDiscovery>());
+        services.AddSingleton<IPeripheralConfiguration>(sp => sp.GetRequiredService<WindowsPeripheralDiscovery>());
+        services.AddSingleton<PeripheralsViewModel>();
         services.AddSingleton<ThemeService>();
         services.AddTransient<DashboardViewModel>();
         services.AddSingleton<ISamplingDelay, SamplingDelay>();
@@ -110,6 +112,7 @@ public partial class App : Application
         services.AddTransient(sp => new StorageViewModel(sp.GetRequiredService<IStorageBrowser>(), () => new IndexControl()));
         services.AddTransient(sp => new IndexViewModel(sp.GetRequiredService<IFileIndexService>(), () => new IndexControl()));
         Services = services.BuildServiceProvider();
+        var isDemo = Services.GetRequiredService<IDashboardClient>().IsDemo;
         MainWindow = new MainWindow();
         _window = MainWindow;
         Desktop = new DesktopController(ruleDirectory);
@@ -123,6 +126,8 @@ public partial class App : Application
         };
         _window.Closed += (_, _) =>
         {
+            if (!isDemo)
+                Services.GetRequiredService<PeripheralsViewModel>().Deactivate();
             Services.GetRequiredService<CoolingDisplayViewModel>().Deactivate();
             Desktop.Dispose();
             try
@@ -139,7 +144,10 @@ public partial class App : Application
         };
         _window.Activate();
         DesktopReady = Desktop.StartAsync();
-        if (!Services.GetRequiredService<IDashboardClient>().IsDemo)
+        if (!isDemo)
+        {
+            _ = Services.GetRequiredService<PeripheralsViewModel>().LoadIfNeededAsync();
             _ = Services.GetRequiredService<CoolingDisplayViewModel>().StartAtApplicationLaunchAsync();
+        }
     }
 }

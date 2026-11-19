@@ -165,6 +165,11 @@ memory.processes 可选 sort=WorkingSet/PrivateCommit（枚举），默认保持
 
 `MouseReadout` 含可空电量、固件版本和板载性能快照。性能快照含 DPI 两轴、以零开始的活动档位和配置组、回报率、抬升高度、休眠和防抖。只有确认无线本体在线才返回快照。`KeyboardLighting` 含匹配的有线 F87 Pro 灯效数据。读不到的快照或字段保持空值，Windows 元数据仍可展示。接口只暴露读取操作。
 
+设置操作通过独立的桌面端口 `IPeripheralConfiguration` 提供。可编辑快照携带 `EditRevision`。应用指定设备键、待修改字段和此前读到的修订值，Native 再读取设备做核验。若当前值已被外部改变，须刷新后重新提交。
+
+- `SetMouseDpiAsync` 接受以零开始的已启用档位，DPI 范围 50 到 42000，步长 50。仅支持已验证且六档双轴值一致的 K7 Ultra 2.4G 配置。
+- `SetKeyboardLightingAsync` 接受有线 F87 Pro 的灯效及可选亮度、速度和预设色索引。可用参数由当前灯效决定。成功结果是从设备回读的最新快照。
+
 ## 水冷显示契约（2026-11-07）
 
 0.3.1 新增 `CoolingDisplaySettings.AutoStart`，仅用于普通显示同步的启动偏好，不是采集授权。`CoolingDisplayDefaults.Select` 仅在没有保存 ID 时按唯一的 Core Max / CPU Fan 标签选择；ID 失效或标签歧义均明确拒绝。`StartAtApplicationLaunchAsync`、`CancelPageDetection` 将页面检测与应用同步生命周期分离。

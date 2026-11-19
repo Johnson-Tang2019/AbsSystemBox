@@ -133,12 +133,17 @@ internal static class PeripheralIdentity
         var name = modelEvidence == PeripheralModelEvidence.SystemReported ? model! :
             JoinLabel(manufacturer, model ?? label);
         var (vendor, product) = SelectHardwareIds(candidates);
-        var keyBytes = Encoding.UTF8.GetBytes(container.ToUpperInvariant());
-        var id = $"{Convert.ToHexString(SHA256.HashData(keyBytes))}:{kind}";
+        var id = DeviceId(container, kind);
         var presence = receiver && mouse is null ? PeripheralPresence.ReceiverOnly : PeripheralPresence.Detected;
         var receiverName = receiver ? SingleValue(candidates.Select(candidate => candidate.Interface.ProductName)) : null;
         return new(id, kind, name, manufacturer, model, modelEvidence, connection, presence, vendor, product,
             mouse is not null ? MchoseK7Reports.BodyId : keyboardIdentity, receiverName, mouse, keyboardLighting);
+    }
+
+    internal static string DeviceId(string container, PeripheralKind kind)
+    {
+        var keyBytes = Encoding.UTF8.GetBytes(container.ToUpperInvariant());
+        return $"{Convert.ToHexString(SHA256.HashData(keyBytes))}:{kind}";
     }
 
     private static (ushort? Vendor, ushort? Product) SelectHardwareIds(List<Candidate> candidates)

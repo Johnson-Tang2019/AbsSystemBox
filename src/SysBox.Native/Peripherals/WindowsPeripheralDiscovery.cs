@@ -23,7 +23,7 @@ internal sealed record PeripheralInterface(
     MousePeripheralReadout? MouseReadout = null,
     KeyboardLightingReadout? KeyboardLighting = null);
 
-public sealed partial class WindowsPeripheralDiscovery : IPeripheralDiscovery
+public sealed partial class WindowsPeripheralDiscovery : IPeripheralDiscovery, IPeripheralConfiguration
 {
     private const uint PresentDeviceInterfaces = 0x12;
     private const uint InterfaceActive = 0x01;
@@ -50,25 +50,30 @@ public sealed partial class WindowsPeripheralDiscovery : IPeripheralDiscovery
     private static readonly DevicePropertyKey FriendlyName = new(DevicePropertySet, 14);
     private static readonly DevicePropertyKey BusType = new(DevicePropertySet, 21);
     private static readonly TimeSpan DiscoveryTimeout = TimeSpan.FromSeconds(8);
+    private Dictionary<string, string> writableInterfaces = new(StringComparer.Ordinal);
     private int running;
 
-    public async Task<Result<IReadOnlyList<PeripheralDevice>>> DiscoverAsync(CancellationToken cancellationToken)
+    public Task<Result<IReadOnlyList<PeripheralDevice>>> DiscoverAsync(CancellationToken cancellationToken) =>
+        RunOperationAsync(Discover, DiscoveryTimeout, "外设检测超时，请稍后刷新。", cancellationToken);
+
+    private async Task<Result<T>> RunOperationAsync<T>(Func<CancellationToken, Result<T>> operation,
+        TimeSpan timeout, string timeoutMessage, CancellationToken cancellationToken) where T : notnull
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (!OperatingSystem.IsWindows())
-            return Failure("当前系统不支持 Windows 外设检测。", retryable: false);
+            return OperationFailure<T>("当前系统不支持 Windows 外设操作。", retryable: false);
 
         if (Interlocked.CompareExchange(ref running, 1, 0) != 0)
-            return Failure("上一次设备检测仍在结束，请稍后刷新。");
+            return OperationFailure<T>("外设正在检测或应用设置，请稍后重试。");
 
-        using var deadline = new CancellationTokenSource(DiscoveryTimeout);
+        using var deadline = new CancellationTokenSource(timeout);
         using var stop = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, deadline.Token);
         var token = stop.Token;
 
         // Win32 metadata calls are synchronous. Keep one in-flight worker even when the caller stops waiting.
         var worker = Task.Run(() =>
         {
-            try { return Discover(token); }
+            try { return operation(token); }
             finally { Volatile.Write(ref running, 0); }
         });
         try
@@ -77,13 +82,14 @@ public sealed partial class WindowsPeripheralDiscovery : IPeripheralDiscovery
         }
         catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested && deadline.IsCancellationRequested)
         {
-            return Failure("外设检测超时，请稍后刷新。");
+            return OperationFailure<T>(timeoutMessage);
         }
     }
 
-    private static Result<IReadOnlyList<PeripheralDevice>> Discover(CancellationToken token)
+    private Result<IReadOnlyList<PeripheralDevice>> Discover(CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
+        writableInterfaces.Clear();
         var setupDataSize = IntPtr.Size == 8 ? 32 : 28;
         var detailHeaderSize = IntPtr.Size == 8 ? 8u : 6u;
         if (Marshal.SizeOf<DeviceInterfaceData>() != setupDataSize ||
@@ -117,6 +123,7 @@ public sealed partial class WindowsPeripheralDiscovery : IPeripheralDiscovery
                         if (detected.Count == 0 && accessBlocked)
                             return Result<IReadOnlyList<PeripheralDevice>>.Failure(new SysBoxError(
                                 ErrorCodes.AccessDenied, "Windows 限制了外设信息的访问。", retryable: true));
+                        writableInterfaces = SelectWritableInterfaces(interfaces, detected);
                         return Result<IReadOnlyList<PeripheralDevice>>.Success(detected);
                     }
                     throw new Win32Exception(error);
