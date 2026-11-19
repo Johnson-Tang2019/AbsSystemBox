@@ -61,6 +61,35 @@ public sealed class AppUpdateFeaturesTests
     }
 
     [Fact]
+    public async Task RetriesTheOfficialCheckAfterATransportInterruption()
+    {
+        var calls = 0;
+        using var client = new HttpClient(new Stub(_ => ++calls == 1
+            ? throw new HttpRequestException("Interrupted.", new IOException()) : Release()));
+        var updates = new GitHubReleaseUpdates(client);
+
+        Assert.NotNull(await updates.CheckAsync(new Version(0, 3, 5), CancellationToken.None));
+        Assert.Equal(2, calls);
+    }
+
+    [Fact]
+    public async Task RestartsAnInterruptedDownloadWithoutKeepingPartialBytes()
+    {
+        var calls = 0;
+        using var client = new HttpClient(new Stub(_ => new(HttpStatusCode.OK)
+        {
+            Content = ++calls == 1 ? new StreamContent(new BrokenInstaller()) : new ByteArrayContent(Payload)
+        }));
+        var updates = new GitHubReleaseUpdates(client);
+        using var output = new MemoryStream();
+
+        await updates.DownloadAsync(Update(), output, null, CancellationToken.None);
+
+        Assert.Equal(2, calls);
+        Assert.Equal(Payload, output.ToArray());
+    }
+
+    [Fact]
     public async Task RefusesRedirectsAwayFromGitHubAssets()
     {
         using var client = new HttpClient(new Stub(_ => Redirect(new Uri("https://example.test/payload"))));
@@ -106,5 +135,12 @@ public sealed class AppUpdateFeaturesTests
     {
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken) =>
             Task.FromResult(respond(request));
+    }
+
+    private sealed class BrokenInstaller() : MemoryStream(new byte[Payload.Length])
+    {
+        public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default) =>
+            Position == 0 ? base.ReadAsync(buffer[..3], cancellationToken) :
+                ValueTask.FromException<int>(new HttpIOException(HttpRequestError.ResponseEnded, "Interrupted."));
     }
 }

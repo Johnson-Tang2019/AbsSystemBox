@@ -16,6 +16,16 @@ public sealed class GitHubReleaseUpdates(HttpClient client)
 
     public async Task<ReleaseUpdate?> CheckAsync(Version installed, CancellationToken token)
     {
+        for (var attempt = 0; ; attempt++)
+        {
+            try { return await CheckOnceAsync(installed, token).ConfigureAwait(false); }
+            catch (Exception error) when (attempt < 2 && IsInterruptedTransfer(error))
+            { await WaitForRetryAsync(attempt, token).ConfigureAwait(false); }
+        }
+    }
+
+    private async Task<ReleaseUpdate?> CheckOnceAsync(Version installed, CancellationToken token)
+    {
         using var request = new HttpRequestMessage(HttpMethod.Get, Latest);
         request.Headers.UserAgent.ParseAdd("AbsSystemBox-Update/1.0");
         request.Headers.Accept.ParseAdd("application/vnd.github+json");
@@ -59,6 +69,36 @@ public sealed class GitHubReleaseUpdates(HttpClient client)
             update.Sha256.Length != 64 || !update.Sha256.AsSpan().ContainsOnlyHex())
             throw new InvalidDataException("Invalid installer metadata.");
 
+        var canRestart = destination.CanSeek && destination.Position == 0 && destination.Length == 0;
+        for (var attempt = 0; ; attempt++)
+        {
+            try
+            {
+                await DownloadOnceAsync(update, destination, progress, token).ConfigureAwait(false);
+                return;
+            }
+            catch (Exception error) when (canRestart && attempt < 2 && IsInterruptedTransfer(error))
+            {
+                destination.SetLength(0);
+                destination.Position = 0;
+                await WaitForRetryAsync(attempt, token).ConfigureAwait(false);
+            }
+        }
+    }
+
+    private static bool IsInterruptedTransfer(Exception error) => error switch
+    {
+        HttpRequestException { StatusCode: { } status } => (int)status is >= 500 or 408,
+        HttpRequestException { InnerException: IOException or System.Net.Sockets.SocketException } => true,
+        System.Net.Http.HttpIOException => true,
+        _ => false
+    };
+
+    private static Task WaitForRetryAsync(int attempt, CancellationToken token) =>
+        Task.Delay(TimeSpan.FromMilliseconds((attempt + 1) * 400), token);
+
+    private async Task DownloadOnceAsync(ReleaseUpdate update, Stream destination, IProgress<double>? progress, CancellationToken token)
+    {
         using var response = await OpenInstallerAsync(update.InstallerUri, token).ConfigureAwait(false);
         if (response.Content.Headers.ContentLength is { } size && size != update.Size)
             throw new InvalidDataException("Installer size differs from the published size.");
@@ -86,7 +126,7 @@ public sealed class GitHubReleaseUpdates(HttpClient client)
                 if ((int)response.StatusCode is not (301 or 302 or 303 or 307 or 308) ||
                     target is not { IsAbsoluteUri: true, Scheme: "https", IsDefaultPort: true, UserInfo: "" } ||
                     target.Host is not ("release-assets.githubusercontent.com" or "objects.githubusercontent.com"))
-                    throw new HttpRequestException("Unable to obtain the official installer.");
+                    throw new HttpRequestException("Unable to obtain the official installer.", null, response.StatusCode);
                 uri = target;
             }
         }

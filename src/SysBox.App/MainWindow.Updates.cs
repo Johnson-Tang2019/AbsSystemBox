@@ -24,6 +24,7 @@ public sealed partial class MainWindow
     private long lastUpdateCheck = long.MinValue;
     private bool checkingUpdate;
     private bool installingUpdate;
+    private bool showCheckResult;
 
     private void InitializeUpdates()
     {
@@ -44,7 +45,7 @@ public sealed partial class MainWindow
 
     public async Task CheckUpdatesAsync(bool manual)
     {
-        if (checkingUpdate || installingUpdate || updateLifetime.IsCancellationRequested)
+        if (installingUpdate || updateLifetime.IsCancellationRequested)
             return;
         if (currentUpdateVersion is not { } installed)
         {
@@ -53,10 +54,20 @@ public sealed partial class MainWindow
             return;
         }
         var now = Environment.TickCount64;
+        if (checkingUpdate)
+        {
+            if (manual)
+            {
+                showCheckResult = true;
+                ShowUpdateStatus("正在检查更新", $"当前版本 {installed}", InfoBarSeverity.Informational);
+            }
+            return;
+        }
         if (!manual && lastUpdateCheck != long.MinValue && now - lastUpdateCheck < 300_000)
             return;
         lastUpdateCheck = now;
         checkingUpdate = true;
+        showCheckResult = manual;
         if (manual)
             ShowUpdateStatus("正在检查更新", $"当前版本 {installed}", InfoBarSeverity.Informational);
         using var deadline = CancellationTokenSource.CreateLinkedTokenSource(updateLifetime.Token);
@@ -69,14 +80,14 @@ public sealed partial class MainWindow
             if (offeredUpdate is { } update)
                 ShowUpdateStatus($"可更新至 {update.Version}", $"当前版本 {installed}。验证下载后将退出软件并打开安装程序。",
                     InfoBarSeverity.Informational, install: true);
-            else if (manual)
+            else if (showCheckResult)
                 ShowUpdateStatus("已是最新版本", $"当前版本 {installed}", InfoBarSeverity.Success);
             else
                 UpdateBanner.IsOpen = false;
         }
         catch (Exception error) when (error is HttpRequestException or IOException or JsonException or OperationCanceledException)
         {
-            if (manual && !updateLifetime.IsCancellationRequested)
+            if (showCheckResult && !updateLifetime.IsCancellationRequested)
                 ShowUpdateStatus("暂时无法检查更新", "请检查网络，稍后重试。", InfoBarSeverity.Warning);
         }
         finally { checkingUpdate = false; }

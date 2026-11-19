@@ -14,6 +14,6 @@
 # Reuse validation/cooling-startup; no remaining automatic groups to dispatch.
 # SensorServiceEndpointTests accepted 2026-11-07 (1 new case; SCM-bound peer cannot be spoofed).
 # PeripheralsFeaturesTests (4) and PeripheralIdentityFeaturesTests (9) accepted 2026-11-19.
-# AppUpdateFeaturesTests (9) cover the new updater; authorized grant replacement and rollback were checked in Windows PowerShell 5.1 with test fixtures.
+# AppUpdateFeaturesTests (11) cover the updater and transport retries; authorized grant replacement and rollback were checked in Windows PowerShell 5.1 with test fixtures.
 # CleanupLaunchPeerTests accepted 2026-11-10 (1 new case; local PID and image checked).
 # CoolingReconnectTests accepted 2026-11-19 (6 new cases; stream/device/startup/stale/write recovery and cancellation).

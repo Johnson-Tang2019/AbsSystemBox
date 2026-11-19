@@ -120,6 +120,17 @@ FunctionEnd
 !insertmacro CLEAN_PAYLOAD ""
 !insertmacro CLEAN_PAYLOAD "un."
 
+!macro WAIT_UPDATE_MUTEX MUTEX
+  System::Call 'kernel32::OpenMutexW(i 0x100000,i 0,w "${MUTEX}")p.r9 ?e'
+  Pop $R7
+  ${If} $9 != 0
+    System::Call 'kernel32::CloseHandle(p r9)'
+    Goto update_pause
+  ${ElseIf} $R7 == 5
+    Goto update_pause
+  ${EndIf}
+!macroend
+
 Function WaitForInAppUpdate
   ${GetParameters} $R8
   ClearErrors
@@ -127,19 +138,16 @@ Function WaitForInAppUpdate
   IfErrors update_ready
   StrCpy $R8 150
 update_wait:
-  System::Call 'kernel32::OpenMutexW(i 0x100000,i 0,w "Local\AbsSystemBox.Desktop")p.r9'
-  IntCmp $9 0 update_host
-  System::Call 'kernel32::CloseHandle(p r9)'
-  Goto update_pause
-update_host:
-  System::Call 'kernel32::OpenMutexW(i 0x100000,i 0,w "Local\AbsSystemBox.CoreHost")p.r9'
-  IntCmp $9 0 update_agent
-  System::Call 'kernel32::CloseHandle(p r9)'
-  Goto update_pause
-update_agent:
-  System::Call 'kernel32::OpenMutexW(i 0x100000,i 0,w "Local\AbsSystemBox.Agent")p.r9'
-  IntCmp $9 0 update_ready
-  System::Call 'kernel32::CloseHandle(p r9)'
+  !insertmacro WAIT_UPDATE_MUTEX "Local\AbsSystemBox.Desktop"
+  !insertmacro WAIT_UPDATE_MUTEX "Local\AbsSystemBox.CoreHost"
+  !insertmacro WAIT_UPDATE_MUTEX "Local\AbsSystemBox.Agent"
+  !insertmacro WAIT_UPDATE_MUTEX "Local\AbsSystemBox.Cleanup"
+  IfFileExists "$INSTDIR\app\SysBox.App.exe" 0 update_ready
+  ClearErrors
+  FileOpen $9 "$INSTDIR\app\SysBox.App.exe" a
+  IfErrors update_pause
+  FileClose $9
+  Goto update_ready
 update_pause:
   Sleep 200
   IntOp $R8 $R8 - 1
