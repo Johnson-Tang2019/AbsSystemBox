@@ -116,6 +116,8 @@
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <TextBlock Text="类型" Style="{StaticResource BodyCopyStyle}" />
                                 <TextBlock x:Name="DeviceType" Grid.Column="1" Style="{StaticResource PeripheralValueStyle}" />
@@ -132,9 +134,93 @@
                                 <TextBlock Grid.Row="5" Text="VID / PID" Style="{StaticResource BodyCopyStyle}" />
                                 <TextBlock x:Name="DeviceIds" Grid.Row="5" Grid.Column="1" Style="{StaticResource PeripheralValueStyle}"
                                            AutomationProperties.AutomationId="PeripheralDeviceIds" />
+                                <TextBlock x:Name="IdentityLabel" Grid.Row="6" Text="硬件身份码" Style="{StaticResource BodyCopyStyle}" />
+                                <TextBlock x:Name="DeviceIdentityCode" Grid.Row="6" Grid.Column="1" Style="{StaticResource PeripheralValueStyle}"
+                                           AutomationProperties.AutomationId="PeripheralIdentityCode" />
+                                <TextBlock x:Name="ReceiverNameLabel" Grid.Row="7" Text="接收器名称" Style="{StaticResource BodyCopyStyle}" />
+                                <TextBlock x:Name="DeviceReceiverName" Grid.Row="7" Grid.Column="1" Style="{StaticResource PeripheralValueStyle}"
+                                           AutomationProperties.AutomationId="PeripheralReceiverName" />
                             </Grid>
                         </StackPanel>
                     </Border>
+                    <StackPanel x:Name="MouseSettings" Spacing="12" Visibility="Collapsed"
+                                AutomationProperties.AutomationId="PeripheralMouseSettings">
+                        <Border Style="{StaticResource SurfaceStyle}" Padding="16">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="鼠标设置（只读）" Style="{StaticResource PeripheralSectionTitleStyle}" />
+                                <TextBlock x:Name="MouseReadoutStatus" Style="{StaticResource BodyCopyStyle}" />
+                                <TextBlock x:Name="MouseFirmware" Style="{StaticResource PeripheralValueStyle}"
+                                           AutomationProperties.AutomationId="PeripheralMouseFirmware" />
+                                <TextBlock x:Name="MouseBattery" Style="{StaticResource PeripheralValueStyle}"
+                                           AutomationProperties.AutomationId="PeripheralMouseBattery" />
+                                <TextBlock x:Name="MouseProfile" Style="{StaticResource PeripheralValueStyle}" />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource SurfaceStyle}" Padding="16">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="灵敏度与响应" Style="{StaticResource PeripheralSectionTitleStyle}" />
+                                <TextBlock x:Name="MouseDpi" Style="{StaticResource PeripheralValueStyle}"
+                                           AutomationProperties.AutomationId="PeripheralMouseDpi" />
+                                <ComboBox x:Name="MouseDpiPicker" Header="查看 DPI 档位" HorizontalAlignment="Stretch"
+                                          AutomationProperties.AutomationId="PeripheralMouseDpiPicker" />
+                                <TextBlock x:Name="MousePolling" Style="{StaticResource PeripheralValueStyle}"
+                                           AutomationProperties.AutomationId="PeripheralMousePolling" />
+                                <TextBlock x:Name="MouseLiftOff" Style="{StaticResource PeripheralValueStyle}"
+                                           AutomationProperties.AutomationId="PeripheralMouseLiftOff" />
+                                <TextBlock x:Name="MouseDebounce" Style="{StaticResource PeripheralValueStyle}" />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource SurfaceStyle}" Padding="16">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="电源管理" Style="{StaticResource PeripheralSectionTitleStyle}" />
+                                <TextBlock x:Name="MouseSleep" Style="{StaticResource PeripheralValueStyle}"
+                                           AutomationProperties.AutomationId="PeripheralMouseSleep" />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource SurfaceStyle}" Padding="16">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="按键映射" Style="{StaticResource PeripheralSectionTitleStyle}"
+                                           AutomationProperties.AutomationId="PeripheralMouseMapping" />
+                                <ComboBox x:Name="MouseButtonPicker" Header="查看按键" HorizontalAlignment="Stretch"
+                                          SelectionChanged="MouseButton_SelectionChanged" />
+                                <TextBlock x:Name="MouseButtonAssignment" Style="{StaticResource BodyCopyStyle}" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                    <StackPanel x:Name="KeyboardSettings" Spacing="12" Visibility="Collapsed"
+                                AutomationProperties.AutomationId="PeripheralKeyboardSettings">
+                        <Border Style="{StaticResource SurfaceStyle}" Padding="16">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="键盘设置（只读）" Style="{StaticResource PeripheralSectionTitleStyle}" />
+                                <TextBlock x:Name="KeyboardReadoutStatus" Style="{StaticResource BodyCopyStyle}" />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource SurfaceStyle}" Padding="16">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="全键盘灯光" Style="{StaticResource PeripheralSectionTitleStyle}" />
+                                <TextBlock x:Name="KeyboardEffect" Style="{StaticResource PeripheralValueStyle}"
+                                           AutomationProperties.AutomationId="PeripheralKeyboardEffect" />
+                                <TextBlock x:Name="KeyboardBrightness" Style="{StaticResource PeripheralValueStyle}"
+                                           AutomationProperties.AutomationId="PeripheralKeyboardBrightness" />
+                                <TextBlock x:Name="KeyboardSpeed" Style="{StaticResource PeripheralValueStyle}"
+                                           AutomationProperties.AutomationId="PeripheralKeyboardSpeed" />
+                                <TextBlock x:Name="KeyboardColor" Style="{StaticResource PeripheralValueStyle}"
+                                           AutomationProperties.AutomationId="PeripheralKeyboardColor" />
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource SurfaceStyle}" Padding="16">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="逐键 RGB 与键位映射" Style="{StaticResource PeripheralSectionTitleStyle}" />
+                                <ComboBox x:Name="KeyboardKeyPicker" Header="查看物理键位" HorizontalAlignment="Stretch"
+                                          SelectionChanged="KeyboardKey_SelectionChanged"
+                                          AutomationProperties.AutomationId="PeripheralKeyboardKeyPicker" />
+                                <TextBlock x:Name="KeyboardKeyColor" Style="{StaticResource PeripheralValueStyle}"
+                                           AutomationProperties.AutomationId="PeripheralKeyboardPerKeyRgb" />
+                                <TextBlock x:Name="KeyboardKeyAssignment" Style="{StaticResource PeripheralValueStyle}"
+                                           AutomationProperties.AutomationId="PeripheralKeyboardMapping" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

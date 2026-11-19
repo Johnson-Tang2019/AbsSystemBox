@@ -15,5 +15,8 @@
 # SensorServiceEndpointTests accepted 2026-11-07 (1 new case; SCM-bound peer cannot be spoofed).
 # PeripheralsFeaturesTests (4) and PeripheralIdentityFeaturesTests (9) accepted 2026-11-19.
 # AppUpdateFeaturesTests (11) cover the updater and transport retries; authorized grant replacement and rollback were checked in Windows PowerShell 5.1 with test fixtures.
+# UpdateProxyRecoveryTests (9) accepted 2026-11-19.
+# KeyboardHardwareIdentityFeaturesTests (5) accepted 2026-11-19.
+# PeripheralSettingsFeaturesTests (6) accepted 2026-11-19.
 # CleanupLaunchPeerTests accepted 2026-11-10 (1 new case; local PID and image checked).
 # CoolingReconnectTests accepted 2026-11-19 (6 new cases; stream/device/startup/stale/write recovery and cancellation).

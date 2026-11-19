@@ -101,16 +101,27 @@ internal static class PeripheralIdentity
         var systemModels = candidates.Select(candidate => ModelFromProductName(candidate.Interface.ProductName))
             .OfType<string>().Distinct(StringComparer.OrdinalIgnoreCase).Take(2).ToArray();
         var catalogModel = SingleValue(candidates.Select(candidate => candidate.Catalog?.Model));
-        var model = receiver ? null : systemModels.Length switch
+        var keyboardIdentity = kind == PeripheralKind.Keyboard && !receiver
+            ? SingleValue(candidates.Select(candidate => candidate.Interface.HardwareIdentityCode)) : null;
+        var mouse = kind == PeripheralKind.Mouse && receiver
+            ? SingleReadout(candidates.Select(candidate => candidate.Interface.MouseReadout)) : null;
+        var keyboardModel = KeyboardIdentityReport.Model(keyboardIdentity);
+        var keyboardLighting = keyboardModel is not null
+            ? SingleReadout(candidates.Where(candidate => candidate.Interface.HardwareIdentityCode == keyboardIdentity)
+                .Select(candidate => candidate.Interface.KeyboardLighting)) : null;
+        var hardwareModel = mouse is not null ? "K7 Ultra" : keyboardModel;
+        var model = hardwareModel ?? (receiver ? null : systemModels.Length switch
         {
             1 => systemModels[0],
             0 => catalogModel,
             _ => null
-        };
+        });
         var modelEvidence = model is null ? PeripheralModelEvidence.Unknown :
+            hardwareModel is not null ? PeripheralModelEvidence.HardwareReported :
             systemModels.Length == 1 ? PeripheralModelEvidence.SystemReported : PeripheralModelEvidence.CatalogMatched;
 
-        var manufacturer = SingleValue(candidates.Select(candidate => candidate.Brand)) ??
+        var manufacturer = mouse is not null ? "迈从" : keyboardModel is not null ? "狼蛛" :
+            SingleValue(candidates.Select(candidate => candidate.Brand)) ??
             SingleValue(candidates.Select(candidate => ManufacturerFromSystem(candidate.Interface.Manufacturer)));
         var category = kind switch
         {
@@ -124,8 +135,10 @@ internal static class PeripheralIdentity
         var (vendor, product) = SelectHardwareIds(candidates);
         var keyBytes = Encoding.UTF8.GetBytes(container.ToUpperInvariant());
         var id = $"{Convert.ToHexString(SHA256.HashData(keyBytes))}:{kind}";
-        var presence = receiver ? PeripheralPresence.ReceiverOnly : PeripheralPresence.Detected;
-        return new(id, kind, name, manufacturer, model, modelEvidence, connection, presence, vendor, product);
+        var presence = receiver && mouse is null ? PeripheralPresence.ReceiverOnly : PeripheralPresence.Detected;
+        var receiverName = receiver ? SingleValue(candidates.Select(candidate => candidate.Interface.ProductName)) : null;
+        return new(id, kind, name, manufacturer, model, modelEvidence, connection, presence, vendor, product,
+            mouse is not null ? MchoseK7Reports.BodyId : keyboardIdentity, receiverName, mouse, keyboardLighting);
     }
 
     private static (ushort? Vendor, ushort? Product) SelectHardwareIds(List<Candidate> candidates)
@@ -200,6 +213,12 @@ internal static class PeripheralIdentity
     {
         var candidates = values.Where(value => !string.IsNullOrWhiteSpace(value))
             .Distinct(StringComparer.OrdinalIgnoreCase).Take(2).ToArray();
+        return candidates.Length == 1 ? candidates[0] : null;
+    }
+
+    private static T? SingleReadout<T>(IEnumerable<T?> values) where T : class
+    {
+        var candidates = values.OfType<T>().Distinct().Take(2).ToArray();
         return candidates.Length == 1 ? candidates[0] : null;
     }
 

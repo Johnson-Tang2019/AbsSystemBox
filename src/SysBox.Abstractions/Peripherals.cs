@@ -26,7 +26,8 @@ public enum PeripheralModelEvidence
 {
     Unknown,
     SystemReported,
-    CatalogMatched
+    CatalogMatched,
+    HardwareReported
 }
 
 public sealed record PeripheralDevice(
@@ -39,7 +40,26 @@ public sealed record PeripheralDevice(
     PeripheralConnection Connection,
     PeripheralPresence Presence,
     ushort? VendorId,
-    ushort? ProductId);
+    ushort? ProductId,
+    string? HardwareIdentityCode = null,
+    string? ReceiverName = null,
+    MousePeripheralReadout? MouseReadout = null,
+    KeyboardLightingReadout? KeyboardLighting = null);
+
+public sealed record MousePeripheralReadout(
+    int? BatteryPercent, string? FirmwareVersion = null, MousePerformanceReadout? Performance = null);
+
+public sealed record MousePerformanceReadout(
+    IReadOnlyList<int> DpiStages,
+    IReadOnlyList<int>? VerticalDpiStages,
+    int ActiveDpiStage,
+    int? ActiveProfile,
+    int? PollingRateHz,
+    decimal? LiftOffDistanceMm,
+    int? SleepMinutes,
+    int? DebounceMilliseconds);
+
+public sealed record KeyboardLightingReadout(int EffectId, int? BrightnessLevel, int? SpeedLevel);
 
 public interface IPeripheralDiscovery
 {

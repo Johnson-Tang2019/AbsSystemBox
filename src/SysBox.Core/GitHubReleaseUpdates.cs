@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 using System.Buffers;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text.Json;
 
@@ -7,7 +8,7 @@ namespace SysBox.Core;
 
 public sealed record ReleaseUpdate(Version Version, Uri InstallerUri, long Size, string Sha256);
 
-public sealed class GitHubReleaseUpdates(HttpClient client)
+public sealed class GitHubReleaseUpdates(HttpClient client, HttpClient? directClient = null, IWebProxy? proxy = null)
 {
     private const string Repository = "Johnson-Tang2019/AbsSystemBox";
     private const int MaxReleaseBytes = 512 * 1024;
@@ -29,7 +30,7 @@ public sealed class GitHubReleaseUpdates(HttpClient client)
         using var request = new HttpRequestMessage(HttpMethod.Get, Latest);
         request.Headers.UserAgent.ParseAdd("AbsSystemBox-Update/1.0");
         request.Headers.Accept.ParseAdd("application/vnd.github+json");
-        using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
+        using var response = await SendAsync(request, token).ConfigureAwait(false);
         response.EnsureSuccessStatusCode();
         if (response.RequestMessage?.RequestUri is { } responseUri && responseUri != Latest)
             throw new InvalidDataException("Release metadata left the official endpoint.");
@@ -116,7 +117,7 @@ public sealed class GitHubReleaseUpdates(HttpClient client)
         {
             using var request = new HttpRequestMessage(HttpMethod.Get, uri);
             request.Headers.UserAgent.ParseAdd("AbsSystemBox-Update/1.0");
-            var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
+            var response = await SendAsync(request, token).ConfigureAwait(false);
             if (response.StatusCode == System.Net.HttpStatusCode.OK &&
                 (response.RequestMessage?.RequestUri is not { } responseUri || responseUri == uri))
                 return response;
@@ -132,6 +133,32 @@ public sealed class GitHubReleaseUpdates(HttpClient client)
         }
         throw new HttpRequestException("Too many installer redirects.");
     }
+
+    private async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken token)
+    {
+        try
+        {
+            return await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
+        }
+        catch (HttpRequestException error) when (directClient is not null && proxy is not null &&
+            IsLocalProxyConnectionFailure(error) && request.RequestUri is { } uri &&
+            !proxy.IsBypassed(uri) && proxy.GetProxy(uri) is { IsLoopback: true })
+        {
+            token.ThrowIfCancellationRequested();
+            using var directRequest = new HttpRequestMessage(request.Method, uri);
+            foreach (var header in request.Headers)
+                directRequest.Headers.TryAddWithoutValidation(header.Key, header.Value);
+            return await directClient.SendAsync(directRequest, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
+        }
+    }
+
+    private static bool IsLocalProxyConnectionFailure(HttpRequestException error) =>
+        error.StatusCode is null && error.HttpRequestError switch
+        {
+            HttpRequestError.ConnectionError or HttpRequestError.ResponseEnded => true,
+            HttpRequestError.SecureConnectionError => error.InnerException is IOException,
+            _ => false
+        };
 
     private static async Task<long> CopyAsync(Stream source, Stream target, long limit, IncrementalHash? hash,
         IProgress<double>? progress, CancellationToken token)

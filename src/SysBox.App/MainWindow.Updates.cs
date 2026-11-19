@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 using System.Diagnostics;
+using System.Net;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text.Json;
@@ -12,12 +13,10 @@ namespace SysBox.App;
 
 public sealed partial class MainWindow
 {
-    private static readonly HttpClient ReleaseHttpClient = new(new HttpClientHandler
-    {
-        AllowAutoRedirect = false,
-        UseCookies = false
-    }) { Timeout = Timeout.InfiniteTimeSpan };
-    private readonly GitHubReleaseUpdates updates = new(ReleaseHttpClient);
+    private static readonly IWebProxy ReleaseProxy = HttpClient.DefaultProxy;
+    private static readonly HttpClient ReleaseHttpClient = CreateReleaseClient(useProxy: true);
+    private static readonly HttpClient DirectReleaseHttpClient = CreateReleaseClient(useProxy: false);
+    private readonly GitHubReleaseUpdates updates = new(ReleaseHttpClient, DirectReleaseHttpClient, ReleaseProxy);
     private readonly CancellationTokenSource updateLifetime = new();
     private Version? currentUpdateVersion;
     private ReleaseUpdate? offeredUpdate;
@@ -25,6 +24,14 @@ public sealed partial class MainWindow
     private bool checkingUpdate;
     private bool installingUpdate;
     private bool showCheckResult;
+
+    private static HttpClient CreateReleaseClient(bool useProxy) => new(new HttpClientHandler
+    {
+        AllowAutoRedirect = false,
+        UseCookies = false,
+        UseProxy = useProxy,
+        Proxy = useProxy ? ReleaseProxy : null
+    }) { Timeout = Timeout.InfiniteTimeSpan };
 
     private void InitializeUpdates()
     {

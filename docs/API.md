@@ -151,11 +151,19 @@ memory.processes 可选 sort=WorkingSet/PrivateCommit（枚举），默认保持
 
 0.3.0-preview.2 的 CleanupPolicy 增加 ProcessScope（0=LegacyAllowList，1=ProtectedBackground）和可选 ExcludedProcesses。缺失 scope 的历史存储继续使用旧白名单，不隐式扩大启用范围；新界面保存保护模式时需要重新进行桌面启用确认。排除名按大小写不敏感匹配、至多 32 个无路径 `.exe`，空列表有效，未知 scope 拒绝。系统默认保护仍在原生执行前复核，不受此枚举授权改变。
 
+## 桌面更新连接
+
+`GitHubReleaseUpdates` 使用首选 HTTP 客户端读取正式版本和下载已核验的安装附件。桌面可提供代表首选连接的 `IWebProxy` 及独立直连客户端，用于本机环回代理连接中断后的同地址重试。仍按原下载地址、大小和 SHA-256 验证安装附件。
+
 ## 外设只读端口
 
 `IPeripheralDiscovery.DiscoverAsync(CancellationToken)` 返回 `Result<IReadOnlyList<PeripheralDevice>>`。成功空列表表示本次未发现可分类设备。失败结果用于表达枚举不可用、超时或忙。设备键只用于本机选择和快照归并，切换 USB 端口或连接模式可能改变设备键。
 
-`PeripheralDevice` 包含类别、显示名、可空厂商和型号、型号来源、连接及在场状态和可空 VID/PID。Windows 报告、已知目录匹配与未知型号分别标记。接收器在场时，配对外设的连接和型号仍待确认。端口只在桌面进程内使用，见 [外设设置设计](PERIPHERALS.md)。
+`PeripheralDevice` 包含类别、显示名、可空厂商和型号、型号来源、连接及在场状态和可空 VID/PID。Windows 报告、已知目录匹配与未知型号分别标记。只有接收器的枚举数据时，配对外设的连接和型号显示待确认。端口只在桌面进程内使用，见 [外设设置设计](PERIPHERALS.md)。
+
+有线键盘的完整六字节身份或 K7 Ultra 本体 VID/PID 可出现在 `HardwareIdentityCode`。匹配完整 F87 Pro 身份或接收到在线 K7 Ultra 本体回报时标记 `HardwareReported`。接收器名称和枚举 VID/PID 分别保留在 `ReceiverName` 和原 USB 标识字段。
+
+`MouseReadout` 含可空电量、固件版本和板载性能快照。性能快照含 DPI 两轴、以零开始的活动档位和配置组、回报率、抬升高度、休眠和防抖。只有确认无线本体在线才返回快照。`KeyboardLighting` 含匹配的有线 F87 Pro 灯效数据。读不到的快照或字段保持空值，Windows 元数据仍可展示。接口只暴露读取操作。
 
 ## 水冷显示契约（2026-11-07）
 

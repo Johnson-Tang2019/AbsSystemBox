@@ -18,7 +18,10 @@ internal sealed record PeripheralInterface(
     ushort? Usage,
     string? Manufacturer,
     string? ProductName,
-    PeripheralConnection Connection);
+    PeripheralConnection Connection,
+    string? HardwareIdentityCode = null,
+    MousePeripheralReadout? MouseReadout = null,
+    KeyboardLightingReadout? KeyboardLighting = null);
 
 public sealed partial class WindowsPeripheralDiscovery : IPeripheralDiscovery
 {
@@ -225,11 +228,29 @@ public sealed partial class WindowsPeripheralDiscovery : IPeripheralDiscovery
         manufacturer ??= ReadStringProperty(instance, in Manufacturer, buffer);
 
         var connection = ReadConnection(instance, instanceId, buffer, token);
+        string? hardwareIdentity = null;
+        MousePeripheralReadout? mouse = null;
+        KeyboardLightingReadout? keyboardLighting = null;
+        if (caps is { } descriptor && KeyboardIdentityReport.Matches(vendor, product, connection, descriptor.UsagePage,
+            descriptor.Usage, descriptor.FeatureReportLength, manufacturer, productName) &&
+            path.Contains("&mi_01&", StringComparison.OrdinalIgnoreCase))
+        {
+            handle.Dispose();
+            (hardwareIdentity, keyboardLighting) = ReadKeyboard(path, token);
+        }
+        else if (caps is { } mouseDescriptor && MchoseK7Reports.Matches(vendor, product, connection,
+            mouseDescriptor.UsagePage, mouseDescriptor.Usage, mouseDescriptor.FeatureReportLength, productName))
+        {
+            handle.Dispose();
+            mouse = ReadMouse(path, token);
+        }
+
         token.ThrowIfCancellationRequested();
         if (CM_Get_DevNode_Status(out _, out _, instance, 0) is NoSuchDevNode or DeviceNotThere)
             return null;
         accessBlocked |= openError == ErrorAccessDenied && usage.Page is null;
-        return new(path, group, vendor, product, usage.Page, usage.Usage, manufacturer, productName, connection);
+        return new(path, group, vendor, product, usage.Page, usage.Usage, manufacturer, productName, connection,
+            hardwareIdentity, mouse, keyboardLighting);
     }
 
     private static bool DeviceDisappeared(int error) => error is 2 or 3 or 433 or 1167 or
@@ -363,12 +384,15 @@ public sealed partial class WindowsPeripheralDiscovery : IPeripheralDiscovery
         public ushort VersionNumber;
     }
 
-    // HIDP_CAPS contains 32 USHORTs. We consume only its first two fields.
+    // HIDP_CAPS contains 32 USHORTs. The report lengths follow the usage values.
     [StructLayout(LayoutKind.Sequential, Size = 64)]
     private struct HidCaps
     {
         public ushort Usage;
         public ushort UsagePage;
+        public ushort InputReportLength;
+        public ushort OutputReportLength;
+        public ushort FeatureReportLength;
     }
 
     private sealed class DeviceInfoSetHandle() : SafeHandleZeroOrMinusOneIsInvalid(true)

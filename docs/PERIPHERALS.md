@@ -44,7 +44,7 @@ Windows 平台接入可参考 `vader5-pro-mapper` 和八爪鱼 5 的 `apex-trigg
 | 键盘 | 读取灯效，先开放单项亮度修改和恢复 | 颜色、灯效、逐键 RGB、改键。磁轴型号的触发行程另立适配 |
 | 手柄 | 查看板载配置槽；已验证才开放一个配置参数。输入预览可显示按键、摇杆和扳机 | 背键、死区、曲线、震动、扳机。各功能按固件和模式验证 |
 
-本轮只读页面显示 Windows 提供的设备身份。接收器单独标记，设备具体型号无法确认时显示待确认。电量、固件、DPI、输入预览和板载配置属于后续的型号适配。
+只读页面显示 Windows 设备身份和已接入的板载读数。鼠标包含 DPI 档位、回报率、抬升高度、休眠、防抖、当前配置组和按键映射。键盘包含灯效、亮度、速度、灯效颜色、逐键 RGB 和键位映射。没有可用数据时显示具体状态。选中 DPI 档位、物理按键或键位只改变当前查看项。
 
 进入配置阶段后，可配设备显示当前值及未应用修改。用户点击「应用到设备」才写入，回读匹配后提示「已应用」。编辑期间切换设备时提示放弃草稿。保存到设备失败后保留草稿和原始快照，重连后重新读取。
 
@@ -55,7 +55,7 @@ Windows 平台接入可参考 `vader5-pro-mapper` 和八爪鱼 5 的 `apex-trigg
 | WinUI | `SysBox.App/MainWindow.xaml`、`MainWindow.xaml.cs`、`App.xaml.cs` 和新增 `Views/PeripheralsPage.xaml(.cs)`。接入导航、依赖注入和现有页面停用流程。 |
 | 页面状态 | `SysBox.Presentation/PeripheralsViewModel.cs`。处理异步刷新、子页与设备选择、错误反馈。离页取消并丢弃旧会话迟到的数据。 |
 | 契约 | `SysBox.Abstractions/Peripherals.cs`。提供可取消的设备枚举接口及结果类型，包含本地设备键、类型、连接方式、型号及识别依据。 |
-| Windows 与协议 | `SysBox.Native/Peripherals/`。用 SetupAPI 枚举在场 HID 集合并查询设备属性。本地按容器和接口归并，同型号多台设备保留独立身份。首轮仅读系统设备元数据，协议接入后用 VID/PID、厂商集合、报表长度和设备身份匹配具体适配器。 |
+| Windows 与协议 | `SysBox.Native/Peripherals/`。用 SetupAPI 枚举在场 HID 集合并查询设备属性。本地按容器和接口归并，同型号多台设备保留独立身份。有线键盘身份查询按 VID/PID、USB 拓扑、厂商集合、报表长度和实际产品描述选择接口。 |
 | 新功能验证 | `PeripheralsFeaturesTests` 和 `PeripheralIdentityFeaturesTests` 覆盖路由选择、刷新失败与恢复、丢弃旧结果、组合接口归并和型号证据。 |
 
 Windows 的键鼠输入集合由系统独占。枚举阶段可使用无数据访问权限的句柄读取元数据。部分 F75、F87 Pro、F99 Pro 接收器共用 `3554:FA09`，型号和归属不明时维持待识别状态。硬件配置仅访问已匹配的厂商集合，使用 `SafeHandle` 并验证报告类型、ID、长度和响应内容。Windows 传输要证明操作可取消或有明确执行上限，再接入页面。手柄的 XInput、DInput 与 Switch 模式分别确认厂商接口，只有通用手柄信息时仅显示已知状态。见 [Aula-Manager 协议笔记](https://github.com/free-soldier28/Aula-Manager/blob/main/docs/PROTOCOL.md)、[Microsoft HID 枚举说明](https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/finding-and-opening-a-hid-collection)、[Windows HID 集合访问规则](https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/hid-architecture)。
@@ -74,3 +74,10 @@ Windows 的键鼠输入集合由系统独占。枚举阶段可使用无数据访
 - Windows 枚举了 28 个活动 HID 接口，得到 8 条独立设备记录。验证了普通会话的 HID 集合元数据读取，以及句柄被拒绝时使用 Windows 硬件 ID 的回退路径。
 - 迈从检测到接收器 `5253:1020`。上游有该接收器配合 L7 Pro 的验证记录，当前只读元数据仍不足以确认配对鼠标本体。键盘检测到共享标识的 `3554:FA09` 接收器，品牌及具体型号待确认。本次未枚举到 HID 手柄，仅以非 HID 模式呈现的手柄尚不在枚举范围内。见 [迈从 L7 Pro 协议](https://github.com/alexfrih/mchose-linux/blob/main/PROTOCOL.md)。
 - 下一步用三台实机分别验证有线或常用模式的连接及拔插，记录完整型号、固件和连接方式，再选择第一台设备验证可恢复的单项设置。
+
+## 2026-11-19 有线键盘身份核对
+
+- 键盘有线 USB 为 `258A:010C`，Windows 产品字符串为 `Gaming Keyboard`。有线实机返回完整身份 `03000000010B`，与 F87 Pro 的厂商资源匹配。外设页按这个精确值识别「狼蛛 F87 Pro」。固件版本仍待核对。见 [AULA Studio 多型号记录](https://github.com/Dahuum/aula-studio/blob/main/docs/MULTI_MODEL_RESEARCH.md)。
+- 同时观察到 `3554:FA09` 接收器。只按 Windows 枚举显示，其身份独立于已通过有线确认的键盘。
+- 迈从 `5253:1020` 的接收器产品名为 `MCHOSE K7 Ultra`，另有单独的 MagDock `3837:1012`。唤醒后从接收器验证厂商集合 `FF01:0001`、65 字节 Feature Report、在线位和本体 ID `3837:4150`。隔离 WinUI 开发版显示固件 `5.28.4.0`、电量 90–91%、第 5 档 2800 DPI、8000 Hz 板载回报率设置、2 mm 抬升高度和 3 分钟休眠。回报率来自设备配置。见 [K7 Ultra 协议记录](https://github.com/aipno/mchose-linux/blob/main/docs/PROTOCOL.md)。
+- 有线 F87 Pro `03000000010B` 返回匹配的 `0x84` 配置报告，开发版显示灯效模式 1。鼠标按键映射和键盘逐键 RGB、键位映射仍待核对。键盘颜色、亮度和速度字段在确认编码后再显示读数。见 [F87 读取契约](https://github.com/Dahuum/aula-studio/blob/main/docs/F87_READ_CONTRACT.md)。
