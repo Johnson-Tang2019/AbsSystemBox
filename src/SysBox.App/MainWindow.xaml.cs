@@ -23,6 +23,7 @@ public sealed partial class MainWindow : Window
         RootGrid.Loaded += ResizeForDisplay;
         App.Services.GetRequiredService<ThemeService>().Attach(RootGrid);
         DemoBanner.IsOpen = App.Services.GetRequiredService<IDashboardClient>().IsDemo;
+        InitializeUpdates();
         Navigation.SelectedItem = Navigation.MenuItems[0];
         Closed += (_, _) =>
         {
@@ -95,6 +96,7 @@ public sealed partial class MainWindow : Window
             "storage" => typeof(StoragePage),
             "rules" => typeof(RulesPage),
             "cooling" => typeof(CoolingDisplayPage),
+            "peripherals" => typeof(PeripheralsPage),
             "diagnostics" => typeof(DiagnosticsPage),
             "settings" => typeof(SettingsPage),
             _ => typeof(DashboardPage)
@@ -104,7 +106,7 @@ public sealed partial class MainWindow : Window
         if (RootFrame.Content is IPageLifetime page)
             page.Deactivate();
         RootFrame.Navigate(pageType);
-        // There are eight fixed destinations: keep at most one view of each, never an unbounded back stack.
+        // Keep one view per fixed destination and clear the back stack.
         if (RootFrame.Content is Page current)
             current.NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Required;
         RootFrame.BackStack.Clear();

@@ -121,16 +121,69 @@ try {
         }
     }
     Assert-Protected $image
-    $temporary = Join-Path $target ('grant-' + [guid]::NewGuid().ToString('N') + '.json')
-    @{Sid=$sid.Value;Image=$client;Areas=$selected} | ConvertTo-Json -Compress | Set-Content -LiteralPath $temporary -Encoding UTF8
-    Seal-File $temporary
-    if ($service) { Stop-Service -Name $name; (Get-Service -Name $name).WaitForStatus('Stopped',[TimeSpan]::FromSeconds(15)) }
-    if (Test-Path -LiteralPath $policy) { [IO.File]::Replace($temporary,$policy,$null) } else { [IO.File]::Move($temporary,$policy) }
-    Assert-Protected $policy
-    if ($service) { Set-Service -Name $name -StartupType Automatic }
-    else { New-Service -Name $name -BinaryPathName $command -DisplayName 'AbsSystemBox Memory Cleanup' -StartupType Automatic | Out-Null }
-    Start-Service -Name $name
-    (Get-Service -Name $name).WaitForStatus('Running',[TimeSpan]::FromSeconds(15))
+    $suffix = [guid]::NewGuid().ToString('N')
+    $temporary = Join-Path $target "grant-$suffix.json"
+    $backup = Join-Path $target "grant-$suffix.backup.json"
+    $discard = Join-Path $target "grant-$suffix.discard.json"
+    $hadPolicy = $null -ne $priorGrant
+    $switched = $false
+    $created = $false
+    $serviceTouched = $false
+    $keepBackup = $false
+    try {
+        @{Sid=$sid.Value;Image=$client;Areas=$selected} | ConvertTo-Json -Compress | Set-Content -LiteralPath $temporary -Encoding UTF8
+        Seal-File $temporary
+        # Use a real backup path. Windows PowerShell 5.1 binds a null string argument as an empty path.
+        if ($hadPolicy) { [IO.File]::Replace($temporary,$policy,$backup) }
+        else { [IO.File]::Move($temporary,$policy) }
+        $switched = $true
+        Assert-Protected $policy
+        if ($service) {
+            $serviceTouched = $true
+            Stop-Service -Name $name
+            (Get-Service -Name $name).WaitForStatus('Stopped',[TimeSpan]::FromSeconds(15))
+            Set-Service -Name $name -StartupType Automatic
+        } else {
+            New-Service -Name $name -BinaryPathName $command -DisplayName 'AbsSystemBox Memory Cleanup' -StartupType Automatic | Out-Null
+            $created = $true
+        }
+        Start-Service -Name $name
+        (Get-Service -Name $name).WaitForStatus('Running',[TimeSpan]::FromSeconds(15))
+    } catch {
+        $failure = $_
+        try {
+            if ($created -or $serviceTouched) {
+                Stop-Service -Name $name
+                (Get-Service -Name $name).WaitForStatus('Stopped',[TimeSpan]::FromSeconds(15))
+            }
+            if ($hadPolicy -and (Test-Path -LiteralPath $backup)) {
+                Assert-Protected $backup
+                if (Test-Path -LiteralPath $policy) { [IO.File]::Replace($backup,$policy,$discard) }
+                else { [IO.File]::Move($backup,$policy) }
+            } elseif ($switched) {
+                if ($hadPolicy) { throw '缺少上次授权的备份。' }
+                [IO.File]::Move($policy,$discard)
+            }
+            if ($created) {
+                & (Join-Path ([Environment]::SystemDirectory) 'sc.exe') delete $name | Out-Null
+                if ($LASTEXITCODE -ne 0) { throw '无法注销本次新建的清理服务。' }
+            } elseif ($serviceTouched) {
+                $startup = if ($service.StartMode -eq 'Auto') { 'Automatic' } else { $service.StartMode }
+                Set-Service -Name $name -StartupType $startup
+                if ($service.State -eq 'Running') {
+                    Start-Service -Name $name
+                    (Get-Service -Name $name).WaitForStatus('Running',[TimeSpan]::FromSeconds(15))
+                }
+            }
+        } catch {
+            $keepBackup = $true
+            throw "清理授权更改失败，无法恢复上次状态。原始错误：$failure。恢复错误：$_"
+        }
+        throw $failure
+    } finally {
+        foreach ($workFile in @($temporary,$discard)) { Remove-Item -LiteralPath $workFile -ErrorAction SilentlyContinue }
+        if (-not $keepBackup) { Remove-Item -LiteralPath $backup -ErrorAction SilentlyContinue }
+    }
 } finally {
     if ($entered) { $lock.ReleaseMutex() }
     $lock.Dispose()

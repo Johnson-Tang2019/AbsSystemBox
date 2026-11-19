@@ -151,6 +151,12 @@ memory.processes 可选 sort=WorkingSet/PrivateCommit（枚举），默认保持
 
 0.3.0-preview.2 的 CleanupPolicy 增加 ProcessScope（0=LegacyAllowList，1=ProtectedBackground）和可选 ExcludedProcesses。缺失 scope 的历史存储继续使用旧白名单，不隐式扩大启用范围；新界面保存保护模式时需要重新进行桌面启用确认。排除名按大小写不敏感匹配、至多 32 个无路径 `.exe`，空列表有效，未知 scope 拒绝。系统默认保护仍在原生执行前复核，不受此枚举授权改变。
 
+## 外设只读端口
+
+`IPeripheralDiscovery.DiscoverAsync(CancellationToken)` 返回 `Result<IReadOnlyList<PeripheralDevice>>`。成功空列表表示本次未发现可分类设备。失败结果用于表达枚举不可用、超时或忙。设备键只用于本机选择和快照归并，切换 USB 端口或连接模式可能改变设备键。
+
+`PeripheralDevice` 包含类别、显示名、可空厂商和型号、型号来源、连接及在场状态和可空 VID/PID。Windows 报告、已知目录匹配与未知型号分别标记。接收器在场时，配对外设的连接和型号仍待确认。端口只在桌面进程内使用，见 [外设设置设计](PERIPHERALS.md)。
+
 ## 水冷显示契约（2026-11-07）
 
 0.3.1 新增 `CoolingDisplaySettings.AutoStart`，仅用于普通显示同步的启动偏好，不是采集授权。`CoolingDisplayDefaults.Select` 仅在没有保存 ID 时按唯一的 Core Max / CPU Fan 标签选择；ID 失效或标签歧义均明确拒绝。`StartAtApplicationLaunchAsync`、`CancelPageDetection` 将页面检测与应用同步生命周期分离。

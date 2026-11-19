@@ -14,6 +14,8 @@ public sealed partial class MemoryCleanupPanel : UserControl
     {
         InitializeComponent();
         Loaded += async (_, _) => await ReadCleanupAsync();
+        Loaded += async (_, _) => await RefreshGrantStatusAsync();
+        Unloaded += (_, _) => grantStatusProbe?.Cancel();
         InitializeSystemAreas();
     }
     private async Task ReadCleanupAsync()

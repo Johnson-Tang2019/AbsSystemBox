@@ -120,6 +120,33 @@ FunctionEnd
 !insertmacro CLEAN_PAYLOAD ""
 !insertmacro CLEAN_PAYLOAD "un."
 
+Function WaitForInAppUpdate
+  ${GetParameters} $R8
+  ClearErrors
+  ${GetOptions} $R8 "/SYSBOXUPDATE" $R9
+  IfErrors update_ready
+  StrCpy $R8 150
+update_wait:
+  System::Call 'kernel32::OpenMutexW(i 0x100000,i 0,w "Local\AbsSystemBox.Desktop")p.r9'
+  IntCmp $9 0 update_host
+  System::Call 'kernel32::CloseHandle(p r9)'
+  Goto update_pause
+update_host:
+  System::Call 'kernel32::OpenMutexW(i 0x100000,i 0,w "Local\AbsSystemBox.CoreHost")p.r9'
+  IntCmp $9 0 update_agent
+  System::Call 'kernel32::CloseHandle(p r9)'
+  Goto update_pause
+update_agent:
+  System::Call 'kernel32::OpenMutexW(i 0x100000,i 0,w "Local\AbsSystemBox.Agent")p.r9'
+  IntCmp $9 0 update_ready
+  System::Call 'kernel32::CloseHandle(p r9)'
+update_pause:
+  Sleep 200
+  IntOp $R8 $R8 - 1
+  StrCmp $R8 0 update_ready update_wait
+update_ready:
+FunctionEnd
+
 !macro CHECK_AGENTS FN
 Function ${FN}CheckAgents
   System::Call 'kernel32::OpenMutexW(i 0x100000,i 0,w "Local\AbsSystemBox.Cleanup")p.r0 ?e'
@@ -266,6 +293,7 @@ setup_ready:
   SetErrorLevel 3
   Abort
 version_ok:
+  Call WaitForInAppUpdate
   Call CheckBusy
 FunctionEnd
 

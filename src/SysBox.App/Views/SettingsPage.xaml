@@ -8,6 +8,12 @@
                 <TextBlock Text="为你的桌面，添一抹粉色。" Style="{StaticResource BodyCopyStyle}" />
             </StackPanel>
             <Border Style="{StaticResource SurfaceStyle}">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="软件更新" Style="{StaticResource SubtitleTextBlockStyle}" />
+                    <Button Content="检查更新" Click="CheckUpdates_Click" AutomationProperties.AutomationId="CheckAppUpdates" />
+                </StackPanel>
+            </Border>
+            <Border Style="{StaticResource SurfaceStyle}">
                 <StackPanel Spacing="20">
                     <TextBlock Text="外观" Style="{StaticResource SubtitleTextBlockStyle}" />
                     <TextBlock Text="粉色主题 · 半透明毛玻璃 · 扁平卡片" Style="{StaticResource BodyCopyStyle}" />

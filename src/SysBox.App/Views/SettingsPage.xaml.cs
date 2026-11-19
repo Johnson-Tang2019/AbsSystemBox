@@ -42,6 +42,7 @@ public sealed partial class SettingsPage : Page
         DesktopStatus.Text = App.Desktop.Status;
     }
     private void QuickSearch_Click(object sender, RoutedEventArgs args) => App.Desktop.ShowSearch();
+    private async void CheckUpdates_Click(object sender, RoutedEventArgs args) => await App.MainWindow.CheckUpdatesAsync(manual: true);
     private void Exit_Click(object sender, RoutedEventArgs args) => App.Desktop.Exit();
     private void Startup_Click(object sender, RoutedEventArgs args)
     {

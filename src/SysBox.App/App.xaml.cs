@@ -86,6 +86,8 @@ public partial class App : Application
 #endif
         services.AddSingleton<ICoolingDisplayTransport, GoldenFiledDisplayTransport>();
         services.AddSingleton<CoolingDisplayViewModel>();
+        services.AddSingleton<IPeripheralDiscovery, WindowsPeripheralDiscovery>();
+        services.AddTransient<PeripheralsViewModel>();
         services.AddSingleton<ThemeService>();
         services.AddTransient<DashboardViewModel>();
         services.AddSingleton<ISamplingDelay, SamplingDelay>();

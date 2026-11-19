@@ -23,7 +23,7 @@ $compiler=& (Join-Path $PSScriptRoot 'get-nsis.ps1')
 foreach($component in @(@{project='SysBox.CoreHost';folder='host'},@{project='SysBox.Cli';folder='cli'},@{project='SysBox.Mcp';folder='mcp'},@{project='SysBox.NtfsService';folder='ntfs-service'},@{project='SysBox.CleanupHelper';folder='cleanup'},@{project='SysBox.SensorHost';folder='sensors'})){
     & (Join-Path $PSScriptRoot 'dotnet.ps1') publish "src/$($component.project)/$($component.project).csproj" -c Release --no-restore '-m:1' '-r' 'win-x64' '--self-contained' 'true' "-p:Version=$Version" "-p:FileVersion=$WindowsVersion" "-p:SourceRevisionId=$revision" '-p:DebugType=None' '-p:DebugSymbols=false' "--output=$(Join-Path $stage $component.folder)"
 }
-foreach($resource in @('App.xbf','MainWindow.xbf','FloatingBallWindow.xbf','QuickSearchWindow.xbf','SysBox.App.pri','Themes/PinkTheme.xbf','Controls/BatteryCard.xbf','Controls/MemoryCleanupPanel.xbf','Views/RulesPage.xbf','Views/SearchPage.xbf','Views/StoragePage.xbf','Views/CoolingDisplayPage.xbf','Controls/StorageTreemap.xbf')){
+foreach($resource in @('App.xbf','MainWindow.xbf','FloatingBallWindow.xbf','QuickSearchWindow.xbf','SysBox.App.pri','Themes/PinkTheme.xbf','Controls/BatteryCard.xbf','Controls/MemoryCleanupPanel.xbf','Views/RulesPage.xbf','Views/SearchPage.xbf','Views/StoragePage.xbf','Views/CoolingDisplayPage.xbf','Views/PeripheralsPage.xbf','Views/SettingsPage.xbf','Controls/StorageTreemap.xbf')){
     if(-not (Test-Path -LiteralPath (Join-Path $stage $resource))){throw "Published WinUI resource missing: $resource"}
 }
 foreach($name in @('LICENSE','COPYING.md','THIRD_PARTY_NOTICES.md')){Copy-Item -LiteralPath (Join-Path $root $name) -Destination $stage}
@@ -44,7 +44,7 @@ $cleanupPayload=Join-Path $stage 'cleanup'
 $cleanupFiles=@(Get-ChildItem -LiteralPath $cleanupPayload -File|ForEach-Object{@{name=$_.Name;sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash}})
 @{files=$cleanupFiles}|ConvertTo-Json -Depth 4|Set-Content (Join-Path $cleanupPayload 'cleanup-files.json') -Encoding UTF8
 [IO.Directory]::CreateDirectory((Join-Path $stage 'docs')) | Out-Null
-foreach($name in @('RULES.md','BATTERY.md','CLEANUP.md','AGENT_API.md','INSTALL.md','NTFS.md','ASSETS.md','COOLING_DISPLAY.md')){Copy-Item -LiteralPath (Join-Path $root "docs/$name") -Destination (Join-Path $stage 'docs')}
+foreach($name in @('RULES.md','BATTERY.md','CLEANUP.md','AGENT_API.md','INSTALL.md','NTFS.md','ASSETS.md','COOLING_DISPLAY.md','PERIPHERALS.md')){Copy-Item -LiteralPath (Join-Path $root "docs/$name") -Destination (Join-Path $stage 'docs')}
 $files=@(Get-ChildItem -LiteralPath $stage -Recurse -File | Sort-Object FullName | ForEach-Object {
     $relative=$_.FullName.Substring($stage.Length+1)
     if($relative.Length -gt 800 -or $relative.Contains("`n") -or $relative.Contains("`r")){throw 'Unsafe installer manifest path'}

@@ -1,5 +1,15 @@
 # 当前架构（桌面入口、CoreHost 与 Agent 接口）
 
+## 桌面软件更新与清理授权状态
+
+窗口激活触发有限频、可取消的发布检查。`GitHubReleaseUpdates` 仅读预定 GitHub Releases API，比较稳定版本并验证对应 x64 附件的来源、字节数和 SHA-256。点击更新后以普通权限把已验证的安装程序交给 Windows 并完全退出。安装程序最多等待 30 秒释放桌面和后台组件的互斥体，随后执行原有安装检查。
+
+内存页将清理授权读回和上一次授权操作结果分别显示。`cleanup.grant.status` 仍验证 SCM、进程和受保护映像身份。已保存授权仅在受保护文件与当前用户及安装应用匹配时作为服务不可用的提示。授权工具使用真实备份路径原子替换后重启服务，失败时恢复旧授权和原服务状态。
+
+## 外设设置（只读识别）
+
+外设为一个固定的 WinUI 导航入口，内含设备总览、鼠标、键盘、手柄四个子页，共用一个 `PeripheralsViewModel`。Presentation 负责刷新与设备选择，离页取消查询并清除快照。App 注入 Abstractions 的 `IPeripheralDiscovery`，Native 负责普通用户的 Windows HID 元数据枚举、组合接口归并和型号证据匹配。接收器可见仅能证明接收器在场。板载配置须按实际型号另行验证。见 [外设设置设计](PERIPHERALS.md)。
+
 ## 2026-11-07 水冷显示增量
 
 0.3.1 将同步 VM 改为应用生命周期单例，启动读取 AutoStart 普通偏好，切换页面只取消页面检测/授权，不停止后台显示。完全退出取消采样与连接；Core Max / CPU Fan 默认解析为同类型唯一精确标签，保存的稳定 ID 消失不替换。偏好不能授予特权。
@@ -50,7 +60,7 @@ Core 的 DashboardClient 委托远程 IMemoryMonitor；规则配置持久化由�
 核心契约和 ViewModel 可以在非 Windows 环境测试；App 仅构建 Windows x64。
 
 App 来自官方 `winui` 模板，再按微软指南改为 unpackaged/self-contained。
-MainWindow 使用 NavigationView 和 Frame，页面包括概览、内存、文件搜索、磁盘空间、水冷显示、规则、诊断、设置。
+MainWindow 使用 NavigationView 和 Frame，页面包括概览、内存、文件搜索、磁盘空间、水冷显示、外设、规则、诊断、设置。
 ThemeService 为窗口根元素应用 System/Light/Dark；毛玻璃由 DesktopAcrylicBackdrop 提供，
 粉色主题资源保存在 Themes/PinkTheme.xaml，状态控件在 Controls/。
 
@@ -61,7 +71,7 @@ Core/IDashboardClient 通过 IMemoryMonitor 调用远程后台；以下页面生
 Release 通过条件编译排除所有模拟实现。
 
 页面离开、Unloaded 或窗口关闭时取消读取并递增请求代数，丢弃不合作客户端的迟到结果。
-Frame 清空同级导航的 BackStack。八个固定页面各缓存一个视图，避免反复重建行模板和界面资源；上限为八个页面。
+Frame 清空同级导航的 BackStack。九个固定页面各缓存一个视图，避免反复重建行模板和界面资源。外设子页使用同一个视图及快照。
 概览进入时读取一次，内存页拥有自己的 5 秒采样循环。
 循环、取消源和 60 点历史属于该页 ViewModel；离开时取消并使迟到结果失效，M2 循环仅属于该页；M3 新增的独立规则观察器见下文。
 内存页离开时清空数据并停止任务；有界视图保持固定的 ViewModel 绑定，重新进入只启动采样，不反复建立整页绑定。

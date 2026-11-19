@@ -43,6 +43,9 @@
                 <NavigationViewItem Content="文件搜索" Tag="search" Icon="Find" AutomationProperties.AutomationId="NavSearch" />
                 <NavigationViewItem Content="磁盘空间" Tag="storage" AutomationProperties.AutomationId="NavStorage"><NavigationViewItem.Icon><FontIcon Glyph="&#xEDA2;" /></NavigationViewItem.Icon></NavigationViewItem>
                 <NavigationViewItem Content="水冷显示" Tag="cooling" Icon="View" AutomationProperties.AutomationId="NavCooling" />
+                <NavigationViewItem Content="外设" Tag="peripherals" AutomationProperties.AutomationId="NavPeripherals">
+                    <NavigationViewItem.Icon><FontIcon Glyph="&#xE772;" /></NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem Content="规则" Tag="rules" AutomationProperties.AutomationId="NavRules"><NavigationViewItem.Icon><FontIcon Glyph="&#xE9D5;" /></NavigationViewItem.Icon></NavigationViewItem>
             </NavigationView.MenuItems>
             <NavigationView.FooterMenuItems>
@@ -50,10 +53,17 @@
                 <NavigationViewItem Content="设置" Tag="settings" Icon="Setting" AutomationProperties.AutomationId="NavSettings" />
             </NavigationView.FooterMenuItems>
             <Grid Padding="24,12,24,24" RowSpacing="12">
-                <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
                 <InfoBar x:Name="DemoBanner" IsOpen="False" IsClosable="False" Severity="Warning"
                          Title="示例预览" Message="这里的数据为模拟数据，不代表本机状态。" />
-                <Frame x:Name="RootFrame" Grid.Row="1" />
+                <InfoBar x:Name="UpdateBanner" Grid.Row="1" IsOpen="False" Severity="Informational"
+                         AutomationProperties.AutomationId="AppUpdateBanner">
+                    <InfoBar.ActionButton>
+                        <Button x:Name="InstallUpdateButton" Content="一键更新" Visibility="Collapsed" Click="InstallUpdate_Click"
+                                AutomationProperties.AutomationId="InstallAppUpdate" />
+                    </InfoBar.ActionButton>
+                </InfoBar>
+                <Frame x:Name="RootFrame" Grid.Row="2" />
             </Grid>
         </NavigationView>
     </Grid>
