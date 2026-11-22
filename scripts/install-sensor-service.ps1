@@ -1,5 +1,5 @@
 ﻿# SPDX-License-Identifier: GPL-3.0-or-later
-param([Parameter(Mandatory=$true)][ValidatePattern('^S-1-5-21-[0-9-]+$')][string]$UserSid,[switch]$ReviewOnly)
+param([Parameter(Mandatory=$true)][ValidatePattern('^S-1-5-21-[0-9-]+$')][string]$UserSid,[switch]$ReviewOnly,[switch]$MaintainExisting)
 $ErrorActionPreference='Stop'
 if(-not[Environment]::Is64BitProcess){throw '请使用 64 位 Windows PowerShell 管理传感器服务。'}
 $product='AbsSystemBox.JohnsonTang2019.Sensors'
@@ -53,18 +53,31 @@ $totalBytes=0L
 foreach($file in $manifest.files){if($file.path-isnot[string]-or$file.path.Length-lt1-or$file.path.Length-gt800-or[IO.Path]::IsPathRooted($file.path)-or(($file.path-split'[/\\]')|Where-Object{$_-in@('..','.','')-or$_-ne$_.TrimEnd(' ','.')-or$_.IndexOfAny([IO.Path]::GetInvalidFileNameChars())-ge0-or($_-split'\.')[0]-match'^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$'})-or$file.path.Contains(':')-or$file.path.Contains("`r")-or$file.path.Contains("`n")-or$file.sha256-notmatch'^[A-Fa-f0-9]{64}$'-or-not$paths.Add($file.path.Replace('/','\'))){throw '传感器负载路径或摘要无效。'};$candidate=[IO.Path]::GetFullPath((Join-Path $source $file.path));if(-not$candidate.StartsWith([IO.Path]::GetFullPath($source).TrimEnd('\')+'\',[StringComparison]::OrdinalIgnoreCase)){throw '传感器负载路径超出源目录。'};Check-NoReparse $candidate;$length=(Get-Item -LiteralPath $candidate).Length;$totalBytes+=$length;if($length-gt67108864-or$totalBytes-gt536870912){throw '传感器负载超出大小上限。'};if((Get-FileHash -LiteralPath $candidate -Algorithm SHA256).Hash-ne$file.sha256){throw '传感器负载摘要不匹配。'}}
 foreach($required in @('SysBox.SensorHost.exe','SysBox.SensorHost.dll','LibreHardwareMonitorLib.dll')){if(-not$paths.Contains($required)){throw '传感器服务负载不完整。'}}
 if($paths.Contains('.sysbox-service')-or$paths.Contains('sensors-files.json')){throw '传感器负载使用了保留的元数据路径。'}
+if(-not$MaintainExisting){
 Add-Type -AssemblyName System.Windows.Forms
 $message="允许 SystemBox 在开机后持续读取 CPU 温度和主板风扇 RPM，用于水冷屏显示？`n用户 SID：$UserSid`n允许的界面：$client`n服务账户：LocalSystem；程序和配置保存在管理员保护目录。`n仅固定的温度/转速读取，不提供风扇控制、超频、任意命令或文件扫描。需要已安装的 PawnIO 驱动。`n停止同步或退出界面后会结束该轮采集；可随时停用服务。"
 if([Windows.Forms.MessageBox]::Show($message,'AbsSystemBox 持久传感器采集授权','YesNo','Warning','Button2')-ne'Yes'){return}
+}
 Check-Trusted (Split-Path $target -Parent);Check-Trusted $target;Check-Trusted $policyRoot;Check-Trusted $policyDirectory
 $policyPath=Join-Path $policyDirectory 'grants.json';Check-Trusted $policyPath
 $service=Get-Service -Name 'AbsSystemBox.Sensors' -ErrorAction SilentlyContinue
 if(($service-or(Test-Path -LiteralPath $target))-and(-not(Test-Path -LiteralPath (Join-Path $target '.sysbox-service'))-or[IO.File]::ReadAllText((Join-Path $target '.sysbox-service')).Trim()-ne$product)){throw '存在其他服务或目录，已保留原内容。'}
 $registration=Get-CimInstance Win32_Service -Filter "Name='AbsSystemBox.Sensors'"
 if($registration-and($registration.StartName-notin@('LocalSystem','NT AUTHORITY\SYSTEM')-or$registration.PathName.Trim()-ne('"'+(Join-Path $target 'SysBox.SensorHost.exe')+'" --service'))){throw '现有服务注册与预期不符，已保留原配置。'}
+if($MaintainExisting){
+    if(-not$registration-or-not(Test-Path -LiteralPath $policyPath -PathType Leaf)-or(Get-Item -LiteralPath $policyPath).Length-gt65536){
+        throw '没有可维护的已授权传感器服务。'
+    }
+    if($registration.StartMode-ne'Auto'){throw '仅维护已启用自动启动的采集服务。'}
+    $existingPolicy=Get-Content -LiteralPath $policyPath -Raw -Encoding UTF8|ConvertFrom-Json
+    $matchingGrant=@($existingPolicy.Grants|Where-Object{$_.Sid-eq$UserSid-and$_.Image-eq$client})
+    if($existingPolicy.Version-ne1-or$existingPolicy.Grants.Count-lt1-or$existingPolicy.Grants.Count-gt32-or$matchingGrant.Count-ne1){
+        throw '受保护授权中没有当前已安装界面的有效记录。'
+    }
+}
 $existingBinary=Join-Path $target 'SysBox.SensorHost.exe'
 if(Test-Path -LiteralPath $existingBinary){Check-Trusted $existingBinary;if([version][Diagnostics.FileVersionInfo]::GetVersionInfo($existingBinary).FileVersion-gt[version][Diagnostics.FileVersionInfo]::GetVersionInfo((Join-Path $source 'SysBox.SensorHost.exe')).FileVersion){throw '不允许将传感器服务降级。'}}
-Protect (Split-Path $target -Parent);Protect $policyRoot;Protect $policyDirectory
+if(-not$MaintainExisting){Protect (Split-Path $target -Parent);Protect $policyRoot;Protect $policyDirectory}
 $stamp=[guid]::NewGuid().ToString('N');$incoming=$target+'.incoming-'+$stamp;$previous=$target+'.previous-'+$stamp;$policyBackup=$policyPath+'.previous-'+$stamp
 $productDirectory=[IO.Path]::GetFullPath((Split-Path $target -Parent)).TrimEnd('\')+'\'
 foreach($ownedPath in @($target,$incoming,$previous)){if(-not[IO.Path]::GetFullPath($ownedPath).StartsWith($productDirectory,[StringComparison]::OrdinalIgnoreCase)){throw '传感器服务维护路径超出受保护产品目录。'}}
@@ -75,34 +88,39 @@ Copy-Item -LiteralPath (Join-Path $source 'sensors-files.json') -Destination $in
 Seal-File (Join-Path $incoming 'sensors-files.json');Seal-File (Join-Path $incoming '.sysbox-service')
 $directoryQueue=[Collections.Generic.Stack[string]]::new();$directoryQueue.Push($incoming)
 while($directoryQueue.Count){$directory=$directoryQueue.Pop();Protect $directory;foreach($child in Get-ChildItem -LiteralPath $directory -Directory -Force){Check-NoReparse $child.FullName;$directoryQueue.Push($child.FullName)}}
+$policyIncoming=$policyPath+'.incoming-'+$stamp
+if(-not$MaintainExisting){
 $grants=@()
 if(Test-Path -LiteralPath $policyPath){if((Get-Item -LiteralPath $policyPath).Length-gt65536){throw '传感器授权配置过大。'};$old=Get-Content $policyPath -Raw -Encoding UTF8|ConvertFrom-Json;if($old.Version-ne1){throw '传感器授权配置版本不受支持。'};$grants=@($old.Grants|Where-Object{$_.Sid-ne$UserSid-or$_.Image-ne$client})}
 $grants+=@{Sid=$UserSid;Image=$client};if($grants.Count-gt32){throw '传感器授权用户数量超过上限。'}
 $json=@{Version=1;Grants=@($grants)}|ConvertTo-Json -Depth 6
-$policyIncoming=$policyPath+'.incoming-'+$stamp
 [IO.File]::WriteAllText($policyIncoming,$json,[Text.UTF8Encoding]::new($false))
 Seal-File $policyIncoming
+}
 $switched=$false;$policySwitched=$false;$hadTarget=Test-Path -LiteralPath $target;$hadPolicy=Test-Path -LiteralPath $policyPath
 try {
 if($service){Stop-Service -Name 'AbsSystemBox.Sensors';$service.WaitForStatus('Stopped',[TimeSpan]::FromSeconds(15))}
 if($hadTarget){[IO.Directory]::Move($target,$previous)}
 try{[IO.Directory]::Move($incoming,$target);$switched=$true}catch{if($hadTarget){[IO.Directory]::Move($previous,$target)};throw}
-if($hadPolicy){[IO.File]::Replace($policyIncoming,$policyPath,$policyBackup)}else{[IO.File]::Move($policyIncoming,$policyPath)};$policySwitched=$true
+if(-not$MaintainExisting){
+    if($hadPolicy){[IO.File]::Replace($policyIncoming,$policyPath,$policyBackup)}else{[IO.File]::Move($policyIncoming,$policyPath)}
+    $policySwitched=$true
+}
 $binary='"'+(Join-Path $target 'SysBox.SensorHost.exe')+'" --service'
-if($service){
+if($service-and-not$MaintainExisting){
     $current=Get-CimInstance Win32_Service -Filter "Name='AbsSystemBox.Sensors'"
     $changed=Invoke-CimMethod -InputObject $current -MethodName Change -Arguments @{PathName=$binary;StartMode='Automatic';StartName='LocalSystem'}
     if($changed.ReturnValue-ne0){throw '传感器服务注册更新失败。'}
-}else{
+}elseif(-not$service){
     New-Service -Name 'AbsSystemBox.Sensors' -BinaryPathName $binary -StartupType Automatic -DisplayName 'AbsSystemBox 传感器读取服务'|Out-Null
 }
 $registered=Get-CimInstance Win32_Service -Filter "Name='AbsSystemBox.Sensors'"
 if(-not$registered-or$registered.PathName.Trim()-ne$binary-or$registered.StartName-notin@('LocalSystem','NT AUTHORITY\SYSTEM')){throw '传感器服务注册身份不匹配。'}
-Start-Service -Name 'AbsSystemBox.Sensors';(Get-Service 'AbsSystemBox.Sensors').WaitForStatus('Running',[TimeSpan]::FromSeconds(15))
 & (Join-Path ([Environment]::SystemDirectory) 'sc.exe') failure 'AbsSystemBox.Sensors' reset= 86400 actions= restart/3000/restart/10000/restart/30000 | Out-Null
 if($LASTEXITCODE-ne0){throw '无法设置采集服务自动恢复。'}
 & (Join-Path ([Environment]::SystemDirectory) 'sc.exe') failureflag 'AbsSystemBox.Sensors' 1 | Out-Null
 if($LASTEXITCODE-ne0){throw '无法启用采集服务错误恢复。'}
+Start-Service -Name 'AbsSystemBox.Sensors';(Get-Service 'AbsSystemBox.Sensors').WaitForStatus('Running',[TimeSpan]::FromSeconds(15))
 } catch {
     $setupError=$_
     try {
@@ -114,6 +132,7 @@ if($LASTEXITCODE-ne0){throw '无法启用采集服务错误恢复。'}
     } catch {Write-Warning '回滚需要管理员检查；原服务负载和授权配置备份已保留。'}
     throw $setupError
 }
-Write-Output ('原服务负载和授权配置已保留，可用于回滚：'+$previous+'; '+$policyBackup)
+if($MaintainExisting){Write-Output ('已沿用授权。原服务负载可用于回滚：'+$previous)}
+else{Write-Output ('原服务负载和授权配置已保留，可用于回滚：'+$previous+'; '+$policyBackup)}
 Write-Output '传感器服务已安装；未启动卷扫描或风扇调速。'
 } finally {$setupLock.ReleaseMutex();$setupLock.Dispose()}

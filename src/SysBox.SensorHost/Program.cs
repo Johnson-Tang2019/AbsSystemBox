@@ -16,8 +16,14 @@ try
 }
 catch (Exception error) when (error is not OutOfMemoryException)
 {
+    if (args is ["--service"])
+    {
+        Console.Error.WriteLine(error);
+        return 1;
+    }
     // A failed handshake, timeout or parent exit never authorizes a fallback operation.
 }
+return 0;
 
 static async Task RunAsync(string[] arguments)
 {

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-using System.Diagnostics;
+using System.ComponentModel;
 using System.IO.Pipes;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
@@ -114,35 +114,50 @@ public static class SensorService
         using var identity = WindowsIdentity.GetCurrent();
         if (identity.User?.Value != "S-1-5-18" || !string.Equals(Environment.ProcessPath, SensorServicePolicy.ServiceImage, StringComparison.OrdinalIgnoreCase))
             throw new UnauthorizedAccessException("传感器服务仅允许从受保护安装位置以系统身份启动。");
-        BrokerPolicy.VerifyProtected(SensorServicePolicy.ServiceImage);
-        SensorServicePolicy.VerifyPayload();
-        var policy = SensorServicePolicy.Load();
         var builder = Host.CreateApplicationBuilder(new HostApplicationBuilderSettings { Args = [], ContentRootPath = AppContext.BaseDirectory });
         builder.Services.AddWindowsService(options => options.ServiceName = SensorServicePolicy.ServiceName);
         builder.Logging.ClearProviders();
         builder.Logging.AddEventLog(options => options.SourceName = SensorServicePolicy.ServiceName);
-        builder.Services.AddSingleton(policy);
         builder.Services.AddHostedService<SensorServiceWorker>();
         await builder.Build().RunAsync();
     }
 }
 
-sealed class SensorServiceWorker(SensorServicePolicy policy) : BackgroundService
+sealed class SensorServiceWorker(ILogger<SensorServiceWorker> logger) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken token)
     {
-        while (!token.IsCancellationRequested)
+        try
         {
-            await using var pipe = NamedPipeServerStreamAcl.Create(SensorServicePolicy.PipeName, PipeDirection.InOut, 1,
-                PipeTransmissionMode.Byte, PipeOptions.Asynchronous | PipeOptions.FirstPipeInstance, 16384, 16384, policy.Security(), HandleInheritability.None);
-            await pipe.WaitForConnectionAsync(token);
-            await HandleAsync(pipe, token);
+            // The host registers with SCM before background verification. No pipe is exposed until verification succeeds.
+            SensorServicePolicy policy;
+            using (var startupBudget = new NativeBudget())
+            {
+                startupBudget.Arm(TimeSpan.FromMinutes(1));
+                BrokerPolicy.VerifyProtected(SensorServicePolicy.ServiceImage);
+                SensorServicePolicy.VerifyPayload();
+                policy = SensorServicePolicy.Load();
+            }
+            while (!token.IsCancellationRequested)
+            {
+                await using var pipe = NamedPipeServerStreamAcl.Create(SensorServicePolicy.PipeName, PipeDirection.InOut, 1,
+                    PipeTransmissionMode.Byte, PipeOptions.Asynchronous | PipeOptions.FirstPipeInstance, 16384, 16384, policy.Security(), HandleInheritability.None);
+                await pipe.WaitForConnectionAsync(token);
+                await HandleAsync(pipe, policy, token);
+            }
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested) { }
+        catch (Exception error) when (error is not OutOfMemoryException)
+        {
+            try { logger.LogCritical(error, "The sensor service failed before it could accept or continue serving requests."); }
+            finally { Environment.Exit(1); }
         }
     }
 
-    private async Task HandleAsync(NamedPipeServerStream pipe, CancellationToken stopping)
+    private static async Task HandleAsync(NamedPipeServerStream pipe, SensorServicePolicy policy, CancellationToken stopping)
     {
         HardwareSensorSession? hardware = null;
+        var baseline = SensorServiceClock.SuspendedTicks();
         using var watchdog = new NativeBudget();
         try
         {
@@ -153,12 +168,14 @@ sealed class SensorServiceWorker(SensorServicePolicy policy) : BackgroundService
                 var request = await Protocol.ReadAsync<RpcRequest>(pipe, requestDeadline.Token);
                 var peer = BrokerPeer.Read(pipe, false);
                 policy.ValidateRequest(peer, request);
+                if (SensorServiceClock.SuspendedSince(baseline)) return;
                 watchdog.Arm(TimeSpan.FromSeconds(15));
                 // A protected LocalSystem service and its protected SID/image grant authorize this fixed operation.
                 // No request field or caller-controlled Boolean can enable privileged sensors.
                 hardware ??= HardwareSensorSession.Create(true);
                 var snapshot = hardware.Read();
                 watchdog.Disarm();
+                if (SensorServiceClock.SuspendedSince(baseline)) return;
                 await Protocol.WriteAsync(pipe, new RpcResponse(Protocol.Version, JsonSerializer.SerializeToElement(snapshot, Protocol.Json), null), requestDeadline.Token);
             }
         }
@@ -188,9 +205,33 @@ sealed class NativeBudget : IDisposable
     private readonly Timer timer;
     public NativeBudget() => timer = new Timer(_ =>
     {
-        if (Stopwatch.GetTimestamp() >= Interlocked.Read(ref deadline)) Environment.Exit(1);
+        if (SensorServiceClock.ActiveTicks() >= Interlocked.Read(ref deadline)) Environment.Exit(1);
     }, null, TimeSpan.FromMilliseconds(250), TimeSpan.FromMilliseconds(250));
-    public void Arm(TimeSpan duration) => Interlocked.Exchange(ref deadline, checked(Stopwatch.GetTimestamp() + (long)(duration.TotalSeconds * Stopwatch.Frequency)));
+    public void Arm(TimeSpan duration) => Interlocked.Exchange(ref deadline, checked(SensorServiceClock.ActiveTicks() + duration.Ticks));
     public void Disarm() => Interlocked.Exchange(ref deadline, long.MaxValue);
     public void Dispose() => timer.Dispose();
+}
+
+static class SensorServiceClock
+{
+    public static long ActiveTicks()
+    {
+        if (!QueryUnbiasedInterruptTime(out var ticks))
+            throw new Win32Exception(Marshal.GetLastWin32Error());
+        return checked((long)ticks);
+    }
+
+    public static long SuspendedTicks()
+    {
+        return checked((long)GetTickCount64() * TimeSpan.TicksPerMillisecond) - ActiveTicks();
+    }
+
+    public static bool SuspendedSince(long baseline) => SuspendedTicks() - baseline >= TimeSpan.TicksPerSecond;
+
+    [DllImport("kernel32.dll", ExactSpelling = true)]
+    private static extern ulong GetTickCount64();
+
+    [DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool QueryUnbiasedInterruptTime(out ulong ticks);
 }
