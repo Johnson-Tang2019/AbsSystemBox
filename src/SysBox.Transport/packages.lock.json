@@ -13,7 +13,7 @@
       "sysbox.rules": {
         "type": "Project",
         "dependencies": {
-          "SysBox.Abstractions": "[0.3.5, )",
+          "SysBox.Abstractions": "[0.3.11, )",
           "YamlDotNet": "[18.1.0, )"
         }
       }

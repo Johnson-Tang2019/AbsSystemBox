@@ -1,5 +1,10 @@
 # 开发状态
 
+## 0.3.11 本地构建
+
+- 该构建包含 Python 和 Windows PowerShell 托管、CLI／MCP 入口、磁盘空间整盘扫描及水冷唤醒恢复代码。
+- 复用已通过的脚本和整盘定向验收。独立普通账户下的 PowerShell、真实整卷遍历和 Windows S4 唤醒仍待验收。
+
 ## Windows PowerShell 托管兼容
 
 - `.ps1` 使用 Windows 自带解释器与隐藏终端，可登记、登录启动、后台运行、结束重试和读取日志。沿用系统执行策略。
