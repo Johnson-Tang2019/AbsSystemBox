@@ -11,6 +11,7 @@ namespace SysBox.App.Views;
 
 public sealed partial class StoragePage : Page, IPageLifetime
 {
+    private ContentDialog? volumeConfirmation;
     public StorageViewModel ViewModel { get; } = App.Services.GetRequiredService<StorageViewModel>();
     public StoragePage()
     {
@@ -20,7 +21,11 @@ public sealed partial class StoragePage : Page, IPageLifetime
         Loaded += async (_, _) => { try { Volumes.ItemsSource = (await App.Services.GetRequiredService<RpcClient>().CallAsync<VolumeCapacity[]>("volumes", new { })).Select(v => new VolumeCapacityRow(v)).ToArray(); } catch { ViewModel.ReportError("暂时无法读取卷容量；仍可输入文件夹路径。"); } };
         Unloaded += (_, _) => Deactivate();
     }
-    public void Deactivate() => ViewModel.Deactivate();
+    public void Deactivate()
+    {
+        volumeConfirmation?.Hide();
+        ViewModel.Deactivate();
+    }
     private void UpdateBreadcrumbs()
     {
         Breadcrumbs.Children.Clear();
@@ -41,7 +46,8 @@ public sealed partial class StoragePage : Page, IPageLifetime
         paths.Reverse();
         foreach (var path in paths)
         {
-            var button = new Button { Content = System.IO.Path.GetFileName(path), Tag = path, Padding = new Thickness(6, 2, 6, 2) };
+            var name = System.IO.Path.GetFileName(path);
+            var button = new Button { Content = name.Length == 0 ? path : name, Tag = path, Padding = new Thickness(6, 2, 6, 2) };
             button.Click += async (_, _) => await ViewModel.LoadAsync(path);
             Breadcrumbs.Children.Add(button);
         }
@@ -62,6 +68,35 @@ public sealed partial class StoragePage : Page, IPageLifetime
         catch { ViewModel.ReportError("无法打开文件夹选择器，请在输入框填写目录路径。 "); }
     }
     private async void Analyze_Click(object sender, RoutedEventArgs args) => await ViewModel.AnalyzeAsync();
+    private async void ScanVolume_Click(object sender, RoutedEventArgs args)
+    {
+        if (ViewModel.IsBusy || volumeConfirmation is not null)
+            return;
+        if (Volumes.SelectedItem is not VolumeCapacityRow volume)
+        {
+            ViewModel.ReportError("请先选择要扫描的磁盘卷。");
+            return;
+        }
+        var root = volume.Value.Root;
+        var dialog = new ContentDialog
+        {
+            XamlRoot = XamlRoot,
+            Title = $"扫描 {root} 整盘？",
+            Content = "读取当前权限可访问的文件名、大小和目录结构。跳过不可访问的项目与链接。最多扫描 100 万个条目或 30 分钟，可暂停和取消。",
+            PrimaryButtonText = "开始扫描",
+            CloseButtonText = "取消",
+            DefaultButton = ContentDialogButton.Close
+        };
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(dialog, "StorageVolumeApproval");
+        volumeConfirmation = dialog;
+        try
+        {
+            if (await dialog.ShowAsync() == ContentDialogResult.Primary && IsLoaded)
+                await ViewModel.AnalyzeVolumeAsync(root);
+        }
+        catch (InvalidOperationException) { ViewModel.ReportError("暂时无法显示整盘扫描确认。"); }
+        finally { volumeConfirmation = null; }
+    }
     private async void Read_Click(object sender, RoutedEventArgs args) => await ViewModel.LoadAsync(ViewModel.Path, resetScope: true);
     private void Pause_Click(object sender, RoutedEventArgs args) => ViewModel.TogglePause();
     private void Cancel_Click(object sender, RoutedEventArgs args) => ViewModel.Cancel();

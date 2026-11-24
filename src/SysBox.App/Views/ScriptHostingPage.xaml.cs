@@ -143,6 +143,7 @@ public sealed partial class ScriptHostingPage : Page, IPageLifetime
         {
             var picker = new FileOpenPicker();
             WinRT.Interop.InitializeWithWindow.Initialize(picker, WinRT.Interop.WindowNative.GetWindowHandle(App.MainWindow));
+            picker.FileTypeFilter.Add(".ps1");
             picker.FileTypeFilter.Add(".py");
             var file = await picker.PickSingleFileAsync();
             if (file is null || page != lifetime || lifetime is null)

@@ -21,3 +21,8 @@ public interface IStorageBrowser
     Task<StorageView> ReadAsync(string path, StorageSort sort, int offset, int limit, CancellationToken token,
         string? scopeRoot = null, long? expectedGeneration = null);
 }
+
+public interface IStorageVolumeBrowser : IStorageBrowser
+{
+    Task<IndexProgress> AnalyzeVolumeAsync(string root, IIndexControl control, IProgress<IndexProgress>? progress, CancellationToken token);
+}

@@ -38,7 +38,7 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox x:Name="ScriptPath" Header="Python 脚本文件" MaxLength="1024"
+                    <TextBox x:Name="ScriptPath" Header="PowerShell 或 Python 脚本" MaxLength="1024"
                              AutomationProperties.AutomationId="ScriptPath"/>
                     <Button x:Name="BrowseButton" Grid.Column="1" Content="浏览" VerticalAlignment="Bottom" Click="Browse_Click"/>
                 </Grid>

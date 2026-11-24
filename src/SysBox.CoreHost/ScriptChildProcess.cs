@@ -10,12 +10,25 @@ using Microsoft.Win32.SafeHandles;
 
 namespace SysBox.CoreHost;
 
-internal sealed class ScriptChildProcess(int id, SafeProcessHandle handle, StreamReader output, StreamReader error) : IDisposable
+internal sealed class ScriptChildProcess : IDisposable
 {
     private const uint DetachedWithAttributes = 0x00080008;
-    public int Id { get; } = id;
-    public StreamReader Output { get; } = output;
-    public StreamReader Error { get; } = error;
+    private const uint ExtendedStartupInfo = 0x00080000;
+    private readonly SafeProcessHandle handle;
+    private readonly HiddenConsole? console;
+
+    private ScriptChildProcess(int id, SafeProcessHandle handle, StreamReader output, StreamReader error, HiddenConsole? console)
+    {
+        Id = id;
+        this.handle = handle;
+        Output = output;
+        Error = error;
+        this.console = console;
+    }
+
+    public int Id { get; }
+    public StreamReader Output { get; }
+    public StreamReader Error { get; }
 
     public int ExitCode
     {
@@ -39,12 +52,13 @@ internal sealed class ScriptChildProcess(int id, SafeProcessHandle handle, Strea
 
     public void Dispose()
     {
+        console?.Dispose();
         handle.Dispose();
         Output.Dispose();
         Error.Dispose();
     }
 
-    public static ScriptChildProcess Start(ProcessStartInfo info, ScriptProcessJob job)
+    public static ScriptChildProcess Start(ProcessStartInfo info, ScriptProcessJob job, bool requiresConsole)
     {
         if (Marshal.SizeOf<StartupWithAttributes>() != 112 || Marshal.SizeOf<SecurityAttributes>() != 24 ||
             Marshal.SizeOf<CreatedProcess>() != 24)
@@ -57,11 +71,14 @@ internal sealed class ScriptChildProcess(int id, SafeProcessHandle handle, Strea
         security.SetOwner(identity.User!);
         security.AddAccessRule(new PipeAccessRule(identity.User!, PipeAccessRights.FullControl, AccessControlType.Allow));
         var descriptor = GCHandle.Alloc(security.GetSecurityDescriptorBinaryForm(), GCHandleType.Pinned);
+        HiddenConsole? console = null;
         try
         {
             using var stdin = new PipePair(descriptor.AddrOfPinnedObject());
             using var stdout = new PipePair(descriptor.AddrOfPinnedObject());
             using var stderr = new PipePair(descriptor.AddrOfPinnedObject());
+            if (requiresConsole)
+                console = HiddenConsole.Create(descriptor.AddrOfPinnedObject());
             var startup = new StartupWithAttributes
             {
                 Startup = new Startup
@@ -75,8 +92,10 @@ internal sealed class ScriptChildProcess(int id, SafeProcessHandle handle, Strea
                 }
             };
             var inherited = new[] { startup.Startup.Input, startup.Startup.Output, startup.Startup.Error };
-            using var attributes = new ProcessAttributes(inherited, job.Handle.DangerousGetHandle());
+            using var attributes = new ProcessAttributes(inherited, job.Handle.DangerousGetHandle(),
+                console?.Handle.DangerousGetHandle() ?? IntPtr.Zero);
             startup.Attributes = attributes.Address;
+            var flags = console is null ? DetachedWithAttributes : ExtendedStartupInfo;
             var desktop = Marshal.StringToHGlobalUni(@"winsta0\default");
             CreatedProcess created;
             bool started;
@@ -86,28 +105,40 @@ internal sealed class ScriptChildProcess(int id, SafeProcessHandle handle, Strea
                 var arguments = CommandLine(info);
                 started = restricted is null
                     ? CreateProcessW(info.FileName, arguments, IntPtr.Zero, IntPtr.Zero,
-                        true, DetachedWithAttributes, IntPtr.Zero, info.WorkingDirectory, ref startup, out created)
+                        true, flags, IntPtr.Zero, info.WorkingDirectory, ref startup, out created)
                     : CreateProcessAsUserW(restricted, info.FileName, arguments, IntPtr.Zero, IntPtr.Zero,
-                        true, DetachedWithAttributes, IntPtr.Zero, info.WorkingDirectory, ref startup, out created);
+                        true, flags, IntPtr.Zero, info.WorkingDirectory, ref startup, out created);
                 if (!started)
-                    throw new Win32Exception(Marshal.GetLastWin32Error(), "Windows 未能启动 Python 解释器。");
+                    throw new Win32Exception(Marshal.GetLastWin32Error(), "Windows 未能启动脚本解释器。");
             }
             finally { Marshal.FreeHGlobal(desktop); }
             var process = new SafeProcessHandle(created.Process, true);
             using var thread = new SafeWaitHandle(created.Thread, true);
-            var stdoutReader = stdout.TakeReader();
+            StreamReader? stdoutReader = null;
             try
             {
-                return new(checked((int)created.ProcessId), process, stdoutReader, stderr.TakeReader());
+                // Windows PowerShell writes redirected text using the new console's OEM code page.
+                var encoding = requiresConsole
+                    ? CodePagesEncodingProvider.Instance.GetEncoding((int)GetOEMCP()) ?? Encoding.UTF8
+                    : Encoding.UTF8;
+                stdoutReader = new StreamReader(stdout.TakeReadStream(), encoding);
+                var result = new ScriptChildProcess(checked((int)created.ProcessId), process, stdoutReader,
+                    new StreamReader(stderr.TakeReadStream(), encoding), console);
+                console = null;
+                return result;
             }
             catch
             {
                 process.Dispose();
-                stdoutReader.Dispose();
+                stdoutReader?.Dispose();
                 throw;
             }
         }
-        finally { descriptor.Free(); }
+        finally
+        {
+            descriptor.Free();
+            console?.Dispose();
+        }
     }
 
     private static StringBuilder CommandLine(ProcessStartInfo info)
@@ -163,20 +194,85 @@ internal sealed class ScriptChildProcess(int id, SafeProcessHandle handle, Strea
 
         public SafeFileHandle Read { get; }
         public SafeFileHandle Write { get; }
-        private bool readerOwned;
+        private bool readTransferred, writeTransferred;
 
-        public StreamReader TakeReader()
+        public FileStream TakeReadStream()
         {
-            var reader = new StreamReader(new FileStream(Read, FileAccess.Read, bufferSize: 4096, isAsync: false));
-            readerOwned = true;
-            return reader;
+            var stream = new FileStream(Read, FileAccess.Read, bufferSize: 4096, isAsync: false);
+            readTransferred = true;
+            return stream;
+        }
+
+        public SafeFileHandle TakeWriteHandle()
+        {
+            writeTransferred = true;
+            return Write;
         }
 
         public void Dispose()
         {
-            if (!readerOwned)
+            if (!readTransferred)
                 Read.Dispose();
-            Write.Dispose();
+            if (!writeTransferred)
+                Write.Dispose();
+        }
+    }
+
+    private sealed class HiddenConsole : IDisposable
+    {
+        private readonly SafeFileHandle input;
+        private readonly FileStream output;
+        private readonly Task drain;
+        public SafePseudoConsoleHandle Handle { get; }
+
+        private HiddenConsole(SafePseudoConsoleHandle handle, SafeFileHandle input, FileStream output)
+        {
+            Handle = handle;
+            this.input = input;
+            this.output = output;
+            // Console control output must be drained separately from the actual script's stdout and stderr.
+            drain = DrainAsync(output);
+        }
+
+        public static HiddenConsole Create(IntPtr descriptor)
+        {
+            using var input = new PipePair(descriptor);
+            using var output = new PipePair(descriptor);
+            var status = CreatePseudoConsole(new ConsoleSize { Columns = 80, Rows = 24 }, input.Read, output.Write, 0, out var value);
+            if (status < 0)
+                throw new Win32Exception($"无法为 Windows PowerShell 创建隐藏终端（0x{status:X8}）。");
+            var handle = new SafePseudoConsoleHandle(value);
+            try
+            {
+                var reader = output.TakeReadStream();
+                return new(handle, input.TakeWriteHandle(), reader);
+            }
+            catch { handle.Dispose(); throw; }
+        }
+
+        private static async Task DrainAsync(FileStream output)
+        {
+            try { await output.CopyToAsync(Stream.Null).ConfigureAwait(false); }
+            catch (Exception error) when (error is IOException or ObjectDisposedException) { }
+        }
+
+        public void Dispose()
+        {
+            // Closing input first sends a console shutdown to the interpreter.
+            Handle.Dispose();
+            input.Dispose();
+            output.Dispose();
+            _ = drain;
+        }
+    }
+
+    private sealed class SafePseudoConsoleHandle : SafeHandleZeroOrMinusOneIsInvalid
+    {
+        public SafePseudoConsoleHandle(IntPtr value) : base(ownsHandle: true) => SetHandle(value);
+        protected override bool ReleaseHandle()
+        {
+            ClosePseudoConsole(handle);
+            return true;
         }
     }
 
@@ -187,10 +283,11 @@ internal sealed class ScriptChildProcess(int id, SafeProcessHandle handle, Strea
         private bool initialized;
         public IntPtr Address { get; private set; }
 
-        public ProcessAttributes(IntPtr[] inherited, IntPtr job)
+        public ProcessAttributes(IntPtr[] inherited, IntPtr job, IntPtr console)
         {
+            var count = console == IntPtr.Zero ? 2 : 3;
             nuint length = 0;
-            InitializeProcThreadAttributeList(IntPtr.Zero, 2, 0, ref length);
+            InitializeProcThreadAttributeList(IntPtr.Zero, count, 0, ref length);
             if (length is 0 or > 4096)
                 throw new Win32Exception("无法分配脚本进程启动属性。");
             Address = Marshal.AllocHGlobal(checked((int)length));
@@ -198,7 +295,7 @@ internal sealed class ScriptChildProcess(int id, SafeProcessHandle handle, Strea
             {
                 handles = GCHandle.Alloc(inherited, GCHandleType.Pinned);
                 jobs = GCHandle.Alloc(new[] { job }, GCHandleType.Pinned);
-                if (!InitializeProcThreadAttributeList(Address, 2, 0, ref length))
+                if (!InitializeProcThreadAttributeList(Address, count, 0, ref length))
                     throw new Win32Exception(Marshal.GetLastWin32Error());
                 initialized = true;
                 if (!UpdateProcThreadAttribute(Address, 0, 0x00020002, handles.AddrOfPinnedObject(),
@@ -206,6 +303,9 @@ internal sealed class ScriptChildProcess(int id, SafeProcessHandle handle, Strea
                     !UpdateProcThreadAttribute(Address, 0, 0x0002000D, jobs.AddrOfPinnedObject(),
                     (nuint)IntPtr.Size, IntPtr.Zero, IntPtr.Zero))
                     throw new Win32Exception(Marshal.GetLastWin32Error(), "无法隔离脚本的继承句柄或进程组。");
+                if (console != IntPtr.Zero &&
+                    !UpdateProcThreadAttribute(Address, 0, 0x00020016, console, (nuint)IntPtr.Size, IntPtr.Zero, IntPtr.Zero))
+                    throw new Win32Exception(Marshal.GetLastWin32Error(), "无法为 Windows PowerShell 接入隐藏终端。");
             }
             catch
             {
@@ -231,6 +331,9 @@ internal sealed class ScriptChildProcess(int id, SafeProcessHandle handle, Strea
 
     [StructLayout(LayoutKind.Sequential)]
     private struct SecurityAttributes { public int Length; public IntPtr Descriptor; public int Inherit; }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct ConsoleSize { public short Columns, Rows; }
 
     [StructLayout(LayoutKind.Sequential)]
     private struct Startup
@@ -278,4 +381,14 @@ internal sealed class ScriptChildProcess(int id, SafeProcessHandle handle, Strea
     [DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool GetExitCodeProcess(SafeProcessHandle process, out uint code);
+
+    [DllImport("kernel32.dll", ExactSpelling = true)]
+    private static extern int CreatePseudoConsole(ConsoleSize size, SafeFileHandle input, SafeFileHandle output,
+        uint flags, out IntPtr console);
+
+    [DllImport("kernel32.dll", ExactSpelling = true)]
+    private static extern void ClosePseudoConsole(IntPtr console);
+
+    [DllImport("kernel32.dll", ExactSpelling = true)]
+    private static extern uint GetOEMCP();
 }

@@ -12,12 +12,13 @@
             </StackPanel>
         <Border Grid.Row="1" Style="{StaticResource SurfaceStyle}">
             <StackPanel Spacing="8">
-                <ComboBox x:Name="Volumes" Header="卷容量（不自动扫描；分析时请选择卷内文件夹）" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="VolumeCapacityList"/>
-                <TextBox Text="{x:Bind ViewModel.Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="分析文件夹" PlaceholderText="选择一个文件夹，不自动扫描整卷" AutomationProperties.AutomationId="StoragePath" />
+                <ComboBox x:Name="Volumes" Header="选择磁盘卷" HorizontalAlignment="Stretch" AutomationProperties.AutomationId="VolumeCapacityList"/>
+                <TextBox Text="{x:Bind ViewModel.Path, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Header="文件夹路径" PlaceholderText="选择或输入文件夹" AutomationProperties.AutomationId="StoragePath" />
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <Button Content="选择文件夹" Click="Choose_Click" AutomationProperties.AutomationId="ChooseStorageFolder" />
-                        <Button Content="分析 / 重扫" Click="Analyze_Click" Style="{StaticResource AccentButtonStyle}" AutomationProperties.AutomationId="AnalyzeStorage" />
+                        <Button Content="分析文件夹" Click="Analyze_Click" Style="{StaticResource AccentButtonStyle}" AutomationProperties.AutomationId="AnalyzeStorage" />
+                        <Button Content="扫描整盘" Click="ScanVolume_Click" AutomationProperties.AutomationId="ScanStorageVolume" />
                         <Button Content="暂停 / 继续" Click="Pause_Click" ToolTipService.ToolTip="暂停目录遍历；最终汇总阶段可取消" AutomationProperties.AutomationId="PauseStorage" />
                         <Button Content="取消" Click="Cancel_Click" AutomationProperties.AutomationId="CancelStorage" />
                         <Button Content="读取已有快照" Click="Read_Click" AutomationProperties.AutomationId="ReadStorage" />

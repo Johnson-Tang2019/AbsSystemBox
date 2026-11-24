@@ -289,9 +289,10 @@ internal sealed class ScriptSupervisor(string dataDirectory)
     {
         var definition = entry.Definition;
         Validate(definition, requireFile: true);
+        var powerShell = Path.GetExtension(definition.Path).Equals(".ps1", StringComparison.OrdinalIgnoreCase);
         using var job = new ScriptProcessJob();
         token.ThrowIfCancellationRequested();
-        using var process = ScriptChildProcess.Start(StartInfo(definition), job);
+        using var process = ScriptChildProcess.Start(StartInfo(definition, powerShell), job, powerShell);
         lock (gate)
         {
             entry.Pid = process.Id;
@@ -337,16 +338,17 @@ internal sealed class ScriptSupervisor(string dataDirectory)
         catch (Exception e) when (e is OperationCanceledException or IOException or ObjectDisposedException) { }
     }
 
-    private static ProcessStartInfo StartInfo(ScriptDefinition definition)
+    private static ProcessStartInfo StartInfo(ScriptDefinition definition, bool powerShell)
     {
         var info = new ProcessStartInfo
         {
-            FileName = FindInterpreter() ?? throw Problem("SCRIPT_PYTHON_MISSING", "找不到 Python，请将 python.exe 或 py.exe 加入当前用户 PATH。"),
+            FileName = powerShell
+                ? Path.Combine(Environment.SystemDirectory, "WindowsPowerShell", "v1.0", "powershell.exe")
+                : FindInterpreter() ?? throw Problem("SCRIPT_PYTHON_MISSING", "找不到 Python，请将 python.exe 或 py.exe 加入当前用户 PATH。"),
             WorkingDirectory = Path.GetDirectoryName(definition.Path)!
         };
-        info.ArgumentList.Add("-u");
-        info.ArgumentList.Add("-X");
-        info.ArgumentList.Add("utf8");
+        foreach (var flag in powerShell ? new[] { "-NoLogo", "-NoProfile", "-NonInteractive", "-File" } : ["-u", "-X", "utf8"])
+            info.ArgumentList.Add(flag);
         info.ArgumentList.Add(definition.Path);
         foreach (var argument in definition.Arguments)
             info.ArgumentList.Add(argument);
@@ -372,10 +374,10 @@ internal sealed class ScriptSupervisor(string dataDirectory)
         if (string.IsNullOrWhiteSpace(item.Name) || item.Name.Length > 80 ||
             item.Path is not { Length: > 0 and <= 1024 } || item.Path.Contains('\0') ||
             !Path.IsPathFullyQualified(item.Path) || Path.GetPathRoot(item.Path) is not { Length: 3 } ||
-            !Path.GetExtension(item.Path).Equals(".py", StringComparison.OrdinalIgnoreCase) ||
+            Path.GetExtension(item.Path).ToLowerInvariant() is not (".ps1" or ".py") ||
             item.Arguments is null || item.Arguments.Length > 16 ||
             item.Arguments.Any(argument => argument is null || argument.Length > 512 || argument.Contains('\0')))
-            throw Problem("SCRIPT_INVALID", "请填写名称和本地 .py 路径，最多 16 个参数。");
+            throw Problem("SCRIPT_INVALID", "请填写名称和本地 .ps1 或 .py 路径，最多 16 个参数。");
         if (requireFile && !File.Exists(item.Path))
             throw Problem("SCRIPT_FILE_MISSING", "脚本文件不存在或当前用户无法读取。");
     }

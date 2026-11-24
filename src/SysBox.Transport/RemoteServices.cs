@@ -44,13 +44,15 @@ public sealed class RemoteIndex(RpcClient client) : IFileIndexService
     private async Task<IReadOnlyList<IndexRoot>> ReadRoots(CancellationToken token) => await client.CallAsync<IndexRoot[]>("index.status", new { }, token).ConfigureAwait(false);
     public async Task<IReadOnlyList<FileEntry>> ReadEntriesAsync(string root, int limit, CancellationToken token) => await client.CallAsync<FileEntry[]>("index.entries", new { root, limit }, token).ConfigureAwait(false);
     public async Task ClearAsync(CancellationToken token) => _ = await client.CallAsync<bool>("index.clear", new { }, token).ConfigureAwait(false);
-    public async Task<IndexProgress> ScanAsync(string root, IndexOptions options, IIndexControl control, IProgress<IndexProgress>? progress, CancellationToken token)
+    public Task<IndexProgress> ScanAsync(string root, IndexOptions options, IIndexControl control, IProgress<IndexProgress>? progress, CancellationToken token)
+        => RunScanAsync(client, "index.scan", new { root, options }, control, progress, token);
+
+    internal static async Task<IndexProgress> RunScanAsync(RpcClient client, string method, object arguments,
+        IIndexControl control, IProgress<IndexProgress>? progress, CancellationToken token)
     {
-        var id = await client.CallAsync<string>("index.scan", new
-        {
-            root,
-            options
-        }, token).ConfigureAwait(false);
+        token.ThrowIfCancellationRequested();
+        // Retain the task ID even when the user cancels before the start response arrives.
+        var id = await client.CallAsync<string>(method, arguments).ConfigureAwait(false);
         bool? paused = null;
         try
         {
@@ -96,9 +98,11 @@ public sealed class RemoteIndex(RpcClient client) : IFileIndexService
         }
     }
 }
-public sealed class RemoteStorage(RpcClient client, IFileIndexService indexer) : IStorageBrowser
+public sealed class RemoteStorage(RpcClient client, IFileIndexService indexer) : IStorageVolumeBrowser
 {
     public Task<IndexProgress> AnalyzeAsync(string path, IIndexControl control, IProgress<IndexProgress>? progress, CancellationToken token) => indexer.ScanAsync(path, new(), control, progress, token);
+    public Task<IndexProgress> AnalyzeVolumeAsync(string root, IIndexControl control, IProgress<IndexProgress>? progress, CancellationToken token)
+        => RemoteIndex.RunScanAsync(client, "storage.scanVolume", new { root }, control, progress, token);
     public Task<StorageView> ReadAsync(string path, StorageSort sort, int offset, int limit, CancellationToken token, string? scopeRoot = null, long? expectedGeneration = null)
         => client.CallAsync<StorageView>("storage.children", new
         {

@@ -23,20 +23,59 @@ public sealed class DirectoryWalkIndexer(IndexDatabase database, IFileSizeReader
         root = Path.TrimEndingDirectorySeparator(Path.GetFullPath(root));
         if (string.Equals(root, Path.TrimEndingDirectorySeparator(Path.GetPathRoot(root)!), StringComparison.OrdinalIgnoreCase))
             throw new SysBoxOperationException(new("INDEX_SCOPE", "请先选择一个文件夹，不直接扫描整卷。"));
-        using var lease = await database.AcquireWriterAsync(cancellationToken).ConfigureAwait(false);
-        return await Task.Run(() => Scan(root, options, control, progress, cancellationToken), cancellationToken).ConfigureAwait(false);
+        return await ScanCoreAsync(root, options, control, progress, cancellationToken).ConfigureAwait(false);
     }
 
-    private IndexProgress Scan(string root, IndexOptions options, IIndexControl control, IProgress<IndexProgress>? progress, CancellationToken token)
+    public async Task<IndexProgress> ScanVolumeAsync(string root, IIndexControl control, IProgress<IndexProgress>? progress,
+        CancellationToken token)
+    {
+        token.ThrowIfCancellationRequested();
+        if (root.Length != 3 || !char.IsAsciiLetter(root[0]) || root[1] != ':' || root[2] != Path.DirectorySeparatorChar ||
+            !OperatingSystem.IsWindows())
+            throw new SysBoxOperationException(new("STORAGE_VOLUME_INVALID", "请选择本地卷的盘符根目录。"));
+        var drive = new DriveInfo(root);
+        if (drive.DriveType is not (DriveType.Fixed or DriveType.Removable) || !drive.IsReady)
+            throw new SysBoxOperationException(new("STORAGE_VOLUME_UNAVAILABLE", "此卷未就绪，或不是可扫描的本地磁盘。"));
+
+        using var budget = CancellationTokenSource.CreateLinkedTokenSource(token);
+        budget.CancelAfter(TimeSpan.FromMinutes(30));
+        try
+        {
+            var report = await ScanCoreAsync(drive.RootDirectory.FullName, new IndexOptions { MaxEntries = 1_000_000 },
+                control, progress, budget.Token, protectNtfsSnapshot: true).ConfigureAwait(false);
+            if (report.State == IndexRunState.Cancelled && budget.IsCancellationRequested)
+                budget.Token.ThrowIfCancellationRequested();
+            return report;
+        }
+        catch (OperationCanceledException) when (budget.IsCancellationRequested && !token.IsCancellationRequested)
+        {
+            throw new SysBoxOperationException(new("STORAGE_VOLUME_BUDGET", "整盘扫描达到 30 分钟上限，旧快照已保留。"));
+        }
+    }
+
+    private async Task<IndexProgress> ScanCoreAsync(string root, IndexOptions options, IIndexControl control,
+        IProgress<IndexProgress>? progress, CancellationToken token, bool protectNtfsSnapshot = false)
+    {
+        using var lease = await database.AcquireWriterAsync(token).ConfigureAwait(false);
+        return await Task.Run(() => Scan(root, options, control, progress, token, protectNtfsSnapshot), token).ConfigureAwait(false);
+    }
+
+    private IndexProgress Scan(string root, IndexOptions options, IIndexControl control, IProgress<IndexProgress>? progress,
+        CancellationToken token, bool protectNtfsSnapshot)
     {
         database.Initialize();
         using var connection = database.Open();
         var scope = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(root)));
         var generation = DateTime.UtcNow.Ticks;
         using var command = connection.CreateCommand();
-        command.CommandText = "INSERT OR IGNORE INTO volumes(scope_id,root) VALUES($scope,$root)";
         command.Parameters.AddWithValue("$scope", scope);
         command.Parameters.AddWithValue("$root", root);
+        if (protectNtfsSnapshot)
+        {
+            command.CommandText = "SELECT 1 FROM volumes WHERE root=$root COLLATE NOCASE AND identity_kind='ntfs' AND active_generation>0";
+            if (command.ExecuteScalar() is not null)
+                throw new SysBoxOperationException(new("STORAGE_NTFS_EXISTS", "此卷已有 NTFS 快照。可读取已有快照，或在设置中重建。"));
+        }
         command.CommandText = "SELECT count(*) FROM volumes WHERE scope_id<>$scope";
         if ((long)command.ExecuteScalar()! >= 256)
             throw new SysBoxOperationException(new("INDEX_LIMIT", "已达到 256 个索引范围上限，请先清除缓存。"));

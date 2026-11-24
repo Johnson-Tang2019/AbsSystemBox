@@ -20,7 +20,7 @@ public sealed class StorageViewModel(IStorageBrowser browser, Func<IIndexControl
     private IIndexControl? control;
     private int generation;
     private bool busy;
-    private string path = "", status = "请选择文件夹；不会自动扫描磁盘。", summary = "尚未计算";
+    private string path = "", status = "请选择卷或文件夹。", summary = "尚未计算";
     private StorageView? current;
     private StorageSort sort;
     private int offset;
@@ -60,32 +60,52 @@ public sealed class StorageViewModel(IStorageBrowser browser, Func<IIndexControl
     {
         get => more; private set => SetProperty(ref more, value);
     }
-    public async Task AnalyzeAsync()
+    public Task AnalyzeAsync() => AnalyzeAsync(Path, browser.AnalyzeAsync);
+
+    public Task AnalyzeVolumeAsync(string root)
     {
-        if (IsBusy || string.IsNullOrWhiteSpace(Path))
+        if (IsBusy)
+            return Task.CompletedTask;
+        if (browser is IStorageVolumeBrowser volumeBrowser)
+        {
+            Path = root;
+            return AnalyzeAsync(root, volumeBrowser.AnalyzeVolumeAsync);
+        }
+        Status = "整盘扫描不可用。";
+        return Task.CompletedTask;
+    }
+
+    private async Task AnalyzeAsync(string selectedPath,
+        Func<string, IIndexControl, IProgress<IndexProgress>?, CancellationToken, Task<IndexProgress>> scan)
+    {
+        if (IsBusy || string.IsNullOrWhiteSpace(selectedPath))
             return;
         var request = ++generation;
         using var source = new CancellationTokenSource();
         operation = source;
         control = createControl();
         IsBusy = true;
-        var selectedPath = Path;
         var acceptProgress = true;
         try
         {
-            Status = "正在分析，数字可能增大…";
+            Status = $"正在分析 {selectedPath}…";
             var progress = new Progress<IndexProgress>(p =>
             {
                 if (request == generation && acceptProgress)
                     Status = $"{(p.State == IndexRunState.Paused ? "已暂停" : "正在分析")} · 已统计 {p.Files:N0} 文件，{SizeFormatting.Format(p.LogicalBytes)} 逻辑大小（尚未完成）";
             });
-            var report = await browser.AnalyzeAsync(selectedPath, control, progress, source.Token);
+            var report = await scan(selectedPath, control, progress, source.Token);
             acceptProgress = false;
             if (request != generation)
                 return;
             if (report.State is not (IndexRunState.Complete or IndexRunState.Partial))
             {
-                Status = $"本次分析未完成（{report.State}），之前的快照保留。";
+                Status = report.Error ?? (report.State switch
+                {
+                    IndexRunState.Cancelled => "分析已取消，旧快照保留。",
+                    IndexRunState.LimitReached => "分析达到条目上限，旧快照保留。",
+                    _ => "本次分析未完成，旧快照保留。"
+                });
                 return;
             }
             IsBusy = false;
@@ -109,7 +129,8 @@ public sealed class StorageViewModel(IStorageBrowser browser, Func<IIndexControl
         HasMore = false;
         try
         {
-            var keepScope = !resetScope && Current is not null && (target == Current.ScopeRoot || target.StartsWith(Current.ScopeRoot + System.IO.Path.DirectorySeparatorChar, StringComparison.Ordinal));
+            var keepScope = !resetScope && Current is not null && (target == Current.ScopeRoot ||
+                target.StartsWith(Current.ScopeRoot.TrimEnd(System.IO.Path.DirectorySeparatorChar) + System.IO.Path.DirectorySeparatorChar, StringComparison.Ordinal));
             var view = await browser.ReadAsync(target, Sort, pageOffset, 100, source.Token,
                 keepScope ? Current!.ScopeRoot : null, keepScope ? Current!.Generation : null);
             if (request != generation)

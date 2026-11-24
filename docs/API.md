@@ -9,6 +9,8 @@ UI 使用 RemoteMemory/RemoteProcesses/RemoteIndex/RemoteSearch/RemoteStorage/Re
 只读方法：status、diagnostics、volumes、memory.status/processes、cleanup.status、search、index.status/entries/job、storage.children、rules.read/validate/simulate/observation。
 有限写入：rules.propose；index.scan 仅接受桌面已授权的既有范围，未知范围需 UI 选择。
 可信桌面独有：cleanup.configure、index.clear、rules.approve/reject/rollback、host.stop。
+
+磁盘页的 `storage.scanVolume {root}` 仅接受可信桌面与本地固定盘、可移动盘的盘符根目录，返回 `index.job` 任务 ID。通过原有控制接口暂停、继续和取消。普通 `index.scan` 仍限制为文件夹范围。
 未知方法返回 METHOD_NOT_FOUND；授权来自操作系统验证的桌面映像，不读取布尔确认参数。
 后台至多 8 个并发客户端、32 个任务记录，已完成记录有界回收；扫描取消保留旧快照。
 diagnostics 只返回版本/OS/架构/权限/资源计数/索引范围数，不含路径和规则内容；volumes 只读容量，不扫描卷。
@@ -191,6 +193,6 @@ memory.processes 可选 sort=WorkingSet/PrivateCommit（枚举），默认保持
 - `scripts.list {}` 返回脚本状态数组。CLI 和 MCP 可见的条目由桌面逐项开放。
 - `scripts.status {id}`、`scripts.start {id}`、`scripts.stop {id}` 返回指定脚本状态。字段包含状态、PID、最近开始与退出时间、退出码、下一次重试时间和错误。PID 仅代表当前运行。
 - `scripts.logs {id}` 返回最多 40 段输出，每段最多 768 个字符。输出按时间、stdout／stderr 和正文记录。
-- 桌面专用 `scripts.save` 接受脚本定义。空 GUID 创建条目，已有 ID 可编辑已停止的脚本。最多 16 个脚本，每个最多 16 个参数。支持本地驱动器路径下的 `.py`。
+- 桌面专用 `scripts.save` 接受脚本定义。空 GUID 创建条目，已有 ID 可编辑已停止的脚本。最多 16 个脚本，每个最多 16 个参数。支持本地驱动器路径下的 `.py` 和 `.ps1`。
 - 桌面专用 `scripts.remove {id}` 移除已停止的托管条目。桌面专用 `scripts.startup {}` 启动已启用且勾选登录启动的条目。
 - `SCRIPT_NOT_FOUND` 表示条目不存在或未开放给 Agent。`SCRIPT_RUNNING` 和 `SCRIPT_STOPPING` 表示需要等待脚本停止。`SCRIPT_CONFIG_INVALID` 表示配置读取失败。

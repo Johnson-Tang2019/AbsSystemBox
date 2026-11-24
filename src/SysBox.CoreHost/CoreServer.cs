@@ -289,15 +289,21 @@ public sealed class CoreServer : BackgroundService
                 return true;
             case "ntfs.build":
             case "index.scan":
+            case "storage.scanVolume":
                 {
-                    var root = Path.TrimEndingDirectorySeparator(Path.GetFullPath(Text("root")));
+                    var requestedRoot = Text("root");
                     var fast = method == "ntfs.build";
+                    var wholeVolume = method == "storage.scanVolume";
+                    var root = wholeVolume ? requestedRoot : Path.TrimEndingDirectorySeparator(Path.GetFullPath(requestedRoot));
                     NtfsVolumeBinding? binding = null;
-                    if (fast)
+                    if (fast || wholeVolume)
                     {
                         RequireUi();
                         if (demo)
                             throw new SysBoxOperationException(new("DEMO_READ_ONLY", "示例模式不允许整卷索引。"));
+                    }
+                    if (fast)
+                    {
                         binding = NtfsObjectAccess.BindRoot(root);
                         var allowed = await broker.CallAsync<string[]>("capabilities", new
                         {
@@ -307,7 +313,7 @@ public sealed class CoreServer : BackgroundService
                     }
                     if (!ui && !(await indexer.ReadRootsAsync(token)).Any(r => r.Root == root))
                         throw new SysBoxOperationException(new("SCOPE_APPROVAL_REQUIRED", "请先在桌面界面选择并索引此目录。"));
-                    var options = args.TryGetProperty("options", out var configured) ? configured.Deserialize<IndexOptions>(Protocol.Json) ?? throw new ArgumentException() : new IndexOptions();
+                    var options = !wholeVolume && args.TryGetProperty("options", out var configured) ? configured.Deserialize<IndexOptions>(Protocol.Json) ?? throw new ArgumentException() : new IndexOptions();
                     string id;
                     Job job;
                     lock (jobsGate)
@@ -330,6 +336,8 @@ public sealed class CoreServer : BackgroundService
                                 using var reader = broker.Open(binding!.VolumeId);
                                 job.Progress = await ntfs.BuildAsync(binding, reader, job.Control, new JobProgress(p => job.Progress = p), job.Cancellation.Token);
                             }
+                            else if (wholeVolume)
+                                job.Progress = await indexer.ScanVolumeAsync(root, job.Control, new JobProgress(p => job.Progress = p), job.Cancellation.Token);
                             else
                                 job.Progress = await indexer.ScanAsync(root, options, job.Control, new JobProgress(p => job.Progress = p), job.Cancellation.Token);
                         }
