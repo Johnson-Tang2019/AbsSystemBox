@@ -96,6 +96,7 @@ public sealed partial class MainWindow : Window
             "storage" => typeof(StoragePage),
             "rules" => typeof(RulesPage),
             "cooling" => typeof(CoolingDisplayPage),
+            "scripts" => typeof(ScriptHostingPage),
             "peripherals" => typeof(PeripheralsPage),
             "diagnostics" => typeof(DiagnosticsPage),
             "settings" => typeof(SettingsPage),

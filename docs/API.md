@@ -185,3 +185,12 @@ memory.processes 可选 sort=WorkingSet/PrivateCommit（枚举），默认保持
 `CoolingDisplaySettings` 仅保存设备/传感器身份和明确标记的手动值，不包含自动开始或特权授权字段。`ICoolingDisplayTransport` 只提供兼容设备检测、连接；连接只接收温度整数 0..255 和转速整数 0..65535 RPM。`GoldenFiledDisplayProtocol.Encode` 生成固定五字节显示帧，越界直接拒绝。`ICoolingSensorSource.ReadAsync` 返回带采样时间的有界温度/RPM 集合，未知传感器不返回虚构值。
 
 独立采集管道是桌面组件内部协议，不新增 CLI/MCP/用户 CoreHost 的授权入口。请求必须为 `RpcRequest("1.0", "cooling.sensors.read", {})`，拒绝其他方法、额外参数和不匹配身份；响应为现有 `RpcResponse` 包装 `CoolingSensorSnapshot`。IPC 传输复用已有长度/JSON 上限，业务最多 256 传感器。授权由实际提权后的原生对话框处理，外部请求无确认标志。详见 [COOLING_DISPLAY.md](COOLING_DISPLAY.md)。
+
+## 脚本托管
+
+- `scripts.list {}` 返回脚本状态数组。CLI 和 MCP 可见的条目由桌面逐项开放。
+- `scripts.status {id}`、`scripts.start {id}`、`scripts.stop {id}` 返回指定脚本状态。字段包含状态、PID、最近开始与退出时间、退出码、下一次重试时间和错误。PID 仅代表当前运行。
+- `scripts.logs {id}` 返回最多 40 段输出，每段最多 768 个字符。输出按时间、stdout／stderr 和正文记录。
+- 桌面专用 `scripts.save` 接受脚本定义。空 GUID 创建条目，已有 ID 可编辑已停止的脚本。最多 16 个脚本，每个最多 16 个参数。支持本地驱动器路径下的 `.py`。
+- 桌面专用 `scripts.remove {id}` 移除已停止的托管条目。桌面专用 `scripts.startup {}` 启动已启用且勾选登录启动的条目。
+- `SCRIPT_NOT_FOUND` 表示条目不存在或未开放给 Agent。`SCRIPT_RUNNING` 和 `SCRIPT_STOPPING` 表示需要等待脚本停止。`SCRIPT_CONFIG_INVALID` 表示配置读取失败。

@@ -43,6 +43,7 @@
                 <NavigationViewItem Content="文件搜索" Tag="search" Icon="Find" AutomationProperties.AutomationId="NavSearch" />
                 <NavigationViewItem Content="磁盘空间" Tag="storage" AutomationProperties.AutomationId="NavStorage"><NavigationViewItem.Icon><FontIcon Glyph="&#xEDA2;" /></NavigationViewItem.Icon></NavigationViewItem>
                 <NavigationViewItem Content="水冷显示" Tag="cooling" Icon="View" AutomationProperties.AutomationId="NavCooling" />
+                <NavigationViewItem Content="脚本托管" Tag="scripts" Icon="Play" AutomationProperties.AutomationId="NavScripts" />
                 <NavigationViewItem Content="外设" Tag="peripherals" AutomationProperties.AutomationId="NavPeripherals">
                     <NavigationViewItem.Icon><FontIcon Glyph="&#xE772;" /></NavigationViewItem.Icon>
                 </NavigationViewItem>

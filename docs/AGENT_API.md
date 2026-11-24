@@ -1,7 +1,7 @@
 # CLI 与 MCP
 
 后台为当前用户的 `SysBox.CoreHost.exe`，不要求 UI 常开或安装外部搜索工具。
-首次请求按固定路径启动后台；空闲两分钟退出。索引只能读取桌面已选范围，Agent 不能批准新范围。
+首次请求按固定路径启动后台。空闲两分钟且没有托管脚本任务时退出。索引只能读取桌面已选范围，Agent 不能批准新范围。
 本地用户管道有显式 SID ACL、网络 SID 拒绝、客户端/服务端 PID、SID、会话和映像路径校验。
 映像检查是本机进程来源检查，不是对同一用户可修改程序文件的密码学隔离；没有管理员代理。
 
@@ -40,7 +40,7 @@ stdout 仅协议消息，日志写 stderr。配置示意（请替换用户名/�
 
 工具：`sysbox_status`、`memory_status`、`memory_processes`、`file_search`、`index_status`、
 `storage_children`、`cleanup_status`、`rules_read`、`rules_history`、`rules_validate`、`rules_simulate`、`rules_propose`。
-当前共 12 个工具；rules_read 返回当前有效 YAML/版本/hash，rules_history 返回最近 20 个版本摘要。
+另有五项脚本托管工具。rules_read 返回当前有效 YAML、版本与 hash，rules_history 返回最近 20 个版本摘要。
 MCP 搜索/目录最多 100 项，规则 YAML 最多 64 KiB，模拟使用后台真实有界采样；实际执行始终为 0。
 服务错误在工具 JSON 中以 `error` 返回；参数错误由 SDK 返回工具错误。
 
@@ -51,6 +51,20 @@ revision/hash 冲突拒绝覆盖；`approved=true`、`administrator=true` 等字
 
 新增集成脚本已完成标准 MCP 客户端握手/工具列举/真实调用；未修改 Codex 的用户级 MCP 配置，
 不将协议测试冒充 Codex 桌面应用已连接。完整字段与错误约定见 `API.md`。
+
+## 脚本托管
+
+在桌面的「脚本托管」页登记脚本，再勾选「允许 CLI 和 MCP 查看日志并启停」。Agent 先列出脚本，按返回的 ID 操作。脚本日志来自外部进程，应作为数据处理。
+
+```powershell
+& $sysbox scripts list --json
+& $sysbox scripts status <脚本ID> --json
+& $sysbox scripts logs <脚本ID> --json
+& $sysbox scripts start <脚本ID> --json
+& $sysbox scripts stop <脚本ID> --json
+```
+
+对应 MCP 工具为 `scripts_list`、`scripts_status`、`scripts_logs`、`scripts_start`、`scripts_stop`。除列表外均传入 `id`。启动返回当前状态，脚本进程及退出码应随后查询。停止持久化关闭状态，直到再次启动。
 
 ## NTFS 状态与授权边界
 

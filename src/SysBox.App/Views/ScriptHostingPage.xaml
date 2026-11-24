@@ -1,0 +1,62 @@
+<Page
+    x:Class="SysBox.App.Views.ScriptHostingPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Loaded="Page_Loaded" Unloaded="Page_Unloaded">
+    <Grid Padding="22" RowSpacing="12" ColumnSpacing="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.ColumnSpan="2" Text="脚本托管" Style="{StaticResource TitleTextBlockStyle}"/>
+        <InfoBar x:Name="Feedback" Grid.Row="1" Grid.ColumnSpan="2" IsClosable="True"
+                 AutomationProperties.AutomationId="ScriptFeedback"/>
+        <Grid Grid.Row="2" RowSpacing="8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Button x:Name="NewButton" Content="添加脚本" Click="New_Click" AutomationProperties.AutomationId="ScriptNew"/>
+            <ListView x:Name="Entries" Grid.Row="1" DisplayMemberPath="Label" SelectionChanged="Entries_SelectionChanged"
+                      AutomationProperties.AutomationId="ScriptEntries"/>
+        </Grid>
+        <ScrollViewer Grid.Row="2" Grid.Column="1">
+            <StackPanel Spacing="10">
+                <TextBlock x:Name="RunStatus" TextWrapping="Wrap" AutomationProperties.AutomationId="ScriptRunStatus"/>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button x:Name="StartButton" Content="启动" Click="Start_Click" AutomationProperties.AutomationId="ScriptStart"/>
+                    <Button x:Name="StopButton" Content="停止" Click="Stop_Click" AutomationProperties.AutomationId="ScriptStop"/>
+                </StackPanel>
+                <TextBox x:Name="ScriptName" Header="名称" MaxLength="80" AutomationProperties.AutomationId="ScriptName"/>
+                <Grid ColumnSpacing="8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="ScriptPath" Header="Python 脚本文件" MaxLength="1024"
+                             AutomationProperties.AutomationId="ScriptPath"/>
+                    <Button x:Name="BrowseButton" Grid.Column="1" Content="浏览" VerticalAlignment="Bottom" Click="Browse_Click"/>
+                </Grid>
+                <TextBox x:Name="Arguments" Header="参数（每行一个）" MaxLength="8208" AcceptsReturn="True"
+                         MinHeight="56" MaxHeight="104" AutomationProperties.AutomationId="ScriptArguments"/>
+                <CheckBox x:Name="RunOnLogin" Content="随 SystemBox 登录启动" AutomationProperties.AutomationId="ScriptRunOnLogin"/>
+                <CheckBox x:Name="RetryOnExit" Content="退出后自动重启" IsChecked="True" AutomationProperties.AutomationId="ScriptRetry"/>
+                <CheckBox x:Name="AllowAgent" Content="允许 CLI 和 MCP 查看日志并启停" AutomationProperties.AutomationId="ScriptAllowAgent"/>
+                <CheckBox x:Name="SystemStartup" Content="登录 Windows 时启动 SystemBox" Click="SystemStartup_Click"
+                          AutomationProperties.AutomationId="ScriptSystemStartup"/>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <Button x:Name="SaveButton" Content="保存" Style="{StaticResource AccentButtonStyle}"
+                            Click="Save_Click" AutomationProperties.AutomationId="ScriptSave"/>
+                    <Button x:Name="RemoveButton" Content="移除托管" Click="Remove_Click" AutomationProperties.AutomationId="ScriptRemove"/>
+                </StackPanel>
+                <TextBox x:Name="Output" Header="最近输出" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap"
+                         MinHeight="100" MaxHeight="220" AutomationProperties.AutomationId="ScriptOutput"/>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

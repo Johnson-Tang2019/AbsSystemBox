@@ -148,6 +148,15 @@ public partial class App : Application
         {
             _ = Services.GetRequiredService<PeripheralsViewModel>().LoadIfNeededAsync();
             _ = Services.GetRequiredService<CoolingDisplayViewModel>().StartAtApplicationLaunchAsync();
+            _ = StartScriptsAsync(Services.GetRequiredService<RpcClient>());
         }
+    }
+
+    internal static string? ScriptStartupError { get; private set; }
+
+    private static async Task StartScriptsAsync(RpcClient client)
+    {
+        try { await client.CallAsync<int>("scripts.startup", new { }); }
+        catch (SysBoxOperationException error) { ScriptStartupError = error.Message; }
     }
 }

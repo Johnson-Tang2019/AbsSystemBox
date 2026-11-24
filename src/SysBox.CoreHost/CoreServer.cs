@@ -30,6 +30,7 @@ public sealed class CoreServer : BackgroundService
     private readonly RuleWorkspace rules;
     private readonly RuleObserver observer;
     private readonly CleanupSupervisor cleanup;
+    private readonly ScriptSupervisor scripts;
     private readonly NtfsLiveIndex ntfs;
     private readonly BrokerClient broker = new();
     private string? ntfsTrackingError;
@@ -62,6 +63,7 @@ public sealed class CoreServer : BackgroundService
         search = new(database);
         storage = new(database, indexer);
         observer = new(rules, memory);
+        scripts = new(root);
         cleanup = new(root, memory, new UserWorkingSetTrimmer(processes), () => !demo && Volatile.Read(ref lastUi) != 0 && Stopwatch.GetElapsedTime(Volatile.Read(ref lastUi)) < TimeSpan.FromSeconds(90));
     }
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -80,7 +82,8 @@ public sealed class CoreServer : BackgroundService
                     foreach (var job in jobs.Values)
                         if (!job.Finished && Stopwatch.GetElapsedTime(Volatile.Read(ref job.Touched)) > TimeSpan.FromSeconds(30))
                             job.Cancellation.Cancel();
-                    if (Stopwatch.GetElapsedTime(Volatile.Read(ref lastRequest)) > TimeSpan.FromMinutes(2) && jobs.Values.All(j => j.Finished))
+                    if (Stopwatch.GetElapsedTime(Volatile.Read(ref lastRequest)) > TimeSpan.FromMinutes(2) &&
+                        jobs.Values.All(j => j.Finished) && !scripts.HasActiveWork)
                         lifetime.StopApplication();
                 }
             }
@@ -117,6 +120,7 @@ public sealed class CoreServer : BackgroundService
                 job.Cancellation.Cancel();
             observer.Dispose();
             await Task.WhenAll(pending);
+            await scripts.ShutdownAsync();
             await idle;
             await cleanupLoop;
             await ntfsLoop;
@@ -184,6 +188,27 @@ public sealed class CoreServer : BackgroundService
         }
         switch (method)
         {
+            case "scripts.list":
+                return scripts.List(ui);
+            case "scripts.status":
+                return scripts.Get(args.GetProperty("id").GetGuid(), ui);
+            case "scripts.save":
+                RequireUi();
+                return scripts.Save(Data<ScriptDefinition>());
+            case "scripts.remove":
+                RequireUi();
+                return scripts.Remove(args.GetProperty("id").GetGuid());
+            case "scripts.startup":
+                RequireUi();
+                return demo ? 0 : scripts.StartForDesktop();
+            case "scripts.start":
+                if (demo)
+                    throw new SysBoxOperationException(new("SCRIPT_DEMO", "演示模式不运行脚本。"));
+                return scripts.Start(args.GetProperty("id").GetGuid(), ui);
+            case "scripts.stop":
+                return scripts.Stop(args.GetProperty("id").GetGuid(), ui);
+            case "scripts.logs":
+                return scripts.Logs(args.GetProperty("id").GetGuid(), ui);
             case "status":
                 return new
                 {

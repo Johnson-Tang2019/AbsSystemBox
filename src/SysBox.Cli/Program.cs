@@ -42,6 +42,17 @@ try
     object result;
     switch (string.Join(' ', words.Take(2)))
     {
+        case "scripts list" when words.Count == 2:
+            result = await Call<ScriptStatus[]>("scripts.list", new { });
+            break;
+        case "scripts status":
+        case "scripts logs":
+        case "scripts start":
+        case "scripts stop":
+            if (words.Count != 3 || !Guid.TryParse(words[2], out var scriptId))
+                throw new ArgumentException("请指定 scripts list 返回的脚本 ID。");
+            result = await Call<JsonElement>("scripts." + words[1], new { id = scriptId });
+            break;
         case "memory status":
             result = await Call<JsonElement>("memory.status", new
             {
@@ -187,7 +198,7 @@ try
             else if (words.FirstOrDefault() == "search")
                 result = await Call<JsonElement>("search", new SearchPageRequest(string.Join(' ', words.Skip(1)), Limit: limit));
             else
-                throw new ArgumentException("用法：sysbox status | memory status/processes | search 查询 | index status/job/cancel | storage children/analyze 目录 | rules validate/simulate/propose 文件 | rules history | cleanup status。审批与启用清理只在桌面界面操作。");
+                throw new ArgumentException("用法：sysbox status | memory status/processes | search 查询 | index status/job/cancel | storage children/analyze 目录 | rules validate/simulate/propose 文件 | rules history | cleanup status | scripts list | scripts status/logs/start/stop ID。审批与启用清理只在桌面界面操作。");
             break;
     }
     if (result is JsonElement element && element.ValueKind == JsonValueKind.Object && element.TryGetProperty("error", out var nestedError) && nestedError.ValueKind == JsonValueKind.Object)
